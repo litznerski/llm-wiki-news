@@ -5,7 +5,7 @@ An interactive, grounded learning companion for exploring your sovereign knowled
 ---
 
 ### Core Architecture
-- **Epistemic Substrate**: Multi-model [[ArcadeDB]] (`knowledgedb`) graph database.
+- **Epistemic Substrate**: Multi-model [[ArcadeDB]] (`news`) graph database.
 - **Middleware Engine**: [[FastMCP]] providing Two-Tier context resolution (Tier 1 Pre-Compiled Golden Syntheses and Tier 2 Toulmin CoT Traversal).
 - **Epistemic Provenance**: Every assertion is verified against underlying primary literature and canonical concept notes.
 

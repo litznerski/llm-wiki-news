@@ -593,7 +593,7 @@
         </div>
         <span class="engine-badge">ArcadeDB Connected</span>
         <div class="meta-pills">
-          <span class="meta-label">Graph: <span class="meta-val">knowledgedb</span></span>
+          <span class="meta-label">Graph: <span class="meta-val">news</span></span>
           <span class="meta-sep">•</span>
           <span class="meta-label">Middleware: <span class="meta-val">FastMCP</span></span>
         </div>

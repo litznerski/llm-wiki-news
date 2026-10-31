@@ -37,13 +37,13 @@ Configured with isolated containers, volumes, and network (`wiki-news-net`) to r
    ```
 4. **Start ArcadeDB (`arcadedb-news`) & Bootstrap Schema**:
    ```bash
-   podman compose -f setup/compose.arcadedb.yaml up -d
+   podman compose -f setup/compose.arcadedb.yaml up -d --no-build
    uv run scripts/bootstrap_arcadedb.py
    ```
 5. **Start Astro Frontend & Chainlit Studio (`chainlit-news`)**:
    ```bash
    npm --prefix site run dev
-   podman compose -f setup/compose.chainlit.yaml up -d
+   podman compose -f setup/compose.chainlit.yaml up -d --no-build
    ```
 
 See `setup/boilerplate_architecture_and_clean_clone_guide.md` for comprehensive documentation.

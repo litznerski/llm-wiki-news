@@ -69,7 +69,7 @@ if [ "$TARGET" = "arcadedb" ]; then
     fi
 
     echo ""
-    echo "  ACTIVE BACKEND: ArcadeDB (knowledgedb)"
+    echo "  ACTIVE BACKEND: ArcadeDB (news)"
     echo "  ENDPOINT      : http://localhost:2481"
     echo "  EMBEDDINGS    : Native in-engine algo.fastrp (Zero Ollama)"
     echo "  ANALYTICS     : Native in-engine algo.pagerank / algo.louvain"

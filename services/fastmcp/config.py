@@ -59,7 +59,7 @@ if HAS_PYDANTIC:
             default_factory=lambda: os.getenv("ARCADEDB_URL", "http://localhost:2480").rstrip("/")
         )
         arcadedb_database: str = Field(
-            default_factory=lambda: os.getenv("ARCADEDB_DATABASE", "knowledgedb")
+            default_factory=lambda: os.getenv("ARCADEDB_DATABASE", "news")
         )
         arcadedb_user: str = Field(
             default_factory=lambda: os.getenv("ARCADEDB_USER", "root")
@@ -99,7 +99,7 @@ else:
             default_factory=lambda: os.getenv("ARCADEDB_URL", "http://localhost:2480").rstrip("/")
         )
         arcadedb_database: str = field(
-            default_factory=lambda: os.getenv("ARCADEDB_DATABASE", "knowledgedb")
+            default_factory=lambda: os.getenv("ARCADEDB_DATABASE", "news")
         )
         arcadedb_user: str = field(
             default_factory=lambda: os.getenv("ARCADEDB_USER", "root")

@@ -81,7 +81,7 @@ def render_valves_panel(valves: Dict[str, Any]) -> cl.Text:
     dev_mode_str = "ENABLED (Live Sidebar Telemetry)" if dev_mode else "DISABLED"
     withholding = valves.get("teachable_agent_mode", False)
     withholding_str = "ENABLED (Friction Active)" if withholding else "DISABLED (Direct Synthesis)"
-    history_str = "ENABLED (knowledgedb)" if valves.get("enable_chat_history", True) else "DISABLED"
+    history_str = "ENABLED (news)" if valves.get("enable_chat_history", True) else "DISABLED"
     langfuse_str = "ENABLED" if valves.get("enable_langfuse", False) else "DISABLED"
 
     llm_enabled = valves.get("enable_llm", True)
@@ -112,7 +112,7 @@ def render_valves_panel(valves: Dict[str, Any]) -> cl.Text:
 
 ### Epistemic Substrate
 - **Platform**: <span class="brand-knowledge-lab"><span class="brand-knowledge">knowledge</span><span class="brand-lab">lab</span></span>
-- **Knowledge Engine**: `ArcadeDB knowledgedb (Graph & Multi-Model)`
+- **Knowledge Engine**: `ArcadeDB news (Graph & Multi-Model)`
 - **Reasoning Architecture**: `Dual-Flow CoT Windowing & Toulmin Roles`
 - **Presentation Host**: `Astro 7 (Liquid Glass Layout)`
 
@@ -254,7 +254,7 @@ def render_developer_sidebar(dev_traces: Any, user_query: str = "") -> cl.Text:
 
 def render_arcadedb_inspector(concept_name: str, node_data: dict) -> cl.Text:
     """Generates a rich ArcadeDB node inspection card for the side panel."""
-    content = f"# 🔍 ArcadeDB Graph Inspector: {concept_name}\n\n" + format_arcadedb_inspector_markdown(concept_name, node_data) + f"\n*Retrieved live from `knowledgedb` multi-model engine for <span class=\"brand-knowledge-lab\"><span class=\"brand-knowledge\">knowledge</span><span class=\"brand-lab\">lab</span></span>.*\n"
+    content = f"# 🔍 ArcadeDB Graph Inspector: {concept_name}\n\n" + format_arcadedb_inspector_markdown(concept_name, node_data) + f"\n*Retrieved live from `news` multi-model engine for <span class=\"brand-knowledge-lab\"><span class=\"brand-knowledge\">knowledge</span><span class=\"brand-lab\">lab</span></span>.*\n"
     return cl.Text(name=f"ArcadeDB Inspector: {concept_name}", content=content, display="side")
 
 
@@ -861,7 +861,7 @@ async def on_chat_start():
                 id="enable_chat_history",
                 label="Persist Chat History in ArcadeDB",
                 initial=valves.get("enable_chat_history", True),
-                description="Store conversation turns in knowledgedb ChatSession collection"
+                description="Store conversation turns in news ChatSession collection"
             ),
             Switch(
                 id="enable_langfuse",
@@ -1054,7 +1054,7 @@ async def on_message(message: cl.Message):
         if valves.get("enable_llm", True) and valves.get("openrouter_api_key"):
             turn1_system_prompt = (
                 "You are the knowledge lab cognitive assistant and epistemology compiler.\n"
-                "You are provided with verified knowledge vault context from ArcadeDB (knowledgedb).\n\n"
+                "You are provided with verified knowledge vault context from ArcadeDB (news).\n\n"
                 f"VAULT CONTEXT:\n{retrieval_data.get('injected_prompt', '')}\n\n"
                 "CRITICAL INSTRUCTIONS FOR TURN 1:\n"
                 "1. Deliver ONLY the concise Definitional Anchor (Claim / Core Theoretical Thesis) for the requested concept.\n"

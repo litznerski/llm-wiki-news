@@ -39,7 +39,7 @@ if _env_file.exists():
         pass
 
 ARCADEDB_URL = os.getenv("ARCADEDB_URL", "http://localhost:2481").rstrip("/")
-DATABASE = os.getenv("ARCADEDB_DATABASE", "knowledgedb")
+DATABASE = os.getenv("ARCADEDB_DATABASE", "news")
 USER = os.getenv("ARCADEDB_USER", "root")
 PASSWORD = os.getenv("ARCADEDB_PASSWORD", "root_secret")
 

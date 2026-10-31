@@ -8,7 +8,7 @@ services:
       - "2425:2424" # Binary Protocol
     environment:
       - JAVA_TOOL_OPTIONS=-Xms512m -Xmx1536m
-      - ARCADEDB_SETTINGS=-Darcadedb.server.rootPassword=${ARCADEDB_PASSWORD:-root_secret} -Darcadedb.server.defaultDatabases=${ARCADEDB_DATABASE:-knowledgedb} -Darcadedb.mcp.enabled=true
+      - ARCADEDB_SETTINGS=-Darcadedb.server.rootPassword=${ARCADEDB_PASSWORD:-root_secret} -Darcadedb.server.defaultDatabases=${ARCADEDB_DATABASE:-news} -Darcadedb.mcp.enabled=true
     volumes:
       - arcadedb-news-data:/home/arcadedb/databases
       - arcadedb-news-config:/home/arcadedb/config
@@ -31,7 +31,7 @@ services:
       - "8001:8000"
     environment:
       - ARCADEDB_URL=http://arcadedb-news:2480
-      - ARCADEDB_DATABASE=${ARCADEDB_DATABASE:-knowledgedb}
+      - ARCADEDB_DATABASE=${ARCADEDB_DATABASE:-news}
       - ARCADEDB_USER=${ARCADEDB_USER:-root}
       - ARCADEDB_PASSWORD=${ARCADEDB_PASSWORD:-root_secret}
       - DEFAULT_DIALECT=auto
