@@ -1,0 +1,91 @@
+{
+  "command_timeout": 5,
+  "templates_folder": "00_System/Templates",
+  "templates_pairs": [
+    [
+      "",
+      ""
+    ]
+  ],
+  "trigger_on_file_creation": true,
+  "auto_jump_to_cursor": false,
+  "enable_system_commands": false,
+  "shell_path": "",
+  "user_scripts_folder": "",
+  "enable_folder_templates": true,
+  "folder_templates": [
+    {
+      "folder": "01_Story_Development/01_Premise_and_Theme",
+      "template": "00_System/Templates/T-Story-Concept.md"
+    },
+    {
+      "folder": "01_Story_Development/02_Character_Network",
+      "template": "00_System/Templates/T-Character-Topology.md"
+    },
+    {
+      "folder": "01_Story_Development/03_Macro_Spine",
+      "template": "00_System/Templates/T-Macro-Spine.md"
+    },
+    {
+      "folder": "02_World_Bible/Characters",
+      "template": "00_System/Templates/T-Character.md"
+    },
+    {
+      "folder": "02_World_Bible/Locations",
+      "template": "00_System/Templates/T-Location.md"
+    },
+    {
+      "folder": "02_World_Bible/Props_and_Tech",
+      "template": "00_System/Templates/T-Prop.md"
+    },
+    {
+      "folder": "03_Plot_and_Outlines/Beat_Sheets",
+      "template": "00_System/Templates/T-Scene.md"
+    },
+    {
+      "folder": "04_Manuscript",
+      "template": "00_System/Templates/T-Episode.md"
+    },
+    {
+      "folder": "05_PreVis_and_Boards",
+      "template": "00_System/Templates/T-PreVis-Card.md"
+    },
+    {
+      "folder": "05_PreVis_and_Boards/Storyboards",
+      "template": "00_System/Templates/T-PreVis-Card.md"
+    },
+    {
+      "folder": "05_PreVis_and_Boards/Prompt_Engine",
+      "template": "00_System/Templates/T-PreVis-Card.md"
+    },
+    {
+      "folder": "06_Screenplays",
+      "template": "00_System/Templates/T-Screenplay.md"
+    },
+    {
+      "folder": "07_Video_Prompts",
+      "template": "00_System/Templates/T-Video-Prompt.md"
+    }
+  ],
+  "enable_file_templates": false,
+  "file_templates": [
+    {
+      "regex": ".*",
+      "template": ""
+    }
+  ],
+  "syntax_highlighting": true,
+  "syntax_highlighting_mobile": false,
+  "enabled_templates_hotkeys": [
+    ""
+  ],
+  "startup_templates": [
+    ""
+  ],
+  "intellisense_render": 1,
+  "ignore_folders_on_creation": [
+    {
+      "folder": ""
+    }
+  ]
+}

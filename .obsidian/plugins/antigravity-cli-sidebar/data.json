@@ -1,0 +1,5 @@
+{
+  "command": "/Users/christoflitznerski/.local/bin/agy",
+  "args": "--dangerously-skip-permissions",
+  "theme": "light"
+}

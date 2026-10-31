@@ -1,0 +1,6 @@
+.mermaid svg {
+  max-width: 50% !important;
+  height: auto;
+  margin: 0 auto;
+  display: block;
+}

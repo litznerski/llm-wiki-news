@@ -1,1 +1,26 @@
-{}
+{
+  "baseTheme": "light",
+  "useMarkdownLinks": false,
+  "newLinkFormat": "shortest",
+  "newFileLocation": "current",
+  "alwaysUpdateLinks": true,
+  "attachmentFolderPath": "raw/assets",
+  "showUnsupportedFiles": true,
+  "userIgnoreFilters": [
+    ".obsidian/",
+    ".trash/",
+    "*.canvas",
+    "*.mp4",
+    "*.mp3",
+    "site/node_modules/",
+    "site/.astro/",
+    "site/dist/"
+  ],
+  "pdfExportSettings": {
+    "includeName": true,
+    "pageSize": "A4",
+    "landscape": true,
+    "margin": "0",
+    "downscalePercent": 100
+  }
+}
