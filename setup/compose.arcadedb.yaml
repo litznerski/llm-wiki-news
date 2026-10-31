@@ -24,7 +24,7 @@ services:
     build:
       context: ../services/fastmcp
       dockerfile: Dockerfile
-    image: fastmcp-news:latest
+    image: fastmcp-middleware:latest
     container_name: fastmcp-news
     restart: unless-stopped
     ports:

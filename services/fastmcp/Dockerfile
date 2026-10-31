@@ -17,14 +17,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Install Python dependencies
 COPY pyproject.toml /app/services/fastmcp/
 RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir \
-        fastmcp>=0.4.0 \
-        httpx>=0.27.0 \
-        pydantic>=2.0.0 \
-        fastapi>=0.110.0 \
-        uvicorn>=0.28.0 \
-        python-dotenv>=1.0.0 \
-        langfuse>=2.0.0
+    pip install --no-cache-dir --prefer-binary \
+        "fastmcp>=0.4.0" \
+        "httpx>=0.27.0" \
+        "pydantic>=2.0.0" \
+        "fastapi>=0.110.0" \
+        "uvicorn>=0.28.0" \
+        "python-dotenv>=1.0.0" \
+        "langfuse>=2.0.0"
 
 # Copy application source code into package structure
 COPY . /app/services/fastmcp/

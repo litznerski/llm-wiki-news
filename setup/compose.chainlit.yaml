@@ -3,7 +3,7 @@ services:
     build:
       context: ../services/frontend
       dockerfile: Dockerfile
-    image: chainlit-news:latest
+    image: chainlit-frontend:latest
     container_name: chainlit-news
     restart: unless-stopped
     ports:
