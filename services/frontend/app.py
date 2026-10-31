@@ -14,7 +14,7 @@ from chainlit.input_widget import Select, Switch, TextInput, Slider
 from typing import Optional, Dict, Any, List
 
 VALVES_FILE = os.path.join(os.path.dirname(__file__), "valves.json")
-DEFAULT_FASTMCP_URL = os.getenv("FASTMCP_URL", "http://fastmcp-middleware:8000")
+DEFAULT_FASTMCP_URL = os.getenv("FASTMCP_URL", "http://fastmcp-news:8000")
 DEFAULT_OPENROUTER_KEY = os.getenv("OPENROUTER_API_KEY", "")
 DEFAULT_LLM_MODEL = os.getenv("LLM_MODEL", "openrouter/free")
 DEFAULT_OPENROUTER_BASE_URL = os.getenv("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1")

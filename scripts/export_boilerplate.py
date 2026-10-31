@@ -602,7 +602,7 @@ const ui = siteConfig.ui;
         arcade_compose = """services:
   arcadedb:
     image: arcadedata/arcadedb:latest
-    container_name: arcadedb-ki
+    container_name: arcadedb-news
     restart: unless-stopped
     ports:
       - "2480:2480" # REST API, Studio Web UI, and Built-in MCP Server (/api/v1/mcp)
@@ -631,7 +631,7 @@ const ui = siteConfig.ui;
     ports:
       - "8000:8000"
     environment:
-      - ARCADEDB_URL=http://arcadedb-ki:2480
+      - ARCADEDB_URL=http://arcadedb-news:2480
       - ARCADEDB_DATABASE=${ARCADEDB_DATABASE:-knowledgedb}
       - ARCADEDB_USER=${ARCADEDB_USER:-root}
       - ARCADEDB_PASSWORD=${ARCADEDB_PASSWORD:-root_secret}

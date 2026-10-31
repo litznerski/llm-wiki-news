@@ -30,7 +30,7 @@ if _env_file.exists():
     except Exception:
         pass
 
-ARCADEDB_URL = os.getenv("ARCADEDB_URL", "http://localhost:2480").rstrip("/")
+ARCADEDB_URL = os.getenv("ARCADEDB_URL", "http://localhost:2481").rstrip("/")
 MCP_ENDPOINT = f"{ARCADEDB_URL}/api/v1/mcp"
 USERNAME = os.getenv("ARCADEDB_USER", "root")
 PASSWORD = os.getenv("ARCADEDB_PASSWORD", "root_secret")

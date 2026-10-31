@@ -9,13 +9,16 @@ import { remarkReadingTime } from './src/plugins/remark-reading-time.mjs';
 import { remarkObsidianWikilinks } from './src/plugins/remark-obsidian-wikilinks.mjs';
 
 // Dynamic site URL and base path resolution
-const siteUrl = process.env.URL || 'http://localhost:4321';
+const siteUrl = process.env.URL || 'http://localhost:4322';
 const basePath = '/';
 
 // https://astro.build/config
 export default defineConfig({
   site: siteUrl,
   base: basePath,
+  server: {
+    port: 4322,
+  },
   redirects: {
     '/blog': '/wiki',
     '/blog/[...slug]': '/wiki/[...slug]',

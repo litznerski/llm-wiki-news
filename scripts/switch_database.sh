@@ -53,11 +53,11 @@ if [ "$TARGET" = "arcadedb" ]; then
         echo "  [✓] Updated wiki/.ki/vault.yaml to profile: default"
     fi
 
-    # 3. Container lifecycle: Start arcadedb-ki and fastmcp-middleware, stop neo4j-ki to conserve host RAM
-    echo "  → Starting local arcadedb-ki and fastmcp-middleware containers..."
+    # 3. Container lifecycle: Start arcadedb-news and fastmcp-news, stop neo4j-ki to conserve host RAM
+    echo "  → Starting local arcadedb-news and fastmcp-news containers..."
     podman compose -f "$VAULT_ROOT/setup/compose.arcadedb.yaml" up -d
-    echo "  [✓] arcadedb-ki active on http://localhost:2480"
-    echo "  [✓] fastmcp-middleware active on http://localhost:8000"
+    echo "  [✓] arcadedb-news active on http://localhost:2481"
+    echo "  [✓] fastmcp-news active on http://localhost:8001"
 
     echo "  → Pausing local neo4j-ki container to conserve 1.8GB RAM..."
     podman stop neo4j-ki 2>/dev/null || true
@@ -70,7 +70,7 @@ if [ "$TARGET" = "arcadedb" ]; then
 
     echo ""
     echo "  ACTIVE BACKEND: ArcadeDB (knowledgedb)"
-    echo "  ENDPOINT      : http://localhost:2480"
+    echo "  ENDPOINT      : http://localhost:2481"
     echo "  EMBEDDINGS    : Native in-engine algo.fastrp (Zero Ollama)"
     echo "  ANALYTICS     : Native in-engine algo.pagerank / algo.louvain"
     echo "================================================================="
@@ -87,9 +87,9 @@ elif [ "$TARGET" = "neo4j-local" ]; then
     fi
 
     # 3. Start local neo4j-ki container, stop ArcadeDB stack
-    echo "  → Pausing arcadedb-ki and fastmcp-middleware containers to conserve RAM..."
-    podman stop fastmcp-middleware arcadedb-ki 2>/dev/null || true
-    echo "  [✓] arcadedb-ki and fastmcp-middleware paused."
+    echo "  → Pausing arcadedb-news and fastmcp-news containers to conserve RAM..."
+    podman stop fastmcp-news arcadedb-news 2>/dev/null || true
+    echo "  [✓] arcadedb-news and fastmcp-news paused."
 
     echo "  → Starting local neo4j-ki container..."
     podman start neo4j-ki 2>/dev/null || true
@@ -176,8 +176,8 @@ elif [ "$TARGET" = "neo4j-aura" ]; then
     fi
 
     # 3. Pause local containers to conserve RAM
-    echo "  → Pausing local containers (neo4j-ki, arcadedb-ki, fastmcp-middleware)..."
-    podman stop fastmcp-middleware arcadedb-ki neo4j-ki 2>/dev/null || true
+    echo "  → Pausing local containers (neo4j-ki, arcadedb-news, fastmcp-news)..."
+    podman stop fastmcp-news arcadedb-news neo4j-ki 2>/dev/null || true
     echo "  [✓] Local containers paused."
 
     # 4. Update Antigravity MCP config to Aura

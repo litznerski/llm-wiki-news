@@ -105,7 +105,7 @@ export const siteConfig: SiteConfig = {
   title: "Knowledge Lab | Sovereign Knowledge Graph & Socratic Studio",
   description:
     "Local-first sovereign knowledge graph and Socratic AI studio powered by Obsidian, ArcadeDB, FastMCP, and Astro 5.",
-  url: "http://localhost:4321",
+  url: "http://localhost:4322",
   favicon: "/favicon.svg",
   defaultOgImage: "/brand/banner.png",
 

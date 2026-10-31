@@ -43,7 +43,7 @@ class ArcadeDBClient:
         password: Optional[str] = None,
         timeout: float = 30.0,
     ):
-        self.base_url = (base_url or os.getenv("ARCADEDB_URL", "http://localhost:2480")).rstrip("/")
+        self.base_url = (base_url or os.getenv("ARCADEDB_URL", "http://localhost:2481")).rstrip("/")
         self.database = database or os.getenv("ARCADEDB_DATABASE", "knowledgedb")
         self.username = username or os.getenv("ARCADEDB_USER", "root")
         self.password = password or os.getenv("ARCADEDB_PASSWORD", "root_secret")

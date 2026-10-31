@@ -391,8 +391,10 @@
    * In embedded iframe mode or standalone on port 8080, routes to Astro port 4321 /wiki.
    */
   function getAstroWikiBaseUrl() {
-    const isLocalhost8080 = window.location.port === "8080";
-    if (isLocalhost8080) {
+    if (window.location.port === "8081") {
+      return `${window.location.protocol}//${window.location.hostname}:4322/wiki`;
+    }
+    if (window.location.port === "8080") {
       return `${window.location.protocol}//${window.location.hostname}:4321/wiki`;
     }
     return "/wiki";

@@ -153,7 +153,7 @@ In the boilerplate, ArcadeDB starts with an empty database volume. To ensure the
 services:
   arcadedb:
     image: arcadedata/arcadedb:latest
-    container_name: arcadedb-ki
+    container_name: arcadedb-news
     restart: unless-stopped
     ports:
       - "2480:2480" # REST API, Studio Web UI, and MCP

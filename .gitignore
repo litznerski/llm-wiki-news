@@ -44,8 +44,10 @@ site/public/pagefind/
 # Environment & Secret Credentials
 .env
 .env.*
+!setup/.env.example
 !site/.env.example
 !services/fastmcp/.env.example
+!services/frontend/.env.example
 
 # Chainlit Runtime Data
 services/frontend/.files/

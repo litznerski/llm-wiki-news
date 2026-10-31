@@ -4,7 +4,7 @@
   "teachable_agent_mode": false,
   "enable_chat_history": true,
   "enable_langfuse": false,
-  "fastmcp_url": "http://fastmcp-middleware:8000",
+  "fastmcp_url": "http://fastmcp-news:8000",
   "enable_llm": true,
   "llm_model": "openrouter/free",
   "custom_model": "",

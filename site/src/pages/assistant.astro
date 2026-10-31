@@ -5,7 +5,7 @@ import '../styles/global.css';
 
 const title = `Learning Studio & Socratic Assistant — ${siteConfig.name}`;
 const description = "Interactive Socratic dialogue, dialectical sparring, and real-time knowledge graph exploration.";
-const chainlitUrl = import.meta.env.PUBLIC_CHAINLIT_URL || 'http://localhost:8080';
+const chainlitUrl = import.meta.env.PUBLIC_CHAINLIT_URL || 'http://localhost:8081';
 const canonicalURL = new URL(Astro.url.pathname, Astro.site || siteConfig.url);
 const faviconUrl = url(siteConfig.favicon || '/favicon.svg');
 const faviconType = faviconUrl.endsWith('.svg') || faviconUrl.startsWith('data:image/svg')

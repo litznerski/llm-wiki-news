@@ -50,7 +50,7 @@ if _env_file.exists():
         pass
 
 # Default Connection Settings
-ARCADEDB_URL = os.getenv("ARCADEDB_URL", "http://localhost:2480").rstrip("/")
+ARCADEDB_URL = os.getenv("ARCADEDB_URL", "http://localhost:2481").rstrip("/")
 ARCADEDB_DATABASE = os.getenv("ARCADEDB_DATABASE", "knowledgedb")
 ARCADEDB_USER = os.getenv("ARCADEDB_USER", "root")
 ARCADEDB_PASSWORD = os.getenv("ARCADEDB_PASSWORD", "root_secret")

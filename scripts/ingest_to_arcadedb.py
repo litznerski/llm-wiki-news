@@ -48,7 +48,7 @@ if _env_file.exists():
     except Exception:
         pass
 
-ARCADEDB_URL = os.getenv("ARCADEDB_URL", "http://localhost:2480")
+ARCADEDB_URL = os.getenv("ARCADEDB_URL", "http://localhost:2481")
 ARCADEDB_DATABASE = os.getenv("ARCADEDB_DATABASE", "knowledgedb")
 ARCADEDB_USER = os.getenv("ARCADEDB_USER", "root")
 ARCADEDB_PASSWORD = os.getenv("ARCADEDB_PASSWORD", "root_secret")

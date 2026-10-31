@@ -1,19 +1,19 @@
 services:
   arcadedb:
     image: arcadedata/arcadedb:latest
-    container_name: arcadedb-ki
+    container_name: arcadedb-news
     restart: unless-stopped
     ports:
-      - "2480:2480" # REST API, Studio Web UI, and Built-in MCP Server (/api/v1/mcp)
-      - "2424:2424" # Binary Protocol
+      - "2481:2480" # REST API, Studio Web UI, and Built-in MCP Server (/api/v1/mcp)
+      - "2425:2424" # Binary Protocol
     environment:
       - JAVA_TOOL_OPTIONS=-Xms512m -Xmx1536m
       - ARCADEDB_SETTINGS=-Darcadedb.server.rootPassword=${ARCADEDB_PASSWORD:-root_secret} -Darcadedb.server.defaultDatabases=${ARCADEDB_DATABASE:-knowledgedb} -Darcadedb.mcp.enabled=true
     volumes:
-      - arcadedb-data:/home/arcadedb/databases
-      - arcadedb-config:/home/arcadedb/config
+      - arcadedb-news-data:/home/arcadedb/databases
+      - arcadedb-news-config:/home/arcadedb/config
     networks:
-      - wiki-net
+      - wiki-news-net
     healthcheck:
       test: ["CMD-SHELL", "wget -q --spider http://localhost:2480/api/v1/ready || exit 1"]
       interval: 10s
@@ -24,13 +24,13 @@ services:
     build:
       context: ../services/fastmcp
       dockerfile: Dockerfile
-    image: fastmcp-middleware:latest
-    container_name: fastmcp-middleware
+    image: fastmcp-news:latest
+    container_name: fastmcp-news
     restart: unless-stopped
     ports:
-      - "8000:8000"
+      - "8001:8000"
     environment:
-      - ARCADEDB_URL=http://arcadedb-ki:2480
+      - ARCADEDB_URL=http://arcadedb-news:2480
       - ARCADEDB_DATABASE=${ARCADEDB_DATABASE:-knowledgedb}
       - ARCADEDB_USER=${ARCADEDB_USER:-root}
       - ARCADEDB_PASSWORD=${ARCADEDB_PASSWORD:-root_secret}
@@ -44,7 +44,7 @@ services:
       arcadedb:
         condition: service_healthy
     networks:
-      - wiki-net
+      - wiki-news-net
     deploy:
       resources:
         limits:
@@ -59,11 +59,11 @@ services:
       retries: 3
 
 volumes:
-  arcadedb-data:
-    name: arcadedb-data
-  arcadedb-config:
-    name: arcadedb-config
+  arcadedb-news-data:
+    name: arcadedb-news-data
+  arcadedb-news-config:
+    name: arcadedb-news-config
 
 networks:
-  wiki-net:
-    name: wiki-net
+  wiki-news-net:
+    name: wiki-news-net
