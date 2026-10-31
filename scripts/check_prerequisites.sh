@@ -71,12 +71,12 @@ check_tool "npm" "npm Package Manager" "Included with Node.js" 1
 echo -e "\n${BOLD}4. Container Engine (ArcadeDB & Chainlit):${NC}"
 # Check Podman or Docker
 if command -v podman &> /dev/null; then
-    check_tool "podman" "Podman Container Engine" "sudo apt install podman podman-compose" 1
+    check_tool "podman" "Podman Container Engine" "brew install podman (macOS) or sudo apt install podman podman-compose (Linux)" 1
 elif command -v docker &> /dev/null; then
     check_tool "docker" "Docker Container Engine" "sudo apt install docker.io docker-compose-plugin" 1
 else
     echo -e "  [${RED}✗${NC}] ${BOLD}Container Engine (podman or docker)${NC} is ${RED}NOT INSTALLED${NC} [CRITICAL]"
-    echo -e "      ${YELLOW}Install via:${NC} sudo apt install podman podman-compose (recommended) or Docker Desktop"
+    echo -e "      ${YELLOW}Install via:${NC} brew install podman (macOS) or sudo apt install podman podman-compose (Linux) or Docker Desktop"
     MISSING_CRITICAL=$((MISSING_CRITICAL + 1))
 fi
 

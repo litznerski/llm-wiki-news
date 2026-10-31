@@ -493,7 +493,7 @@ sequenceDiagram
     Note over Git,User: Distribution & Cloning
     User->>Git: Click "Use this template" -> Clone new repo
     User->>User: cp .env.example .env & configure keys
-    User->>DB: podman-compose up -d (ArcadeDB + FastMCP)
+    User->>DB: podman compose up -d (ArcadeDB + FastMCP)
     User->>DB: uv run scripts/bootstrap_arcadedb.py
     User->>Astro: npm --prefix site run dev
     User->>User: Run /ingest on first document
@@ -549,7 +549,7 @@ flowchart TD
 | :--- | :--- | :--- | :--- | :--- |
 | **Obsidian** | Desktop Markdown IDE & Graph Canvas | Optional (Recommended) | Flatpak / Snap / AppImage | `winget install Obsidian.Obsidian` |
 | **Antigravity CLI (`agy`)** | Autonomous AI pair programmer & compiler | **Critical** | Native Linux CLI / npm global | `npm install -g @google/antigravity-cli` (or inside WSL2) |
-| **Container Engine** | Runs ArcadeDB & Chainlit containers | **Critical** | Podman (`podman-compose`) or Docker | Docker Desktop (WSL2 backend) or Podman Desktop |
+| **Container Engine** | Runs ArcadeDB & Chainlit containers | **Critical** | Podman (`podman compose`) or Docker | Docker Desktop (WSL2 backend) or Podman Desktop |
 | **Python 3.11+** | Backend scripts & FastMCP runtime | **Critical** | `python3` from package manager | `winget install Python.Python.3.12` |
 | **Astral `uv`** | High-speed Python package manager & runner | **Critical** | `curl -LsSf https://astral.sh/uv/install.sh \| sh` | `winget install astral-sh.uv` or PowerShell script |
 | **Node.js (v20+) & npm** | Builds Astro 5 digital garden & Pagefind | **Critical** | NodeSource repo (`nodejs`) or `nvm` | `winget install OpenJS.NodeJS.LTS` |
@@ -703,7 +703,7 @@ npm --prefix site install
 
 #### 4. Spin Up ArcadeDB & FastMCP Services
 ```bash
-podman-compose -f setup/compose.arcadedb.yaml up -d
+podman compose -f setup/compose.arcadedb.yaml up -d
 # (or docker compose -f setup/compose.arcadedb.yaml up -d)
 ```
 Verify ArcadeDB readiness:
@@ -735,7 +735,7 @@ In separate terminal windows (or via background daemons):
 npm --prefix site run dev
 
 # Terminal 2: Launch Chainlit Learning Studio (Port 8080)
-podman-compose -f setup/compose.chainlit.yaml up
+podman compose -f setup/compose.chainlit.yaml up -d
 ```
 
 #### 8. Verify Day-1 Ingestion

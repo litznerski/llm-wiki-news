@@ -26,13 +26,13 @@ A local-first, autonomous knowledge compiler and Socratic learning studio powere
    ```
 4. **Start ArcadeDB & Bootstrap Schema**:
    ```bash
-   podman-compose -f setup/compose.arcadedb.yaml up -d
+   podman compose -f setup/compose.arcadedb.yaml up -d
    uv run scripts/bootstrap_arcadedb.py
    ```
 5. **Start Astro Frontend & Chainlit Studio**:
    ```bash
    npm --prefix site run dev
-   podman-compose -f setup/compose.chainlit.yaml up -d
+   podman compose -f setup/compose.chainlit.yaml up -d
    ```
 
 See `setup/boilerplate_architecture_and_clean_clone_guide.md` for comprehensive documentation.
