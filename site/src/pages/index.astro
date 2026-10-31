@@ -1,0 +1,167 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import HeroMagazineCover from '../components/ui/HeroMagazineCover.astro';
+import TagBadge from '../components/ui/TagBadge.astro';
+import siteConfig from '../config/site';
+import { url } from '../utils/paths';
+import { getCollection } from 'astro:content';
+import { ArrowRight, Sparkles, BookOpen, Network, Cpu, Compass } from 'lucide-astro';
+
+const allPosts = await getCollection('blog');
+const sortedPosts = allPosts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const featuredPost = sortedPosts[0];
+
+const categories = siteConfig.categories.map((cat) => ({
+  name: cat.name,
+  desc: cat.desc,
+}));
+
+const allTags = [...new Set(sortedPosts.flatMap((p) => p.data.tags || []))];
+const ui = siteConfig.ui;
+---
+
+<BaseLayout>
+  <!-- Hero Section -->
+  <section class="mb-10 sm:mb-14 p-6 sm:p-10 lg:p-12 kepler-card rounded-3xl relative overflow-hidden group">
+    <div class="absolute -top-24 -right-24 w-96 h-96 rounded-full border border-dashed border-orange-500/20 pointer-events-none animate-[orbit-spin_35s_linear_infinite]"></div>
+
+    <div class="relative z-10 max-w-3xl">
+      <div class="kepler-chip-orange mb-4 sm:mb-5">
+        <span class="w-2 h-2 rounded-full bg-orange-600 animate-pulse"></span>
+        <span>{siteConfig.hero.badge}</span>
+      </div>
+
+      <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold font-poppins text-white tracking-tight leading-[1.15] mb-4 sm:mb-5">
+        Sovereign Knowledge Base & <br class="hidden sm:inline" />
+        <span class="text-orange-400">Socratic Studio.</span>
+      </h1>
+
+      <p class="text-sm sm:text-lg text-zinc-200 font-normal leading-relaxed mb-6 sm:mb-8">
+        {siteConfig.hero.tagline}
+      </p>
+
+      <div class="flex flex-wrap items-center gap-3">
+        <a
+          href={url('/wiki')}
+          class="kepler-btn-orange px-6 py-3 text-xs sm:text-sm w-full sm:w-auto"
+        >
+          <span>Explore Knowledge Graph</span>
+          <ArrowRight class="w-4 h-4" />
+        </a>
+
+        <a
+          href={url('/assistant')}
+          class="kepler-btn-navy px-5 py-3 text-xs sm:text-sm w-full sm:w-auto"
+        >
+          <span>Launch Learning Studio</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Architectural Pillars Matrix -->
+  <section class="mb-14 grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div class="p-6 rounded-3xl kepler-card flex flex-col justify-between">
+      <div>
+        <div class="text-orange-400 font-mono text-xs uppercase tracking-wider mb-2 font-bold flex items-center gap-2">
+          <BookOpen class="w-4 h-4" />
+          <span>Obsidian IDE</span>
+        </div>
+        <h3 class="text-lg font-bold font-poppins text-white mb-2">Atomic Knowledge Graph</h3>
+        <p class="text-sm text-zinc-200 leading-relaxed">
+          Agent-managed markdown vault with strict CoT epistemic arcs across concepts, entities, and distilled sources.
+        </p>
+      </div>
+    </div>
+
+    <div class="p-6 rounded-3xl kepler-card flex flex-col justify-between">
+      <div>
+        <div class="text-orange-400 font-mono text-xs uppercase tracking-wider mb-2 font-bold flex items-center gap-2">
+          <Network class="w-4 h-4" />
+          <span>ArcadeDB</span>
+        </div>
+        <h3 class="text-lg font-bold font-poppins text-white mb-2">Multi-Model Engine</h3>
+        <p class="text-sm text-zinc-200 leading-relaxed">
+          High-performance graph traversals, JVector HNSW vector indexing, and Graph OLAP procedures with zero external bloat.
+        </p>
+      </div>
+    </div>
+
+    <div class="p-6 rounded-3xl kepler-card flex flex-col justify-between">
+      <div>
+        <div class="text-orange-400 font-mono text-xs uppercase tracking-wider mb-2 font-bold flex items-center gap-2">
+          <Cpu class="w-4 h-4" />
+          <span>FastMCP & Chainlit</span>
+        </div>
+        <h3 class="text-lg font-bold font-poppins text-white mb-2">Socratic Sparring Studio</h3>
+        <p class="text-sm text-zinc-200 leading-relaxed">
+          Two-Tier Toulmin context retrieval and Socratic dialogue valves that enforce productive friction and authentic learning.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Note / Welcome Spotlight -->
+  {featuredPost && <HeroMagazineCover post={featuredPost} />}
+
+  <!-- Categories & Tags Section -->
+  <section class="my-16 grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <div class="lg:col-span-7 kepler-card rounded-3xl p-7 sm:p-8">
+      <div class="flex items-center justify-between border-b border-white/10 pb-4 mb-6">
+        <div class="flex items-center gap-2.5">
+          <span class="w-2.5 h-2.5 rounded-full bg-orange-500"></span>
+          <h3 class="text-lg font-bold font-poppins text-white">
+            {ui?.categoriesTitle || 'Topic Domains'}
+          </h3>
+        </div>
+        <span class="text-xs font-mono text-sky-200/80">// CATEGORIES</span>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {categories.map((cat) => (
+          <a
+            href={url(`/categories/${cat.name.toLowerCase()}`)}
+            class="group p-5 rounded-2xl bg-[#0a1628]/60 border border-white/10 hover:border-orange-400/50 hover:shadow-[2px_2px_0_var(--color-ink)] flex flex-col justify-between transition-all"
+          >
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-base font-bold font-poppins text-white group-hover:text-orange-400 transition-colors">
+                {cat.name}
+              </span>
+              <Compass class="w-4 h-4 text-orange-400 opacity-60 group-hover:opacity-100 transition-opacity" />
+            </div>
+            <p class="text-xs text-zinc-300 leading-relaxed">
+              {cat.desc}
+            </p>
+          </a>
+        ))}
+      </div>
+    </div>
+
+    <div class="lg:col-span-5 kepler-card rounded-3xl p-7 sm:p-8 flex flex-col justify-between">
+      <div>
+        <div class="flex items-center justify-between border-b border-white/10 pb-4 mb-6">
+          <div class="flex items-center gap-2.5">
+            <span class="w-2.5 h-2.5 rounded-full bg-orange-500"></span>
+            <h3 class="text-lg font-bold font-poppins text-white">
+              {ui?.tagsTitle || 'Indexed Tags'}
+            </h3>
+          </div>
+          <span class="font-mono text-xs text-sky-200/80">#TAGS</span>
+        </div>
+
+        <div class="flex flex-wrap gap-2">
+          {allTags.length > 0 ? (
+            allTags.map((tag) => <TagBadge tag={tag} size="sm" />)
+          ) : (
+            <span class="text-xs text-zinc-400 italic">Tags will populate as notes are ingested.</span>
+          )}
+        </div>
+      </div>
+
+      <div class="mt-6 pt-4 border-t border-white/10 flex justify-between items-center text-xs text-zinc-300 font-mono">
+        <span>SOVEREIGN KNOWLEDGE</span>
+        <a href={url('/wiki')} class="text-orange-400 hover:underline">View All Wiki Notes &rarr;</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

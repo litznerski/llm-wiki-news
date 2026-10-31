@@ -1,0 +1,69 @@
+services:
+  arcadedb:
+    image: arcadedata/arcadedb:latest
+    container_name: arcadedb-ki
+    restart: unless-stopped
+    ports:
+      - "2480:2480" # REST API, Studio Web UI, and Built-in MCP Server (/api/v1/mcp)
+      - "2424:2424" # Binary Protocol
+    environment:
+      - JAVA_TOOL_OPTIONS=-Xms512m -Xmx1536m
+      - ARCADEDB_SETTINGS=-Darcadedb.server.rootPassword=${ARCADEDB_PASSWORD:-root_secret} -Darcadedb.server.defaultDatabases=${ARCADEDB_DATABASE:-knowledgedb} -Darcadedb.mcp.enabled=true
+    volumes:
+      - arcadedb-data:/home/arcadedb/databases
+      - arcadedb-config:/home/arcadedb/config
+    networks:
+      - wiki-net
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:2480/api/v1/ready || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  fastmcp-middleware:
+    build:
+      context: ../services/fastmcp
+      dockerfile: Dockerfile
+    image: fastmcp-middleware:latest
+    container_name: fastmcp-middleware
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - ARCADEDB_URL=http://arcadedb-ki:2480
+      - ARCADEDB_DATABASE=${ARCADEDB_DATABASE:-knowledgedb}
+      - ARCADEDB_USER=${ARCADEDB_USER:-root}
+      - ARCADEDB_PASSWORD=${ARCADEDB_PASSWORD:-root_secret}
+      - DEFAULT_DIALECT=auto
+      - LOG_LEVEL=INFO
+      - ENABLE_LANGFUSE=${ENABLE_LANGFUSE:-false}
+      - LANGFUSE_PUBLIC_KEY=${LANGFUSE_PUBLIC_KEY:-}
+      - LANGFUSE_SECRET_KEY=${LANGFUSE_SECRET_KEY:-}
+      - LANGFUSE_HOST=${LANGFUSE_HOST:-https://cloud.langfuse.com}
+    depends_on:
+      arcadedb:
+        condition: service_healthy
+    networks:
+      - wiki-net
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: "1.0"
+        reservations:
+          memory: 128M
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/health || exit 1"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+volumes:
+  arcadedb-data:
+    name: arcadedb-data
+  arcadedb-config:
+    name: arcadedb-config
+
+networks:
+  wiki-net:
+    name: wiki-net

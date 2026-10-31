@@ -1,0 +1,118 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostCard from '../../components/ui/PostCard.astro';
+import WikiCard from '../../components/ui/WikiCard.astro';
+import siteConfig from '../../config/site';
+import { url } from '../../utils/paths';
+import { getCollection } from 'astro:content';
+import { isNotePublished, getWikiCategory, slugifyWikiTitle } from '../../config/wiki.config';
+import { ArrowLeft, BookOpen, Layers } from 'lucide-astro';
+
+export async function getStaticPaths() {
+  const allPosts = await getCollection('blog');
+  const allNotes = await getCollection('wiki');
+  const publishedNotes = allNotes.filter((n) => isNotePublished(n.id, n.data));
+
+  const configuredCategories = siteConfig.categories.map((c) => c.name);
+  const postCategories = allPosts.map((p) => p.data.category);
+  const wikiCategories = publishedNotes.map((n) => getWikiCategory(n.data));
+  const uniqueCategoryNames = [...new Set([...configuredCategories, ...postCategories, ...wikiCategories])];
+
+  return uniqueCategoryNames.map((catName) => {
+    const slug = slugifyWikiTitle(catName);
+
+    const filteredPosts = allPosts.filter(
+      (p) => slugifyWikiTitle(p.data.category) === slug || p.data.category.toLowerCase() === catName.toLowerCase()
+    ).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+    const filteredWiki = publishedNotes.filter((n) => {
+      const noteCat = getWikiCategory(n.data);
+      return slugifyWikiTitle(noteCat) === slug || noteCat.toLowerCase() === catName.toLowerCase();
+    }).sort((a, b) => {
+      const titleA = a.data?.title || a.id.replace(/\.md$/, '').split('/').pop() || '';
+      const titleB = b.data?.title || b.id.replace(/\.md$/, '').split('/').pop() || '';
+      return titleA.localeCompare(titleB);
+    });
+
+    return {
+      params: { category: slug },
+      props: {
+        category: catName,
+        posts: filteredPosts,
+        wikiNotes: filteredWiki,
+      },
+    };
+  });
+}
+
+const { category, posts, wikiNotes } = Astro.props;
+const categoryTitle = category;
+const totalCount = posts.length + wikiNotes.length;
+---
+
+<BaseLayout
+  title={`${categoryTitle} Articles & Wiki Nodes — ${siteConfig.name}`}
+  description={`Browse technical articles, cognitive science models, and knowledge wiki primitives in ${categoryTitle}`}
+>
+  <div class="mb-6">
+    <a
+      href={url('/categories')}
+      class="inline-flex items-center gap-2 text-xs font-semibold font-mono uppercase tracking-wider text-zinc-300 hover:text-orange-400 transition-colors"
+    >
+      <ArrowLeft class="w-3.5 h-3.5 text-orange-400" />
+      <span>All Categories</span>
+    </a>
+  </div>
+
+  <div class="mb-10 p-7 sm:p-10 kepler-card rounded-3xl shadow-xl">
+    <div class="flex items-center justify-between">
+      <div>
+        <div class="kepler-chip-orange mb-2.5">
+          Category Domain
+        </div>
+        <h1 class="text-3xl sm:text-4xl font-extrabold font-poppins text-white tracking-tight">
+          {categoryTitle}
+        </h1>
+        <p class="text-sm text-zinc-200 mt-2 font-mono">
+          // {totalCount} total resources ({posts.length} {posts.length === 1 ? 'article' : 'articles'}, {wikiNotes.length} wiki {wikiNotes.length === 1 ? 'primitive' : 'primitives'}) published in this domain
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Blog Articles Section (if any) -->
+  {posts.length > 0 && (
+    <div class="mb-12">
+      <div class="flex items-center gap-2 mb-6">
+        <BookOpen class="w-4 h-4 text-orange-400" />
+        <h2 class="text-xl font-bold font-poppins text-white">Articles & Publications ({posts.length})</h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {posts.map((post) => (
+          <PostCard post={post} />
+        ))}
+      </div>
+    </div>
+  )}
+
+  <!-- Wiki Knowledge Primitives Section (if any) -->
+  {wikiNotes.length > 0 && (
+    <div class="mb-12">
+      <div class="flex items-center gap-2 mb-6">
+        <Layers class="w-4 h-4 text-orange-400" />
+        <h2 class="text-xl font-bold font-poppins text-white">Knowledge Wiki Primitives ({wikiNotes.length})</h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {wikiNotes.map((note) => (
+          <WikiCard note={note} showCategory={false} />
+        ))}
+      </div>
+    </div>
+  )}
+
+  {totalCount === 0 && (
+    <div class="p-12 text-center kepler-card rounded-3xl">
+      <p class="text-sm text-zinc-300 font-mono">// No resources currently published in this section.</p>
+    </div>
+  )}
+</BaseLayout>

@@ -1,0 +1,99 @@
+---
+import siteConfig from '../../config/site';
+import { url } from '../../utils/paths';
+import { Rss, Linkedin, Twitter } from 'lucide-astro';
+
+const brandDescription = siteConfig.footer.brandDescription || siteConfig.description;
+---
+
+<footer class="mt-20 border-t border-white/10 relative overflow-hidden bg-[#060b14] transition-colors">
+  <!-- Subtle Orbit Background Accent -->
+  <div class="absolute -top-32 -right-32 w-96 h-96 rounded-full border border-dashed border-orange-500/15 pointer-events-none animate-[orbit-spin_40s_linear_infinite]"></div>
+  
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 relative z-10">
+    <!-- Main Footer Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-8 pb-10 border-b border-white/10">
+      <!-- Col 1: Brand Info -->
+      <div class="md:col-span-2 space-y-3.5">
+        <div class="flex items-center gap-2.5">
+          <div class="flex items-center justify-center w-7 h-7 rounded-full liquid-glass-card text-sm font-bold tracking-tight select-none">
+            <span class="font-poppins font-bold text-white lowercase leading-none">k</span><span class="font-mono font-bold text-orange-400 lowercase leading-none">l</span>
+          </div>
+          <span class="text-base tracking-tight leading-none">
+            <span class="font-poppins font-bold text-white">karimoo</span>
+            <span class="font-mono font-bold text-orange-400 ml-1">lab</span>
+          </span>
+        </div>
+        <p class="text-sm text-zinc-300 max-w-sm leading-relaxed">
+          {brandDescription}
+        </p>
+        <div class="flex items-center gap-2 pt-1">
+          {siteConfig.author.social.linkedin && (
+            <a
+              href={siteConfig.author.social.linkedin}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="LinkedIn"
+              class="p-2.5 rounded-full liquid-pill text-zinc-300 hover:text-orange-400 hover:scale-105 transition-all"
+            >
+              <Linkedin class="w-4 h-4" />
+            </a>
+          )}
+          {siteConfig.author.social.twitter && (
+            <a
+              href={siteConfig.author.social.twitter}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Twitter / X"
+              class="p-2.5 rounded-full liquid-pill text-zinc-300 hover:text-orange-400 hover:scale-105 transition-all"
+            >
+              <Twitter class="w-4 h-4" />
+            </a>
+          )}
+          <a
+            href={url('/rss.xml')}
+            aria-label="RSS Feed"
+            class="p-2.5 rounded-full liquid-pill text-zinc-300 hover:text-orange-400 hover:scale-105 transition-all"
+          >
+            <Rss class="w-4 h-4" />
+          </a>
+        </div>
+      </div>
+
+      <!-- Col 2: Navigation Links -->
+      <div>
+        <h4 class="text-xs font-bold uppercase tracking-wider text-white mb-3.5 font-mono">
+          // Navigation
+        </h4>
+        <ul class="space-y-2 text-sm text-zinc-300">
+          {siteConfig.navLinks.map((link) => (
+            <li><a href={url(link.href)} class="hover:text-orange-400 transition-colors">{link.text}</a></li>
+          ))}
+        </ul>
+      </div>
+
+      <!-- Col 3: Topics -->
+      <div>
+        <h4 class="text-xs font-bold uppercase tracking-wider text-white mb-3.5 font-mono">
+          // Topics
+        </h4>
+        <ul class="space-y-2 text-sm text-zinc-300">
+          {siteConfig.categories.map((cat) => (
+            <li><a href={url(`/categories/${cat.name.toLowerCase()}`)} class="hover:text-orange-400 transition-colors">{cat.name}</a></li>
+          ))}
+        </ul>
+      </div>
+    </div>
+
+    <!-- Bottom Copyright -->
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 text-xs text-zinc-400 font-mono">
+      <span>
+        <span class="font-poppins font-semibold text-white">karimoo</span>
+        <span class="font-mono font-semibold text-orange-400 ml-1">lab</span>
+        <span class="text-zinc-400"> // Socratic AI & Learning Architecture</span>
+      </span>
+      <span>© {new Date().getFullYear()} {siteConfig.footer.copyright}.</span>
+    </div>
+  </div>
+</footer>
+

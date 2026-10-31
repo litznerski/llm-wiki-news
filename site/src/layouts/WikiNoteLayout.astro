@@ -1,0 +1,347 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import TableOfContents from '../components/ui/TableOfContents.astro';
+import TagBadge from '../components/ui/TagBadge.astro';
+import { url } from '../utils/paths';
+import { slugifyWikiTitle, getWikiCategory, getWikiCategorySlug } from '../config/wiki.config';
+import { 
+  ArrowLeft, 
+  Share2, 
+  MessageSquare, 
+  Network, 
+  ShieldCheck, 
+  Layers, 
+  BookOpen, 
+  Calendar,
+  ExternalLink
+} from 'lucide-astro';
+
+interface Backlink {
+  title: string;
+  slug: string;
+  type?: string;
+}
+
+interface Props {
+  note: any;
+  headings: any[];
+  backlinks?: Backlink[];
+}
+
+const { note, headings = [], backlinks = [] } = Astro.props;
+const data = note.data || {};
+const title = data.title || note.id.replace(/\.md$/, '').split('/').pop();
+const type = data.type || 'concept';
+const subtype = data.subtype;
+const tags = Array.isArray(data.tags) ? data.tags : [];
+const aliases = Array.isArray(data.aliases) ? data.aliases : [];
+const sources = Array.isArray(data.sources) ? data.sources : [];
+const reliability = typeof data.reliability_score === 'number' ? data.reliability_score : 1.0;
+const category = getWikiCategory(data);
+const categorySlug = getWikiCategorySlug(category);
+const lastUpdated = data.last_updated ? new Date(data.last_updated).toLocaleDateString('en-US', {
+  month: 'short',
+  day: 'numeric',
+  year: 'numeric'
+}) : null;
+
+const studioPrompt = `Explain [[${title}]]`;
+const studioUrl = url(`/assistant?q=${encodeURIComponent(studioPrompt)}`);
+
+const typeLabel = subtype ? `${type} · ${subtype}` : type;
+---
+
+<BaseLayout
+  title={`${title} | karimoo lab Knowledge Wiki`}
+  description={`Knowledge graph primitive: ${title}. ${tags.length > 0 ? `Tags: ${tags.join(', ')}` : ''}`}
+  article={true}
+>
+  <!-- Reading Progress Bar -->
+  <div
+    id="reading-progress-bar"
+    class="fixed top-0 left-0 h-1 bg-gradient-to-r from-orange-400 via-orange-500 to-amber-300 z-50 transition-all duration-75 shadow-xs shadow-orange-500/50"
+    style="width: 0%;"
+  ></div>
+
+  <!-- Breadcrumb / Back Link -->
+  <nav class="mb-6 flex flex-wrap items-center justify-between gap-3">
+    <a
+      href={url('/wiki')}
+      class="inline-flex items-center gap-2 text-xs font-semibold font-mono uppercase tracking-wider text-zinc-300 hover:text-orange-400 transition-colors"
+    >
+      <ArrowLeft class="w-3.5 h-3.5 text-orange-400" />
+      <span>Knowledge Catalog</span>
+    </a>
+
+    <div class="flex items-center gap-2">
+      <a
+        href={url(`/categories/${categorySlug}`)}
+        class="kepler-chip-orange hover:border-orange-400 transition-colors flex items-center gap-1.5"
+      >
+        <Layers class="w-3 h-3 text-orange-400" />
+        <span>{category}</span>
+      </a>
+      <span class="kepler-chip-orange capitalize">
+        {typeLabel}
+      </span>
+      {reliability !== undefined && (
+        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-bold bg-emerald-500/15 border border-emerald-500/30 text-emerald-400">
+          <ShieldCheck class="w-3 h-3 text-emerald-400" />
+          {(reliability * 100).toFixed(0)}% verified
+        </span>
+      )}
+    </div>
+  </nav>
+
+  <!-- Article Header Banner -->
+  <header class="p-6 sm:p-10 lg:p-12 kepler-card rounded-3xl shadow-xl mb-8 relative overflow-hidden">
+    <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+      <div class="flex flex-wrap items-center gap-2">
+        <span class="px-3 py-1 rounded-full text-xs font-mono font-bold uppercase tracking-wider bg-orange-500/20 text-orange-300 border border-orange-500/30 flex items-center gap-1.5">
+          <Layers class="w-3.5 h-3.5 text-orange-400" />
+          {type.toUpperCase()}
+        </span>
+        {subtype && (
+          <span class="px-2.5 py-0.5 rounded-full text-xs font-mono text-zinc-300 bg-white/10 border border-white/15">
+            {subtype}
+          </span>
+        )}
+        <a
+          href={url(`/categories/${categorySlug}`)}
+          class="px-2.5 py-0.5 rounded-full text-xs font-mono text-orange-300 bg-orange-500/10 border border-orange-500/25 hover:bg-orange-500/20 transition-colors flex items-center gap-1"
+        >
+          <Layers class="w-3 h-3 text-orange-400" />
+          <span>{category}</span>
+        </a>
+      </div>
+
+      {lastUpdated && (
+        <div class="flex items-center gap-1.5 text-xs font-mono text-sky-200/80">
+          <Calendar class="w-3.5 h-3.5 text-orange-400" />
+          <span>Updated {lastUpdated}</span>
+        </div>
+      )}
+    </div>
+
+    <!-- Title -->
+    <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold font-poppins text-white tracking-tight leading-tight mb-4">
+      {title}
+    </h1>
+
+    <!-- Aliases (if available) -->
+    {aliases.length > 0 && (
+      <div class="mb-4 flex flex-wrap items-center gap-2 text-xs font-mono text-zinc-300">
+        <span class="text-orange-400 font-semibold">Aliases:</span>
+        {aliases.map((alias: string) => (
+          <span class="px-2 py-0.5 rounded-md bg-white/5 border border-white/10 text-zinc-300">
+            {alias}
+          </span>
+        ))}
+      </div>
+    )}
+
+    <!-- Tags Rendering -->
+    {tags.length > 0 && (
+      <div class="mb-6 flex flex-wrap items-center gap-1.5">
+        <span class="text-xs font-mono text-zinc-400 mr-1">Tags:</span>
+        {tags.map((tag: string) => (
+          <TagBadge tag={tag} size="sm" />
+        ))}
+      </div>
+    )}
+
+    <!-- Quick CTA Bar -->
+    <div class="pt-6 border-t border-white/10 flex flex-wrap items-center justify-between gap-4">
+      <a
+        href={studioUrl}
+        class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full kepler-btn-orange text-xs font-bold uppercase tracking-wider shadow-lg hover:scale-[1.02] transition-all"
+      >
+        <MessageSquare class="w-4 h-4" />
+        <span>Spar in Learning Studio</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Content Layout Grid -->
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+    <!-- Left: Navigation Sidebar (4 cols) -->
+    <aside class="lg:col-span-4 space-y-6 lg:sticky lg:top-24 lg:self-start lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto pr-1">
+      <!-- Table of Contents -->
+      <TableOfContents headings={headings} />
+
+      <!-- Spar CTA Card -->
+      <div class="white-card-3d text-zinc-900 rounded-3xl p-6 overflow-hidden">
+        <div class="flex items-center gap-2 text-xs uppercase tracking-wider font-bold text-[#0a1628] mb-2 font-poppins">
+          <MessageSquare class="w-4 h-4 text-orange-600" />
+          <span>Interactive Sparring</span>
+        </div>
+        <p class="text-xs text-zinc-600 mb-4 leading-relaxed">
+          Drill down into this concept with the governed Socratic Assistant in real-time.
+        </p>
+        <a
+          href={studioUrl}
+          class="w-full py-2.5 rounded-full kepler-btn-orange text-xs font-semibold flex items-center justify-center gap-2 transition-all text-white"
+        >
+          <span>Open in Studio</span>
+          <ExternalLink class="w-3.5 h-3.5" />
+        </a>
+      </div>
+
+      <!-- Share Widget -->
+      <div class="white-card-3d text-zinc-900 rounded-3xl p-6 overflow-hidden">
+        <div class="text-xs uppercase tracking-wider font-bold text-[#0a1628] mb-1.5 font-poppins">
+          Share Primitive
+        </div>
+        <p class="text-xs text-zinc-600 mb-4 leading-relaxed">
+          Copy direct canonical link to this knowledge graph node.
+        </p>
+        <button
+          onclick={`navigator.clipboard.writeText(window.location.href); alert('Canonical primitive link copied to clipboard!');`}
+          class="w-full py-2.5 rounded-full kepler-btn-orange text-xs font-semibold cursor-pointer flex items-center justify-center gap-2 transition-all"
+        >
+          <Share2 class="w-3.5 h-3.5" />
+          <span>Copy Node Link</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Right: Article Body with Clean Dark Grey Border (8 cols) -->
+    <article data-pagefind-body class="lg:col-span-8 white-card-3d text-zinc-900 p-6 sm:p-10 lg:p-12 rounded-3xl overflow-hidden">
+      <div class="prose prose-zinc max-w-none text-[#1e293b]
+        prose-headings:font-bold prose-headings:tracking-tight prose-headings:font-poppins prose-headings:text-[#0a1628]
+        prose-h2:border-b prose-h2:border-zinc-200 prose-h2:pb-3 prose-h2:mt-10 prose-h2:mb-4 prose-h2:text-[#0a1628]
+        prose-h3:text-[#ea580c] prose-h3:mt-8 prose-h3:mb-3
+        prose-p:leading-relaxed prose-p:text-[#1e293b]
+        prose-li:text-[#1e293b] prose-li:leading-relaxed
+        prose-ul:text-[#1e293b] prose-ol:text-[#1e293b]
+        prose-a:text-[#ea580c] prose-a:font-semibold prose-a:underline underline-offset-4 hover:prose-a:text-[#c2410c]
+        prose-strong:font-bold prose-strong:text-[#0a1628]
+        prose-em:text-[#1e293b]
+        prose-code:font-mono prose-code:text-[#9a3412] prose-code:bg-orange-50 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-md prose-code:border prose-code:border-orange-200
+        prose-blockquote:border-l-4 prose-blockquote:border-orange-500 prose-blockquote:bg-orange-50/70 prose-blockquote:text-[#1e293b] prose-blockquote:py-3 prose-blockquote:px-5 prose-blockquote:rounded-r-2xl prose-blockquote:italic
+        prose-th:text-[#0a1628] prose-th:border-zinc-300 prose-td:text-[#1e293b] prose-td:border-zinc-200
+        prose-table:overflow-x-auto
+      ">
+        <slot />
+      </div>
+
+      <!-- Sources Section (if present) -->
+      {sources.length > 0 && (
+        <div class="mt-10 pt-6 border-t border-zinc-200">
+          <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#0a1628] mb-3 font-poppins">
+            <BookOpen class="w-4 h-4 text-orange-600" />
+            <span>Epistemic Grounding & Primary Sources</span>
+          </div>
+          <ul class="space-y-1.5 text-xs font-mono text-zinc-600">
+            {sources.map((src: string) => {
+              const raw = src.replace(/^\[\[|\]\]$/g, '').trim();
+              const parts = raw.split('|');
+              const target = parts[0].trim();
+              const isRawEvidence = 
+                target.toLowerCase().startsWith('raw/') || 
+                target.toLowerCase().endsWith('.pdf') ||
+                target.toLowerCase().endsWith('.mp4');
+              const leaf = target.split('/').pop() || target;
+              const targetSlug = slugifyWikiTitle(leaf.replace(/\.md$/, ''));
+              const label = parts.length > 1 ? parts[1].trim() : leaf.replace(/\.md$/, '');
+
+              if (isRawEvidence) {
+                return (
+                  <li class="flex items-center gap-2 text-slate-700">
+                    <span class="text-slate-500 font-bold">📄</span>
+                    <span class="font-medium">{label}</span>
+                    <span class="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 border border-slate-300">
+                      raw source
+                    </span>
+                  </li>
+                );
+              }
+
+              return (
+                <li class="flex items-center gap-2">
+                  <span class="text-orange-500 font-bold">›</span>
+                  <a
+                    href={url(`/wiki/${targetSlug}`)}
+                    class="text-orange-600 hover:text-orange-700 hover:underline font-semibold transition-colors"
+                  >
+                    {label}
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      )}
+
+      <!-- Bidirectional Backlinks (Mentioned In) -->
+      <div class="mt-10 pt-6 border-t border-zinc-200">
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#0a1628] font-poppins">
+            <Network class="w-4 h-4 text-orange-600" />
+            <span>Bidirectional Graph Context ({backlinks.length})</span>
+          </div>
+          <span class="text-[10px] font-mono text-zinc-400">// INBOUND CITATIONS</span>
+        </div>
+
+        {backlinks.length > 0 ? (
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {backlinks.map((link) => (
+              <a
+                href={url(`/wiki/${link.slug}`)}
+                class="p-3.5 rounded-2xl bg-[#f8fafc] border border-zinc-200 hover:border-orange-500 hover:-translate-y-0.5 transition-all flex flex-col justify-between group"
+              >
+                <div class="flex items-center justify-between mb-1">
+                  <span class="text-[10px] font-mono uppercase text-orange-600 font-bold">
+                    {link.type || 'concept'}
+                  </span>
+                  <ExternalLink class="w-3 h-3 text-zinc-400 group-hover:text-orange-600 transition-colors" />
+                </div>
+                <span class="text-xs font-bold font-poppins text-[#0a1628] group-hover:text-orange-600 transition-colors line-clamp-1">
+                  {link.title}
+                </span>
+              </a>
+            ))}
+          </div>
+        ) : (
+          <div class="p-4 rounded-2xl border border-dashed border-zinc-200 text-zinc-400 font-mono text-xs text-center">
+            No inbound citations recorded from currently published nodes.
+          </div>
+        )}
+      </div>
+
+      <!-- Bottom Sparring CTA Box -->
+      <div class="mt-10 p-6 rounded-2xl bg-gradient-to-br from-[#0a1628] to-[#1e3a8a] text-white flex flex-col sm:flex-row items-center justify-between gap-4 shadow-md">
+        <div>
+          <h4 class="font-poppins font-bold text-base text-white">Have questions about {title}?</h4>
+          <p class="text-xs text-sky-200/80 mt-1 max-w-md">
+            Test your comprehension or challenge the underlying framework in our governed AI sparring room.
+          </p>
+        </div>
+        <a
+          href={studioUrl}
+          class="shrink-0 px-5 py-2.5 rounded-full kepler-btn-orange text-xs font-bold uppercase tracking-wider text-white shadow-lg hover:scale-105 transition-all flex items-center gap-2"
+        >
+          <MessageSquare class="w-4 h-4" />
+          <span>Launch Sparring</span>
+        </a>
+      </div>
+    </article>
+  </div>
+</BaseLayout>
+
+<script>
+  function setupReadingProgress() {
+    const bar = document.getElementById('reading-progress-bar');
+    if (!bar) return;
+
+    window.addEventListener('scroll', () => {
+      const scrollTop = window.scrollY || document.documentElement.scrollTop;
+      const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+      bar.style.width = `${Math.min(100, Math.max(0, progress))}%`;
+    });
+  }
+
+  setupReadingProgress();
+  document.addEventListener('astro:after-swap', setupReadingProgress);
+</script>

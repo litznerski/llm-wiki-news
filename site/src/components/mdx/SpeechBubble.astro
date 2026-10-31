@@ -1,0 +1,63 @@
+---
+import { url } from '../../utils/paths';
+
+interface Props {
+  speaker?: string;
+  role?: string;
+  avatar?: string;
+  side?: 'left' | 'right';
+  variant?: 'normal' | 'shout' | 'thought' | 'insight';
+}
+
+const {
+  speaker = 'Alex Rivera',
+  role,
+  avatar = '⚡',
+  side = 'left',
+  variant = 'normal',
+} = Astro.props;
+
+const isRight = side === 'right';
+---
+
+<div class:list={['my-6 flex gap-3 sm:gap-4 items-start', isRight ? 'flex-row-reverse' : 'flex-row']}>
+  <!-- Avatar / Speaker portrait -->
+  <div class="flex flex-col items-center shrink-0 w-16 text-center">
+    <div
+      class="w-12 h-12 rounded-full bg-orange-50 border-2 border-orange-300 flex items-center justify-center text-xl shadow-xs overflow-hidden"
+    >
+      {avatar.startsWith('http') || avatar.startsWith('/') ? (
+        <img src={url(avatar)} alt={speaker} class="w-full h-full object-cover" />
+      ) : (
+        <span>{avatar}</span>
+      )}
+    </div>
+    <span class="mt-1.5 text-xs font-bold font-poppins text-[#0a1628] leading-tight break-words w-full">
+      {speaker}
+    </span>
+  </div>
+
+  <!-- Capsule Bubble -->
+  <div class:list={['relative max-w-[85%] sm:max-w-[80%]', isRight ? 'text-right' : 'text-left']}>
+    <div
+      class:list={[
+        'p-5 text-sm font-normal rounded-3xl bg-orange-50/80 border border-orange-200 shadow-[3px_3px_0_var(--color-ink)] transition-all overflow-hidden',
+        variant === 'shout'
+          ? 'border-orange-400 bg-orange-100/80'
+          : variant === 'thought'
+          ? 'border-dashed border-zinc-300 italic bg-zinc-50'
+          : '',
+      ]}
+    >
+      {role && (
+        <div class="mb-1.5 text-[11px] font-mono tracking-wider uppercase text-orange-700 font-bold">
+          // {role}
+        </div>
+      )}
+      <div class="prose prose-sm max-w-none text-zinc-800 leading-relaxed">
+        <slot />
+      </div>
+    </div>
+  </div>
+</div>
+

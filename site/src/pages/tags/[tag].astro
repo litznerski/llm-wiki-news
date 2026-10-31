@@ -1,0 +1,138 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostCard from '../../components/ui/PostCard.astro';
+import WikiCard from '../../components/ui/WikiCard.astro';
+import siteConfig from '../../config/site';
+import { url } from '../../utils/paths';
+import { getCollection } from 'astro:content';
+import { isNotePublished } from '../../config/wiki.config';
+import { ArrowLeft, BookOpen, Layers } from 'lucide-astro';
+
+export async function getStaticPaths() {
+  const allPosts = await getCollection('blog');
+  const allNotes = await getCollection('wiki');
+  const publishedNotes = allNotes.filter((note) => isNotePublished(note.id, note.data));
+
+  // Map of normalized tag string -> { label, posts, wikiNotes }
+  const tagMap = new Map<string, { label: string; posts: any[]; wikiNotes: any[] }>();
+
+  for (const post of allPosts) {
+    const postTags = Array.isArray(post.data.tags) ? post.data.tags : [];
+    for (const tag of postTags) {
+      if (!tag || typeof tag !== 'string') continue;
+      const key = tag.trim().toLowerCase();
+      if (!tagMap.has(key)) {
+        tagMap.set(key, { label: tag.trim(), posts: [], wikiNotes: [] });
+      }
+      tagMap.get(key)!.posts.push(post);
+    }
+  }
+
+  for (const note of publishedNotes) {
+    const noteTags = Array.isArray(note.data?.tags) ? note.data.tags : [];
+    for (const tag of noteTags) {
+      if (!tag || typeof tag !== 'string') continue;
+      const key = tag.trim().toLowerCase();
+      if (!tagMap.has(key)) {
+        tagMap.set(key, { label: tag.trim(), posts: [], wikiNotes: [] });
+      }
+      tagMap.get(key)!.wikiNotes.push(note);
+    }
+  }
+
+  return Array.from(tagMap.entries()).map(([key, item]) => {
+    const sortedPosts = item.posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+    const sortedWiki = item.wikiNotes.sort((a, b) => {
+      const titleA = a.data?.title || a.id.replace(/\.md$/, '').split('/').pop() || '';
+      const titleB = b.data?.title || b.id.replace(/\.md$/, '').split('/').pop() || '';
+      return titleA.localeCompare(titleB);
+    });
+
+    return {
+      params: { tag: key },
+      props: {
+        tag: item.label,
+        posts: sortedPosts,
+        wikiNotes: sortedWiki,
+      },
+    };
+  });
+}
+
+const { tag, posts, wikiNotes } = Astro.props;
+const totalCount = posts.length + wikiNotes.length;
+---
+
+<BaseLayout
+  title={`#${tag} Topics & Knowledge Nodes — ${siteConfig.name}`}
+  description={`Browse articles and knowledge wiki primitives tagged with #${tag}`}
+>
+  <div class="mb-6">
+    <a
+      href={url('/tags')}
+      class="inline-flex items-center gap-2 text-xs font-semibold font-mono uppercase tracking-wider text-zinc-300 hover:text-orange-400 transition-colors"
+    >
+      <ArrowLeft class="w-3.5 h-3.5 text-orange-400" />
+      <span>All Tags</span>
+    </a>
+  </div>
+
+  <div class="mb-10 p-7 sm:p-10 kepler-card rounded-3xl shadow-xl">
+    <div class="flex items-center justify-between">
+      <div>
+        <div class="kepler-chip-orange mb-2.5">
+          Topic Filter
+        </div>
+        <h1 class="text-3xl sm:text-4xl font-extrabold font-poppins text-white tracking-tight">
+          #{tag}
+        </h1>
+        <p class="text-sm text-zinc-200 mt-2 font-mono">
+          // Found <strong class="text-orange-400">{totalCount}</strong> {totalCount === 1 ? 'result' : 'results'} 
+          ({posts.length} {posts.length === 1 ? 'article' : 'articles'}, {wikiNotes.length} wiki {wikiNotes.length === 1 ? 'node' : 'nodes'})
+        </p>
+      </div>
+
+      <div class="hidden sm:block">
+        <span class="font-mono text-3xl text-orange-500/30 font-bold">
+          #{tag.toUpperCase()}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Blog Articles Section (if any) -->
+  {posts.length > 0 && (
+    <div class="mb-12">
+      <div class="flex items-center gap-2 mb-6">
+        <BookOpen class="w-4 h-4 text-orange-400" />
+        <h2 class="text-xl font-bold font-poppins text-white">Articles & Publications ({posts.length})</h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {posts.map((post) => (
+          <PostCard post={post} />
+        ))}
+      </div>
+    </div>
+  )}
+
+  <!-- Wiki Knowledge Primitives Section (if any) -->
+  {wikiNotes.length > 0 && (
+    <div class="mb-12">
+      <div class="flex items-center gap-2 mb-6">
+        <Layers class="w-4 h-4 text-orange-400" />
+        <h2 class="text-xl font-bold font-poppins text-white">Knowledge Wiki Primitives ({wikiNotes.length})</h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {wikiNotes.map((note) => (
+          <WikiCard note={note} />
+        ))}
+      </div>
+    </div>
+  )}
+
+  {totalCount === 0 && (
+    <div class="p-12 text-center kepler-card rounded-3xl">
+      <p class="text-sm text-zinc-300 font-mono">// No items found matching this tag.</p>
+    </div>
+  )}
+</BaseLayout>

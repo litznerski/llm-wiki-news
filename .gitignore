@@ -1,0 +1,54 @@
+# Obsidian system workspace configuration
+.obsidian/workspace*
+.obsidian/cache*
+
+# OS and Agent Temp Files
+.DS_Store
+Thumbs.db
+*.tmp
+__pycache__/
+.agent/scratchpad/
+scratch/
+
+# Knowledge Index (ki) Configuration - explicitly tracked
+!**/.ki/
+!**/.ki/**
+
+# Raw Evidence & Primary Source Repository - explicitly tracked and published
+!raw/
+!raw/**
+raw/**/__pycache__/
+
+# OS and Agent Temp Files (ensure ignored in subdirectories like raw/)
+.DS_Store
+**/.DS_Store
+Thumbs.db
+**/Thumbs.db
+
+# Media & Video Binaries (prevent Git repository bloat; transcripts remain tracked)
+*.mp4
+*.mov
+*.m4v
+*.mkv
+*.avi
+*.webm
+*.mp3
+*.wav
+*.m4a
+
+# Astro & Web Dependencies (Governed Mono-Vault site/)
+site/node_modules/
+site/.astro/
+site/dist/
+site/public/pagefind/
+# Environment & Secret Credentials
+.env
+.env.*
+!site/.env.example
+!services/fastmcp/.env.example
+
+# Chainlit Runtime Data
+services/frontend/.files/
+
+
+

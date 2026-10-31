@@ -1,0 +1,3 @@
+"""
+services/fastmcp package initialization.
+"""

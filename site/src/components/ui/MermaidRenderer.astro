@@ -1,0 +1,740 @@
+---
+import { url } from '../../utils/paths';
+import { Maximize2, X, ZoomIn, ZoomOut, RotateCcw, Sun, Moon } from 'lucide-astro';
+
+const mermaidJsUrl = url('/mermaid.min.js');
+---
+
+<!-- Offline Mermaid.js Script -->
+<script is:inline src={mermaidJsUrl}></script>
+
+<!-- Full-Screen Interactive Mermaid Enlarge Modal -->
+<dialog
+  id="mermaid-modal"
+  class="fixed inset-0 m-auto w-[96vw] max-w-[1600px] h-[94vh] max-h-[94vh] rounded-3xl bg-[#0a1628]/95 backdrop-blur-xl border border-white/20 text-white p-0 shadow-2xl overflow-hidden z-[100] closed:hidden open:flex flex-col"
+  aria-labelledby="mermaid-modal-title"
+>
+  <!-- Modal Header Bar -->
+  <div class="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-[#0f213e]/90 shrink-0">
+    <div class="flex items-center gap-2.5">
+      <span class="kepler-chip-orange text-xs py-0.5">
+        Diagram Viewer
+      </span>
+      <h3 id="mermaid-modal-title" class="text-sm font-bold font-poppins text-white">
+        Architecture Flowchart
+      </h3>
+    </div>
+
+    <!-- Zoom, Theme & Close Controls -->
+    <div class="flex items-center gap-2 sm:gap-3">
+      <!-- Zoom Controls -->
+      <div class="flex items-center bg-black/40 rounded-full border border-white/15 px-1 py-0.5">
+        <button
+          id="mermaid-zoom-out"
+          type="button"
+          class="p-1.5 hover:text-orange-400 text-zinc-300 transition-colors rounded-full cursor-pointer"
+          title="Zoom out (-)"
+          aria-label="Zoom out"
+        >
+          <ZoomOut class="w-4 h-4" />
+        </button>
+        <span id="mermaid-zoom-level" class="text-xs font-mono text-zinc-300 px-2 min-w-[3.5rem] text-center">
+          100%
+        </span>
+        <button
+          id="mermaid-zoom-in"
+          type="button"
+          class="p-1.5 hover:text-orange-400 text-zinc-300 transition-colors rounded-full cursor-pointer"
+          title="Zoom in (+)"
+          aria-label="Zoom in"
+        >
+          <ZoomIn class="w-4 h-4" />
+        </button>
+        <button
+          id="mermaid-zoom-reset"
+          type="button"
+          class="p-1.5 hover:text-orange-400 text-zinc-300 transition-colors rounded-full border-l border-white/10 ml-0.5 cursor-pointer"
+          title="Reset zoom to 100% (R)"
+          aria-label="Reset zoom"
+        >
+          <RotateCcw class="w-3.5 h-3.5" />
+        </button>
+      </div>
+
+      <!-- Canvas Theme Toggle (Light / Dark) -->
+      <button
+        id="mermaid-theme-toggle"
+        type="button"
+        class="px-2.5 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-zinc-200 hover:text-white transition-colors cursor-pointer text-xs font-medium flex items-center gap-1.5 border border-white/15"
+        title="Toggle canvas theme (Light / Dark) [T]"
+        aria-label="Toggle canvas theme"
+      >
+        <span id="mermaid-theme-icon">☀️</span>
+        <span id="mermaid-theme-label" class="hidden sm:inline text-xs font-poppins">Light Canvas</span>
+      </button>
+
+      <!-- Modal Close Button -->
+      <button
+        id="mermaid-modal-close"
+        type="button"
+        class="p-2 rounded-full bg-white/10 hover:bg-orange-500 text-white transition-colors cursor-pointer"
+        title="Close modal (Esc)"
+        aria-label="Close modal"
+      >
+        <X class="w-4 h-4" />
+      </button>
+    </div>
+  </div>
+
+  <!-- Modal Viewport Canvas -->
+  <div
+    id="mermaid-modal-canvas"
+    class="relative flex-1 w-full h-full overflow-hidden transition-colors duration-200 cursor-grab select-none touch-none focus:outline-none is-light"
+    tabindex="0"
+    role="region"
+    aria-label="Interactive diagram canvas"
+  >
+    <div
+      id="mermaid-modal-target"
+      class="absolute left-1/2 top-1/2 origin-center inline-flex justify-center items-center pointer-events-auto will-change-transform"
+      style="transform: translate(-50%, -50%) translate3d(0px, 0px, 0px) scale(1);"
+    >
+      <!-- Cloned SVG dynamically injected here -->
+    </div>
+  </div>
+
+  <!-- Modal Footer Helper -->
+  <div class="px-6 py-2.5 border-t border-white/10 bg-[#0a1628] text-[11px] font-mono text-zinc-400 flex items-center justify-between shrink-0">
+    <span>Tip: Drag with hand tool to pan. Scroll/pinch to zoom. [T] to toggle light/dark canvas. Double-click to reset.</span>
+    <span>Press [Esc] to exit</span>
+  </div>
+</dialog>
+
+<script>
+  let currentZoom = 1;
+  let panX = 0;
+  let panY = 0;
+  let baseWidth = 0;
+  let baseHeight = 0;
+  let naturalVbWidth = 800;
+  let naturalVbHeight = 600;
+
+  const ZOOM_STEP = 0.2;
+  const MIN_ZOOM = 0.3;
+  const MAX_ZOOM = 5.0;
+
+  function unescapeEntities(text: string): string {
+    return text
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&#x3C;/gi, '<')
+      .replace(/&#x3E;/gi, '>')
+      .replace(/&quot;/g, '"')
+      .replace(/&#x22;/gi, '"')
+      .replace(/&#39;/g, "'")
+      .replace(/&#x27;/gi, "'")
+      .replace(/&amp;/g, '&')
+      .trim();
+  }
+
+  function extractMermaidCode(container: HTMLElement, pre: HTMLElement): string {
+    // 1. Try extracting line-by-line from Expressive Code lines to preserve essential newlines
+    const lineEls = pre.querySelectorAll('.ec-line, .line');
+    if (lineEls.length > 0) {
+      const lines = Array.from(lineEls).map((el) => el.textContent || '');
+      return unescapeEntities(lines.join('\n'));
+    }
+
+    // 2. Fallback to pre.textContent (never button[data-code] because attribute collapses newlines)
+    const code = pre.textContent || '';
+    return unescapeEntities(code);
+  }
+
+  function ensureMermaid(): Promise<any> {
+    const win = window as any;
+    if (win.mermaid) return Promise.resolve(win.mermaid);
+
+    return new Promise((resolve) => {
+      let attempts = 0;
+      const interval = setInterval(() => {
+        attempts++;
+        if (win.mermaid) {
+          clearInterval(interval);
+          resolve(win.mermaid);
+        } else if (attempts > 60) {
+          clearInterval(interval);
+          console.error('[MermaidRenderer] Timed out waiting for window.mermaid');
+          resolve(null);
+        }
+      }, 100);
+    });
+  }
+
+  async function renderAllMermaidDiagrams() {
+    const mermaid = await ensureMermaid();
+    if (!mermaid) return;
+
+    try {
+      mermaid.initialize({
+        startOnLoad: false,
+        theme: 'neutral',
+        securityLevel: 'loose',
+        flowchart: {
+          curve: 'basis',
+          htmlLabels: true,
+          useMaxWidth: false,
+          padding: 20,
+        },
+        sequence: {
+          actorFontFamily: '"Plus Jakarta Sans", "Space Grotesk", system-ui, sans-serif',
+          messageFontFamily: '"Plus Jakarta Sans", "Space Grotesk", system-ui, sans-serif',
+          noteFontFamily: '"Plus Jakarta Sans", "Space Grotesk", system-ui, sans-serif',
+          actorFontSize: 13,
+          messageFontSize: 13,
+          noteFontSize: 13,
+          useMaxWidth: false,
+        },
+        themeVariables: {
+          primaryColor: '#ffedd5',
+          primaryTextColor: '#0a1628',
+          primaryBorderColor: '#ea580c',
+          lineColor: '#ea580c',
+          secondaryColor: '#f1f5f9',
+          tertiaryColor: '#ffffff',
+          // High-contrast sequence diagram palette
+          actorBkg: '#ffffff',
+          actorBorder: '#ea580c',
+          actorTextColor: '#0a1628',
+          actorLineColor: '#94a3b8',
+          signalColor: '#ea580c',
+          signalTextColor: '#0a1628',
+          labelBoxBkgColor: '#ffedd5',
+          labelBoxBorderColor: '#ea580c',
+          loopTextColor: '#0a1628',
+          noteBkgColor: '#fffbeb',
+          noteBorderColor: '#f59e0b',
+          noteTextColor: '#0a1628',
+          sequenceNumberColor: '#ffffff',
+          fontFamily: '"Plus Jakarta Sans", "Space Grotesk", system-ui, sans-serif',
+          fontSize: '13px',
+        },
+      });
+    } catch (e) {
+      console.error('[MermaidRenderer] Initialization error:', e);
+    }
+
+    // Modal elements
+    const modal = document.getElementById('mermaid-modal') as HTMLDialogElement | null;
+    const modalCanvas = document.getElementById('mermaid-modal-canvas');
+    const modalTarget = document.getElementById('mermaid-modal-target');
+    const modalTitleEl = document.getElementById('mermaid-modal-title');
+    const modalCloseBtn = document.getElementById('mermaid-modal-close');
+    const zoomInBtn = document.getElementById('mermaid-zoom-in');
+    const zoomOutBtn = document.getElementById('mermaid-zoom-out');
+    const zoomResetBtn = document.getElementById('mermaid-zoom-reset');
+    const zoomLevelText = document.getElementById('mermaid-zoom-level');
+    const themeToggleBtn = document.getElementById('mermaid-theme-toggle');
+    const themeIcon = document.getElementById('mermaid-theme-icon');
+    const themeLabel = document.getElementById('mermaid-theme-label');
+
+    // Canvas Theme Handling (Light vs Dark)
+    function applyCanvasTheme(theme: 'light' | 'dark') {
+      if (!modalCanvas) return;
+      if (theme === 'dark') {
+        modalCanvas.classList.remove('is-light');
+        modalCanvas.classList.add('is-dark');
+        if (themeIcon) themeIcon.textContent = '🌙';
+        if (themeLabel) themeLabel.textContent = 'Dark Canvas';
+      } else {
+        modalCanvas.classList.remove('is-dark');
+        modalCanvas.classList.add('is-light');
+        if (themeIcon) themeIcon.textContent = '☀️';
+        if (themeLabel) themeLabel.textContent = 'Light Canvas';
+      }
+      try {
+        localStorage.setItem('mermaid-modal-canvas-theme', theme);
+      } catch (_) {}
+    }
+
+    const savedTheme = (typeof localStorage !== 'undefined' && localStorage.getItem('mermaid-modal-canvas-theme')) as 'light' | 'dark' | null;
+    // Default to light canvas for optimal contrast with diagram text
+    applyCanvasTheme(savedTheme || 'light');
+
+    if (themeToggleBtn) {
+      themeToggleBtn.onclick = () => {
+        const isCurrentlyDark = modalCanvas?.classList.contains('is-dark');
+        applyCanvasTheme(isCurrentlyDark ? 'light' : 'dark');
+      };
+    }
+
+    function applyTransform() {
+      if (modalTarget) {
+        modalTarget.style.transform = `translate(-50%, -50%) translate3d(${panX}px, ${panY}px, 0px) scale(${currentZoom})`;
+      }
+    }
+
+    function updateZoom(newZoom: number) {
+      currentZoom = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, Math.round(newZoom * 100) / 100));
+      applyTransform();
+      if (zoomLevelText) {
+        zoomLevelText.textContent = `${Math.round(currentZoom * 100)}%`;
+      }
+    }
+
+    function resetView() {
+      panX = 0;
+      panY = 0;
+      updateZoom(1.0);
+    }
+
+    function calculateFitDimensions() {
+      if (!modalCanvas || !modalTarget) return;
+      const canvasRect = modalCanvas.getBoundingClientRect();
+      const padding = 64; // 32px breathing room on each side
+      const availW = Math.max(100, canvasRect.width - padding);
+      const availH = Math.max(100, canvasRect.height - padding);
+
+      const scaleToFit = Math.min(availW / naturalVbWidth, availH / naturalVbHeight);
+      baseWidth = Math.round(naturalVbWidth * scaleToFit);
+      baseHeight = Math.round(naturalVbHeight * scaleToFit);
+
+      modalTarget.style.width = `${baseWidth}px`;
+      modalTarget.style.height = `${baseHeight}px`;
+    }
+
+    function openModalWithSvg(svgContent: string, title?: string) {
+      if (!modal || !modalTarget || !modalCanvas) return;
+
+      if (modalTitleEl && title) {
+        modalTitleEl.textContent = title;
+      } else if (modalTitleEl) {
+        modalTitleEl.textContent = 'Architecture Diagram';
+      }
+
+      // 1. Show modal first so canvas has real layout dimensions
+      if (!modal.open) {
+        modal.showModal();
+      }
+
+      // 2. Inject SVG
+      modalTarget.innerHTML = svgContent;
+      const svgEl = modalTarget.querySelector('svg');
+      if (!svgEl) return;
+
+      // 3. Remove fixed constraints from SVG to allow fluid scaling
+      svgEl.style.maxWidth = 'none';
+      svgEl.style.maxHeight = 'none';
+      svgEl.style.width = '100%';
+      svgEl.style.height = '100%';
+      svgEl.style.display = 'block';
+      svgEl.style.overflow = 'visible';
+      svgEl.removeAttribute('height');
+      svgEl.removeAttribute('width');
+
+      // 4. Extract viewBox dimensions
+      naturalVbWidth = 0;
+      naturalVbHeight = 0;
+      const viewBoxAttr = svgEl.getAttribute('viewBox');
+      if (viewBoxAttr) {
+        const parts = viewBoxAttr.trim().split(/[\s,]+/).map(parseFloat);
+        if (parts.length === 4 && !isNaN(parts[2]) && !isNaN(parts[3]) && parts[2] > 0 && parts[3] > 0) {
+          naturalVbWidth = parts[2];
+          naturalVbHeight = parts[3];
+        }
+      }
+      if (!naturalVbWidth || !naturalVbHeight) {
+        if (svgEl.viewBox && svgEl.viewBox.baseVal && svgEl.viewBox.baseVal.width > 0) {
+          naturalVbWidth = svgEl.viewBox.baseVal.width;
+          naturalVbHeight = svgEl.viewBox.baseVal.height;
+        } else {
+          try {
+            const bbox = svgEl.getBBox();
+            if (bbox && bbox.width > 0 && bbox.height > 0) {
+              naturalVbWidth = bbox.width;
+              naturalVbHeight = bbox.height;
+            }
+          } catch (_) {}
+        }
+      }
+      if (!naturalVbWidth || !naturalVbHeight) {
+        naturalVbWidth = 1000;
+        naturalVbHeight = 600;
+      }
+
+      // 5. Fit to available canvas real estate and calibrate as 100% zoom
+      calculateFitDimensions();
+      resetView();
+    }
+
+    // Modal Control Button Handlers
+    if (zoomInBtn) zoomInBtn.onclick = () => updateZoom(currentZoom + ZOOM_STEP);
+    if (zoomOutBtn) zoomOutBtn.onclick = () => updateZoom(currentZoom - ZOOM_STEP);
+    if (zoomResetBtn) zoomResetBtn.onclick = () => resetView();
+
+    if (modalCloseBtn && modal) {
+      modalCloseBtn.onclick = () => modal.close();
+    }
+
+    if (modal) {
+      modal.onclick = (e) => {
+        const rect = modal.getBoundingClientRect();
+        const isInDialog = (
+          rect.top <= e.clientY &&
+          e.clientY <= rect.top + rect.height &&
+          rect.left <= e.clientX &&
+          e.clientX <= rect.left + rect.width
+        );
+        if (!isInDialog) {
+          modal.close();
+        }
+      };
+    }
+
+    // Hand Tool / Drag-to-Pan Interaction on Modal Canvas
+    let isDragging = false;
+    let startX = 0;
+    let startY = 0;
+
+    if (modalCanvas) {
+      modalCanvas.addEventListener('pointerdown', (e) => {
+        if (e.target && (e.target as HTMLElement).closest('button, a, input')) return;
+        if (e.pointerType === 'mouse' && e.button !== 0) return;
+
+        isDragging = true;
+        startX = e.clientX - panX;
+        startY = e.clientY - panY;
+        modalCanvas.style.cursor = 'grabbing';
+        try {
+          modalCanvas.setPointerCapture(e.pointerId);
+        } catch (_) {}
+      });
+
+      modalCanvas.addEventListener('pointermove', (e) => {
+        if (!isDragging) return;
+        panX = e.clientX - startX;
+        panY = e.clientY - startY;
+        applyTransform();
+      });
+
+      const stopDragging = (e: PointerEvent) => {
+        if (isDragging) {
+          isDragging = false;
+          modalCanvas.style.cursor = 'grab';
+          try {
+            modalCanvas.releasePointerCapture(e.pointerId);
+          } catch (_) {}
+        }
+      };
+
+      modalCanvas.addEventListener('pointerup', stopDragging);
+      modalCanvas.addEventListener('pointercancel', stopDragging);
+
+      // Smooth trackpad 2-finger pan & pinch/ctrl-scroll zoom
+      modalCanvas.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        if (e.ctrlKey || e.metaKey) {
+          const factor = e.deltaY < 0 ? 1.08 : 0.92;
+          updateZoom(currentZoom * factor);
+        } else {
+          panX -= e.deltaX;
+          panY -= e.deltaY;
+          applyTransform();
+        }
+      }, { passive: false });
+
+      // Double click to reset
+      modalCanvas.addEventListener('dblclick', (e) => {
+        if (e.target && (e.target as HTMLElement).closest('button, a')) return;
+        resetView();
+      });
+    }
+
+    // Keyboard Shortcuts for Active Modal
+    window.addEventListener('keydown', (e) => {
+      if (!modal?.open) return;
+      if (e.key === '+' || e.key === '=') {
+        e.preventDefault();
+        updateZoom(currentZoom + ZOOM_STEP);
+      } else if (e.key === '-' || e.key === '_') {
+        e.preventDefault();
+        updateZoom(currentZoom - ZOOM_STEP);
+      } else if (e.key === '0' || e.key.toLowerCase() === 'r') {
+        e.preventDefault();
+        resetView();
+      } else if (e.key.toLowerCase() === 't') {
+        e.preventDefault();
+        const isCurrentlyDark = modalCanvas?.classList.contains('is-dark');
+        applyCanvasTheme(isCurrentlyDark ? 'light' : 'dark');
+      }
+    });
+
+    // Window Resize Responsive Recalibration
+    window.addEventListener('resize', () => {
+      if (modal?.open && panX === 0 && panY === 0 && currentZoom === 1) {
+        calculateFitDimensions();
+        applyTransform();
+      }
+    });
+
+    // Locate all mermaid pre blocks
+    const mermaidPres = document.querySelectorAll<HTMLElement>(
+      'pre[data-language="mermaid"], pre.language-mermaid, pre:has(> code.language-mermaid)'
+    );
+
+    mermaidPres.forEach((pre, idx) => {
+      const container = pre.closest<HTMLElement>('.expressive-code') || pre.closest<HTMLElement>('figure') || pre;
+
+      if (container.dataset.mermaidProcessed === 'true') {
+        return;
+      }
+      container.dataset.mermaidProcessed = 'true';
+
+      const rawCode = extractMermaidCode(container, pre);
+      if (!rawCode) return;
+
+      const renderId = `mermaid_diag_${Date.now()}_${idx}`;
+
+      // Extract card title from nearby section header if present
+      const nearestHeader = container.closest('section')?.querySelector('h2, h3, h4')?.textContent?.trim()
+        || container.previousElementSibling?.tagName.match(/^H[1-6]$/) ? container.previousElementSibling?.textContent?.trim()
+        : 'Architecture Diagram';
+      const diagTitle = nearestHeader || 'Architecture Diagram';
+
+      mermaid.render(renderId, rawCode).then((result: { svg: string }) => {
+        const svg = result.svg;
+
+        // Card container
+        const card = document.createElement('div');
+        card.className = 'mermaid-interactive-card my-8 rounded-3xl bg-white text-zinc-900 border border-slate-300 shadow-md overflow-hidden transition-all';
+
+        // Header
+        const header = document.createElement('div');
+        header.className = 'flex items-center justify-between px-5 py-3 border-b border-slate-200 bg-[#f8fafc] text-xs font-mono';
+        header.innerHTML = `
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-orange-500 animate-pulse"></span>
+            <span class="font-bold text-[#0a1628] font-poppins">${diagTitle}</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <button type="button" class="mermaid-toggle-code-btn px-2.5 py-1 rounded-full bg-slate-200/80 hover:bg-slate-300 text-slate-800 transition-colors flex items-center gap-1 cursor-pointer font-semibold" title="Toggle Mermaid source code">
+              <span>&lt;/&gt; Code</span>
+            </button>
+            <button type="button" class="mermaid-card-enlarge-btn px-3 py-1 rounded-full kepler-btn-orange text-white font-semibold transition-all flex items-center gap-1 cursor-pointer shadow-xs hover:scale-105" title="Enlarge diagram to full screen">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg>
+              <span>Enlarge</span>
+            </button>
+          </div>
+        `;
+
+        // SVG Viewport
+        const body = document.createElement('div');
+        body.className = 'mermaid-svg-viewport p-6 sm:p-8 flex justify-center items-center overflow-x-auto cursor-zoom-in bg-white group';
+        body.title = 'Click to enlarge diagram in interactive viewer';
+        body.innerHTML = svg;
+
+        const svgEl = body.querySelector('svg');
+        if (svgEl) {
+          svgEl.style.maxWidth = '100%';
+          svgEl.style.height = 'auto';
+          svgEl.style.overflow = 'visible';
+        }
+
+        // Code Drawer
+        const codeDrawer = document.createElement('div');
+        codeDrawer.className = 'hidden border-t border-slate-200 p-4 bg-slate-900 text-slate-100 text-xs font-mono overflow-x-auto';
+        const preCode = document.createElement('pre');
+        preCode.className = 'p-0 m-0';
+        preCode.textContent = rawCode;
+        codeDrawer.appendChild(preCode);
+
+        // Click handlers
+        const enlargeBtn = header.querySelector('.mermaid-card-enlarge-btn');
+        if (enlargeBtn) {
+          enlargeBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            openModalWithSvg(svg, diagTitle);
+          });
+        }
+
+        body.addEventListener('click', () => {
+          openModalWithSvg(svg, diagTitle);
+        });
+
+        const toggleCodeBtn = header.querySelector('.mermaid-toggle-code-btn');
+        if (toggleCodeBtn) {
+          toggleCodeBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isHidden = codeDrawer.classList.contains('hidden');
+            codeDrawer.classList.toggle('hidden', !isHidden);
+            toggleCodeBtn.classList.toggle('bg-orange-100', isHidden);
+            toggleCodeBtn.classList.toggle('text-orange-800', isHidden);
+          });
+        }
+
+        card.appendChild(header);
+        card.appendChild(body);
+        card.appendChild(codeDrawer);
+
+        // Insert card and hide raw code container
+        container.parentNode?.insertBefore(card, container);
+        container.style.display = 'none';
+      }).catch((err: any) => {
+        console.error('[MermaidRenderer] Render error for block:', err, rawCode);
+      });
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', renderAllMermaidDiagrams);
+  } else {
+    renderAllMermaidDiagrams();
+  }
+  document.addEventListener('astro:page-load', renderAllMermaidDiagrams);
+  document.addEventListener('astro:after-swap', renderAllMermaidDiagrams);
+</script>
+
+<style is:global>
+  #mermaid-modal::backdrop {
+    background: rgba(5, 10, 20, 0.85);
+    backdrop-filter: blur(8px);
+  }
+
+  /* Modal Canvas Theming */
+  #mermaid-modal-canvas.is-light {
+    background-color: #f8fafc;
+    background-image: radial-gradient(#cbd5e1 1.2px, transparent 1.2px);
+    background-size: 24px 24px;
+  }
+
+  #mermaid-modal-canvas.is-dark {
+    background-color: #0a1628;
+    background-image: radial-gradient(#1e3a8a 1.2px, transparent 1.2px);
+    background-size: 24px 24px;
+  }
+
+  /* SVG Viewport Global Rules */
+  .mermaid-svg-viewport svg {
+    display: block;
+    margin: 0 auto;
+    font-family: var(--font-sans, system-ui, sans-serif);
+    overflow: visible !important;
+  }
+  
+  .mermaid-svg-viewport svg .node rect,
+  .mermaid-svg-viewport svg .node circle,
+  .mermaid-svg-viewport svg .node polygon,
+  #mermaid-modal-target svg .node rect,
+  #mermaid-modal-target svg .node circle,
+  #mermaid-modal-target svg .node polygon {
+    rx: 8px;
+    ry: 8px;
+  }
+
+  #mermaid-modal-target svg {
+    overflow: visible !important;
+  }
+
+  #mermaid-modal-target svg foreignObject,
+  .mermaid-svg-viewport svg foreignObject,
+  #mermaid-modal-target svg foreignObject div,
+  .mermaid-svg-viewport svg foreignObject div {
+    overflow: visible !important;
+  }
+
+  /* Light Canvas High-Contrast Clarity */
+  #mermaid-modal-canvas.is-light #mermaid-modal-target svg .messageText {
+    fill: #0a1628 !important;
+    font-weight: 500 !important;
+  }
+
+  #mermaid-modal-canvas.is-light #mermaid-modal-target svg .actor text,
+  #mermaid-modal-canvas.is-light #mermaid-modal-target svg text.actor {
+    fill: #0a1628 !important;
+    font-weight: 600 !important;
+  }
+
+  #mermaid-modal-canvas.is-light #mermaid-modal-target svg .actor-line {
+    stroke: #94a3b8 !important;
+  }
+
+  #mermaid-modal-canvas.is-light #mermaid-modal-target svg .messageLine0,
+  #mermaid-modal-canvas.is-light #mermaid-modal-target svg .messageLine1 {
+    stroke: #ea580c !important;
+  }
+
+  /* Dark Canvas High-Contrast Overrides */
+  #mermaid-modal-canvas.is-dark #mermaid-modal-target svg .messageText {
+    fill: #f8fafc !important;
+    stroke: none !important;
+    font-weight: 500 !important;
+  }
+
+  #mermaid-modal-canvas.is-dark #mermaid-modal-target svg .messageLine0,
+  #mermaid-modal-canvas.is-dark #mermaid-modal-target svg .messageLine1,
+  #mermaid-modal-canvas.is-dark #mermaid-modal-target svg line[class*="messageLine"] {
+    stroke: #fb923c !important;
+    stroke-width: 1.5px !important;
+  }
+
+  #mermaid-modal-canvas.is-dark #mermaid-modal-target svg #arrowhead path,
+  #mermaid-modal-canvas.is-dark #mermaid-modal-target svg #crosshead path,
+  #mermaid-modal-canvas.is-dark #mermaid-modal-target svg #filled-head path {
+    fill: #fb923c !important;
+    stroke: #fb923c !important;
+  }
+
+  #mermaid-modal-canvas.is-dark #mermaid-modal-target svg .actor-line {
+    stroke: #64748b !important;
+    stroke-dasharray: 4 4 !important;
+  }
+
+  #mermaid-modal-canvas.is-dark #mermaid-modal-target svg rect.actor {
+    fill: #0f172a !important;
+    stroke: #fb923c !important;
+    stroke-width: 1.5px !important;
+  }
+
+  #mermaid-modal-canvas.is-dark #mermaid-modal-target svg text.actor,
+  #mermaid-modal-canvas.is-dark #mermaid-modal-target svg text.actor > tspan {
+    fill: #f8fafc !important;
+    font-weight: 600 !important;
+  }
+
+  #mermaid-modal-canvas.is-dark #mermaid-modal-target svg .note {
+    fill: #1e293b !important;
+    stroke: #f59e0b !important;
+  }
+
+  #mermaid-modal-canvas.is-dark #mermaid-modal-target svg .noteText,
+  #mermaid-modal-canvas.is-dark #mermaid-modal-target svg .noteText > tspan {
+    fill: #fde68a !important;
+  }
+
+  #mermaid-modal-canvas.is-dark #mermaid-modal-target svg .loopText,
+  #mermaid-modal-canvas.is-dark #mermaid-modal-target svg .loopText > tspan {
+    fill: #f8fafc !important;
+    font-weight: 500 !important;
+  }
+
+  #mermaid-modal-canvas.is-dark #mermaid-modal-target svg .loopLine {
+    stroke: #64748b !important;
+  }
+
+  #mermaid-modal-canvas.is-dark #mermaid-modal-target svg .sequenceNumber {
+    fill: #0a1628 !important;
+    font-weight: bold !important;
+  }
+
+  #mermaid-modal-canvas.is-dark #mermaid-modal-target svg .edgeLabel,
+  #mermaid-modal-canvas.is-dark #mermaid-modal-target svg .edgeLabel span {
+    background-color: #0a1628 !important;
+    color: #f8fafc !important;
+  }
+
+  #mermaid-modal-canvas.is-dark #mermaid-modal-target svg .cluster-label span,
+  #mermaid-modal-canvas.is-dark #mermaid-modal-target svg .cluster-label text {
+    color: #fdba74 !important;
+    fill: #fdba74 !important;
+    font-weight: 600 !important;
+  }
+</style>

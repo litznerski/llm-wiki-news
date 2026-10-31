@@ -1,0 +1,136 @@
+---
+import siteConfig from '../config/site';
+import { url } from '../utils/paths';
+import '../styles/global.css';
+
+const title = `Learning Studio & Socratic Assistant — ${siteConfig.name}`;
+const description = "Interactive Socratic dialogue, dialectical sparring, and real-time knowledge graph exploration.";
+const chainlitUrl = import.meta.env.PUBLIC_CHAINLIT_URL || 'http://localhost:8080';
+const canonicalURL = new URL(Astro.url.pathname, Astro.site || siteConfig.url);
+const faviconUrl = url(siteConfig.favicon || '/favicon.svg');
+const faviconType = faviconUrl.endsWith('.svg') || faviconUrl.startsWith('data:image/svg')
+  ? 'image/svg+xml'
+  : faviconUrl.endsWith('.png')
+  ? 'image/png'
+  : 'image/x-icon';
+---
+
+<!doctype html>
+<html lang="en" class="dark h-full w-full overflow-hidden">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#101f3c" />
+    <link rel="icon" type={faviconType} href={faviconUrl} />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="canonical" href={canonicalURL} />
+
+    <!-- Primary Meta Tags -->
+    <title>{title}</title>
+    <meta name="title" content={title} />
+    <meta name="description" content={description} />
+
+    <!-- Open Graph / Twitter -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+  </head>
+
+  <body class="w-screen h-dvh overflow-hidden bg-neutral-950 text-neutral-100 relative antialiased flex flex-col m-0 p-0">
+    <!-- Ambient Fluid Lighting Background Mesh -->
+    <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden" aria-hidden="true">
+      <div class="absolute inset-0 bg-[radial-gradient(ellipse_90%_65%_at_75%_-5%,rgba(56,189,248,0.15),rgba(99,102,241,0.18)_40%,transparent_75%)]"></div>
+      <div class="absolute inset-0 bg-[radial-gradient(ellipse_70%_55%_at_15%_15%,rgba(129,140,248,0.12),rgba(249,115,22,0.06)_45%,transparent_75%)]"></div>
+    </div>
+
+    <!-- Floating Minimalist Back to Home Navigation Pill -->
+    <header class="fixed top-2.5 left-3 z-50">
+      <a
+        href="/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-900/80 hover:bg-slate-800/90 text-neutral-200 hover:text-white border border-white/10 hover:border-orange-500/50 text-xs font-medium backdrop-blur-md shadow-lg transition-all group"
+        title="Return to karimoo lab home"
+      >
+        <svg
+          class="w-3.5 h-3.5 text-neutral-400 group-hover:text-orange-400 transition-colors"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="m15 18-6-6 6-6" />
+        </svg>
+        <span class="font-poppins font-bold text-white text-[0.8rem]">karimoo</span><span class="font-mono font-bold text-orange-400 text-[0.8rem] -ml-0.5">lab</span>
+        <span class="text-neutral-400 text-[0.7rem] hidden sm:inline ml-1">• Home</span>
+      </a>
+    </header>
+
+    <!-- Full-Height Viewport Iframe -->
+    <main class="w-full h-full flex-1 relative z-10">
+      <iframe
+        id="chainlit-learner-frame"
+        src={chainlitUrl}
+        class="w-full h-full border-0 block"
+        allow="clipboard-write; microphone"
+        loading="eager"
+      ></iframe>
+    </main>
+
+    <script>
+      const iframe = document.getElementById('chainlit-learner-frame') as HTMLIFrameElement;
+      const searchParams = new URLSearchParams(window.location.search);
+      const q = searchParams.get('q');
+
+      // Forward ?q= directly to iframe URL if present
+      if (q && iframe) {
+        try {
+          const currentSrc = iframe.getAttribute('src') || '';
+          const iframeUrl = new URL(currentSrc, window.location.origin);
+          iframeUrl.searchParams.set('q', q);
+          iframe.src = iframeUrl.toString();
+        } catch (_) {}
+      }
+
+      // Suppress browser extension injection errors (e.g. FIDO2 / CredentialsContainer)
+      window.addEventListener(
+        'error',
+        (e) => {
+          if (
+            e.message &&
+            (e.message.includes('CredentialsContainer') ||
+              e.message.includes('fido2-page-script') ||
+              e.message.includes("Cannot assign to read only property 'create'"))
+          ) {
+            e.stopImmediatePropagation();
+            e.preventDefault();
+          }
+        },
+        true
+      );
+
+      // Sync theme & query prompt on initial load
+      function syncIframePrompt() {
+        iframe?.contentWindow?.postMessage({ type: 'SET_THEME', theme: 'dark' }, '*');
+        if (q) {
+          [200, 600, 1200, 2500].forEach((delay) => {
+            setTimeout(() => {
+              iframe?.contentWindow?.postMessage({ type: 'CHAINLIT_SET_PROMPT', query: q }, '*');
+            }, delay);
+          });
+        }
+      }
+
+      window.addEventListener('load', syncIframePrompt);
+      iframe?.addEventListener('load', syncIframePrompt);
+
+      // Listen for learner milestone notifications
+      window.addEventListener('message', (event) => {
+        if (event.data?.type === 'SOCRATIC_MILESTONE_REACHED') {
+          console.log('Learner achieved CFQ threshold:', event.data.cfq_score);
+        }
+      });
+    </script>
+  </body>
+</html>

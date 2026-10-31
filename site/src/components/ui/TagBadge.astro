@@ -1,0 +1,34 @@
+---
+import { url } from '../../utils/paths';
+
+interface Props {
+  tag: string;
+  size?: 'sm' | 'md';
+  active?: boolean;
+  variant?: 'dark' | 'light' | 'auto';
+}
+
+const { tag, size = 'sm', active = false, variant = 'dark' } = Astro.props;
+
+const sizeClass = size === 'sm' ? 'text-xs px-2.5 py-0.5' : 'text-sm px-3.5 py-1';
+
+const styleClass = active
+  ? 'bg-orange-500 text-white border border-orange-300 shadow-[3px_3px_0_var(--color-ink)]'
+  : variant === 'light'
+  ? 'bg-slate-100 hover:bg-orange-50 text-slate-800 hover:text-orange-700 border border-slate-300 hover:border-orange-300 font-semibold shadow-xs hover:scale-[1.02]'
+  : 'liquid-pill text-zinc-200 hover:text-orange-400 hover:border-orange-400/40 hover:shadow-xs hover:scale-[1.02]';
+
+const hashColorClass = variant === 'light' ? 'text-orange-600' : 'text-orange-400';
+---
+
+<a
+  href={url(`/tags/${encodeURIComponent(tag.toLowerCase())}`)}
+  class:list={[
+    'inline-flex items-center gap-1 font-medium rounded-full transition-all duration-200',
+    sizeClass,
+    styleClass,
+  ]}
+>
+  <span class={`${hashColorClass} text-xs font-mono font-bold`}>#</span>
+  <span>{tag}</span>
+</a>

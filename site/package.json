@@ -1,0 +1,33 @@
+{
+  "name": "knowledge-lab-site",
+  "version": "0.1.0",
+  "description": "Knowledge Lab — Sovereign Knowledge Graph & Socratic Learning Studio.",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "ASTRO_TELEMETRY_DISABLED=1 astro dev",
+    "build": "ASTRO_TELEMETRY_DISABLED=1 astro build && pagefind --site dist && rm -rf public/pagefind && cp -r dist/pagefind public/pagefind",
+    "check": "ASTRO_TELEMETRY_DISABLED=1 astro check",
+    "preview": "ASTRO_TELEMETRY_DISABLED=1 astro preview",
+    "astro": "ASTRO_TELEMETRY_DISABLED=1 astro",
+    "pagefind": "pagefind --site dist && rm -rf public/pagefind && cp -r dist/pagefind public/pagefind"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@astrojs/mdx": "latest",
+    "@astrojs/rss": "latest",
+    "@astrojs/sitemap": "latest",
+    "@tailwindcss/typography": "latest",
+    "@tailwindcss/vite": "^4.3.3",
+    "astro": "7.2.8",
+    "astro-expressive-code": "latest",
+    "lucide-astro": "latest",
+    "mdast-util-to-string": "latest",
+    "reading-time": "latest",
+    "tailwindcss": "4.3.3",
+    "typescript": "^6.0.3"
+  },
+  "devDependencies": {
+    "pagefind": "latest"
+  }
+}

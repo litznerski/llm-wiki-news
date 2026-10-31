@@ -1,0 +1,95 @@
+---
+import Header from '../components/ui/Header.astro';
+import Footer from '../components/ui/Footer.astro';
+import MermaidRenderer from '../components/ui/MermaidRenderer.astro';
+import siteConfig from '../config/site';
+import { url } from '../utils/paths';
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  article?: boolean;
+}
+
+const {
+  title = siteConfig.title,
+  description = siteConfig.description,
+  image = siteConfig.defaultOgImage || '/images/og-default.png',
+  article = false,
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site || siteConfig.url);
+const faviconUrl = url(siteConfig.favicon || '/favicon.svg');
+const faviconType =
+  faviconUrl.endsWith('.svg') || faviconUrl.startsWith('data:image/svg')
+    ? 'image/svg+xml'
+    : faviconUrl.endsWith('.png')
+    ? 'image/png'
+    : 'image/x-icon';
+
+const ogImageUrl = image.startsWith('http')
+  ? image
+  : new URL(url(image), Astro.site || siteConfig.url).href;
+---
+
+<!doctype html>
+<html lang="en" class="dark scroll-smooth">
+
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#101f3c" />
+    <link rel="icon" type={faviconType} href={faviconUrl} />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="canonical" href={canonicalURL} />
+    <link rel="alternate" type="application/rss+xml" title={`${siteConfig.name} RSS Feed`} href={url('/rss.xml')} />
+    <link rel="sitemap" href={url('/sitemap-index.xml')} />
+
+    <!-- Primary Meta Tags -->
+    <title>{title}</title>
+    <meta name="title" content={title} />
+    <meta name="description" content={description} />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content={article ? 'article' : 'website'} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImageUrl} />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={canonicalURL} />
+    <meta property="twitter:title" content={title} />
+    <meta property="twitter:description" content={description} />
+    <meta property="twitter:image" content={ogImageUrl} />
+  </head>
+  <body class="relative min-h-screen flex flex-col antialiased selection:bg-orange-500 selection:text-white overflow-x-hidden">
+    
+    <!-- Ambient Fluid Lighting Background Mesh -->
+    <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden" aria-hidden="true">
+      <!-- Top Center/Right Indigo & Cyan Nebula -->
+      <div class="absolute inset-0 bg-[radial-gradient(ellipse_90%_65%_at_75%_-5%,rgba(56,189,248,0.2),rgba(99,102,241,0.22)_40%,transparent_75%)]"></div>
+      
+      <!-- Top Left Violet & Orange Glow -->
+      <div class="absolute inset-0 bg-[radial-gradient(ellipse_70%_55%_at_15%_15%,rgba(129,140,248,0.18),rgba(249,115,22,0.08)_45%,transparent_75%)]"></div>
+      
+      <!-- Bottom Center Deep Blue & Cyan Glow -->
+      <div class="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_85%,rgba(30,58,138,0.35),rgba(14,165,233,0.12)_45%,transparent_75%)]"></div>
+    </div>
+
+    <!-- Main Content Layer -->
+    <div class="relative z-10 flex flex-col min-h-screen">
+      <Header />
+      <main class="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+        <slot />
+      </main>
+      <Footer />
+    </div>
+
+    <!-- Interactive Mermaid Renderer & Zoom Modal -->
+    <MermaidRenderer />
+  </body>
+</html>

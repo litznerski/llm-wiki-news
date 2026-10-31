@@ -1,0 +1,207 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SpeechBubble from '../components/mdx/SpeechBubble.astro';
+import siteConfig from '../config/site';
+import { url } from '../utils/paths';
+import { Sparkles, Linkedin, Mail } from 'lucide-astro';
+
+const aboutData = siteConfig.about;
+
+const techArsenal = aboutData?.techArsenal || [
+  { name: 'Astro 7', desc: 'Islands architecture, server islands, and zero-JS defaults', category: 'Framework' },
+  { name: 'TypeScript', desc: 'Strict domain models, algebraic types, and nominal branding', category: 'Language' },
+  { name: 'Tailwind CSS 4', desc: 'Liquid Glass design system, modern gradients & CSS tokens', category: 'Styling' },
+  { name: 'Vite & Pagefind', desc: 'Instant hot-reloading and lightning-fast static indexing', category: 'Tooling' },
+  { name: 'React / Preact', desc: 'Isolated reactive client components when state is required', category: 'UI Library' },
+  { name: 'Edge Runtimes', desc: 'Distributed low-latency deployment at the CDN edge', category: 'Infra' },
+];
+
+const highlights = aboutData?.highlights || [
+  {
+    icon: '⚡',
+    title: 'Speed & Zero-JS',
+    desc: 'Shipping ultra-lightweight static HTML first, hydrating only when client interactivity is strictly required.',
+  },
+  {
+    icon: '✨',
+    title: 'Liquid Glass Design',
+    desc: 'Crafting translucent, refractive spatial UI with specular highlights and GPU-accelerated blur effects.',
+  },
+  {
+    icon: '🛡️',
+    title: 'Type Safety & Domain Invariants',
+    desc: 'Eliminating entire categories of runtime bugs using compiler-enforced discriminated unions and pure functions.',
+  },
+  {
+    icon: '🚀',
+    title: '60fps Micro-Interactions',
+    desc: 'Building responsive spring physics, compositor animations, and tactile interactive feedback.',
+  },
+];
+
+const philosophyTitle = aboutData?.philosophyTitle || 'My Engineering Philosophy';
+const philosophyParagraphs = aboutData?.philosophyParagraphs || [
+  'I started this blog as my personal digital garden—a place to document experiments, architectural patterns, and lessons learned while crafting modern web applications.',
+  'I believe that a modern website should feel instantaneous, tactile, and visually delightful. In an era where web apps often ship megabytes of unnecessary JavaScript runtimes, I advocate for content-first static delivery with selective island hydration.',
+];
+const quote = aboutData?.quote || 'Every byte of JavaScript saved and every millisecond shaved off TTFB makes the web a faster, more accessible, and more joyful space for everyone.';
+---
+
+<BaseLayout
+  title={`About Me — ${siteConfig.name}`}
+  description={`Learn more about ${siteConfig.author.name}, engineering journey, tech stack, and digital garden.`}
+>
+  <!-- Page Header with Author Photo -->
+  <div class="mb-10 p-8 sm:p-12 kepler-card rounded-3xl shadow-xl relative overflow-hidden group">
+    <!-- Ambient Internal Orbit Arc -->
+    <div class="absolute -top-24 -right-24 w-96 h-96 rounded-full border border-dashed border-orange-500/20 pointer-events-none animate-[orbit-spin_35s_linear_infinite]"></div>
+
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center relative z-10">
+      <div class="md:col-span-8">
+        <div class="kepler-chip-orange mb-3.5">
+          <Sparkles class="w-3.5 h-3.5 text-orange-700" />
+          Learning Architecture & Foundations
+        </div>
+        <h1 class="text-3xl sm:text-5xl font-extrabold font-poppins text-white tracking-tight mb-4">
+          About the Lab & Lineage
+        </h1>
+        <p class="text-base sm:text-lg text-zinc-200 font-normal leading-relaxed">
+          I'm <strong class="text-white font-semibold">{siteConfig.author.name}</strong> — {siteConfig.author.bio}
+        </p>
+      </div>
+
+      <div class="md:col-span-4 flex justify-center md:justify-end">
+        <div class="relative group/avatar">
+          <img
+            src={url(siteConfig.author.avatar)}
+            alt={siteConfig.author.name}
+            class="relative w-36 h-36 sm:w-44 sm:h-44 rounded-3xl object-cover border-2 border-white/20 shadow-[6px_6px_0_var(--color-ink)]"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Story Section -->
+  <section class="my-10 kepler-card rounded-3xl shadow-xl p-7 sm:p-10 overflow-hidden">
+    <div class="flex items-center gap-2.5 border-b border-white/10 pb-4 mb-6">
+      <span class="w-2.5 h-2.5 rounded-full bg-orange-500"></span>
+      <h2 class="text-xl font-bold font-poppins text-white">
+        {philosophyTitle}
+      </h2>
+    </div>
+
+    <div class="prose max-w-none text-zinc-200 space-y-4 leading-relaxed text-sm sm:text-base">
+      {philosophyParagraphs.map((p) => (
+        <p>{p}</p>
+      ))}
+    </div>
+
+    <div class="my-8">
+      <SpeechBubble speaker={siteConfig.author.name} role={siteConfig.author.role} avatar={siteConfig.author.avatar} side="left">
+        "{quote}"
+      </SpeechBubble>
+    </div>
+  </section>
+
+  <!-- Core Pillars -->
+  <section class="my-12">
+    <div class="flex items-center gap-2.5 border-b border-white/10 pb-4 mb-8">
+      <span class="w-2.5 h-2.5 rounded-full bg-orange-500"></span>
+      <h2 class="text-2xl font-bold font-poppins text-white">
+        Core Pillars & Research Horizon
+      </h2>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+      {highlights.map((item) => (
+        <div class="p-7 kepler-card rounded-3xl shadow-lg flex flex-col justify-between overflow-hidden">
+          <div>
+            <div class="w-12 h-12 rounded-full bg-[#ffedd5] border border-[#fdba74] shadow-[3px_3px_0_var(--color-ink)] flex items-center justify-center text-2xl mb-4">
+              {item.icon}
+            </div>
+
+            <h3 class="text-lg font-bold font-poppins text-white mb-2">
+              {item.title}
+            </h3>
+
+            <p class="text-xs sm:text-sm text-zinc-200 leading-relaxed">
+              {item.desc}
+            </p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Technology Stack & Tools -->
+  <section class="my-12 p-7 sm:p-10 kepler-card rounded-3xl shadow-xl overflow-hidden">
+    <div class="flex items-center justify-between border-b border-white/10 pb-4 mb-6">
+      <div class="flex items-center gap-2.5">
+        <span class="w-2.5 h-2.5 rounded-full bg-orange-500"></span>
+        <h2 class="text-lg font-bold font-poppins text-white">
+          Architecture Stack & Tools
+        </h2>
+      </div>
+      <span class="text-xs font-mono text-sky-200/80">// ARSENAL</span>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      {techArsenal.map((tech) => (
+        <div class="p-5 rounded-2xl bg-[#0a1628]/60 border border-white/10 hover:border-orange-400/50 hover:shadow-[2px_2px_0_var(--color-ink)] flex flex-col justify-between transition-all">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-sm font-bold font-poppins text-white">
+                {tech.name}
+              </span>
+              <span class="px-2.5 py-0.5 rounded-full bg-orange-500/15 border border-orange-400/25 text-orange-300 text-[10px] font-mono font-semibold">
+                {tech.category}
+              </span>
+            </div>
+            <p class="text-xs text-zinc-300 leading-relaxed">
+              {tech.desc}
+            </p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Connect & Socials -->
+  <section class="my-12 p-8 sm:p-10 kepler-card rounded-3xl shadow-xl relative overflow-hidden group text-center sm:text-left">
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+      <div class="md:col-span-8 space-y-2">
+        <h3 class="text-2xl font-extrabold font-poppins text-white tracking-tight">
+          Let's Connect & Collaborate
+        </h3>
+        <p class="text-sm text-zinc-200 max-w-xl leading-relaxed">
+          Whether you want to discuss learning architecture, pedagogical governance, or collaborate on Socratic sandboxes, feel free to reach out!
+        </p>
+      </div>
+
+      <div class="md:col-span-4 flex flex-wrap justify-center md:justify-end gap-3">
+        {siteConfig.author.social.linkedin && (
+          <a
+            href={siteConfig.author.social.linkedin}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="kepler-btn-orange px-5 py-3 text-xs"
+          >
+            <Linkedin class="w-4 h-4" />
+            <span>LinkedIn</span>
+          </a>
+        )}
+
+        {siteConfig.author.social.email && (
+          <a
+            href={`mailto:${siteConfig.author.social.email}`}
+            class="kepler-btn-navy px-5 py-3 text-xs"
+          >
+            <Mail class="w-4 h-4" />
+            <span>Email</span>
+          </a>
+        )}
+      </div>
+    </div>
+  </section>
+</BaseLayout>

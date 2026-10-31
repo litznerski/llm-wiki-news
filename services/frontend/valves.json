@@ -1,0 +1,14 @@
+{
+  "operating_mode": "General",
+  "developer_mode": true,
+  "teachable_agent_mode": false,
+  "enable_chat_history": true,
+  "enable_langfuse": false,
+  "fastmcp_url": "http://fastmcp-middleware:8000",
+  "enable_llm": true,
+  "llm_model": "openrouter/free",
+  "custom_model": "",
+  "openrouter_api_key": "",
+  "openrouter_base_url": "https://openrouter.ai/api/v1",
+  "llm_temperature": 0.2
+}

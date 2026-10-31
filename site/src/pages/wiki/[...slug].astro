@@ -1,0 +1,109 @@
+---
+import { getCollection, render } from 'astro:content';
+import WikiNoteLayout from '../../layouts/WikiNoteLayout.astro';
+import { isNotePublished, slugifyWikiTitle } from '../../config/wiki.config';
+
+export async function getStaticPaths() {
+  const allNotes = await getCollection('wiki');
+
+  // Filter notes that qualify for publication under Option C rules
+  const publishedNotes = allNotes.filter((note) => isNotePublished(note.id, note.data));
+
+  // Build bidirectional backlinks registry
+  const backlinksMap = new Map<string, Array<{ title: string; slug: string; type?: string }>>();
+  const WIKILINK_REGEX = /\[\[([^\]|#]+)(?:#([^\]|]+))?(?:\|([^\]]+))?\]\]/g;
+
+  for (const note of publishedNotes) {
+    const rawNoteTitle = note.data?.title || note.id.replace(/\.md$/, '').split('/').pop() || '';
+    const noteTitleSlug = slugifyWikiTitle(rawNoteTitle);
+    const fileBasename = note.id.replace(/\.md$/, '').split('/').pop() || '';
+    const fileSlug = slugifyWikiTitle(fileBasename);
+    const bodyText = note.body || '';
+
+    const seenTargetsInThisNote = new Set<string>();
+    let match;
+    WIKILINK_REGEX.lastIndex = 0;
+
+    while ((match = WIKILINK_REGEX.exec(bodyText)) !== null) {
+      let rawTarget = match[1].trim().replace(/^wiki\//, '');
+      const targetLeaf = rawTarget.split('/').pop() || rawTarget;
+      const targetSlug = slugifyWikiTitle(targetLeaf);
+
+      if (targetSlug === noteTitleSlug || targetSlug === fileSlug || seenTargetsInThisNote.has(targetSlug)) {
+        continue;
+      }
+      seenTargetsInThisNote.add(targetSlug);
+
+      if (!backlinksMap.has(targetSlug)) {
+        backlinksMap.set(targetSlug, []);
+      }
+
+      backlinksMap.get(targetSlug)!.push({
+        title: rawNoteTitle,
+        slug: noteTitleSlug,
+        type: note.data?.type || 'concept',
+      });
+    }
+  }
+
+  // Deduplicate and return static path entries
+  const paths = [];
+  const registeredSlugs = new Set<string>();
+
+  for (const note of publishedNotes) {
+    const rawTitle = note.data?.title || note.id.replace(/\.md$/, '').split('/').pop() || '';
+    const titleSlug = slugifyWikiTitle(rawTitle);
+    const fileBasename = note.id.replace(/\.md$/, '').split('/').pop() || '';
+    const fileSlug = slugifyWikiTitle(fileBasename);
+
+    // Collect all candidate slugs for this note (title slug, file slug, and aliases)
+    const candidateSlugs = [titleSlug, fileSlug];
+    if (Array.isArray(note.data?.aliases)) {
+      for (const a of note.data.aliases) {
+        if (!a || typeof a !== 'string') continue;
+        const as = slugifyWikiTitle(a);
+        if (as) candidateSlugs.push(as);
+      }
+    }
+
+    // Merge backlinks across all candidate slugs
+    const allBacklinks: Array<{ title: string; slug: string; type?: string }> = [];
+    const seenBacklinkTitles = new Set<string>();
+
+    for (const cSlug of candidateSlugs) {
+      const bls = backlinksMap.get(cSlug) || [];
+      for (const bl of bls) {
+        if (!seenBacklinkTitles.has(bl.title)) {
+          seenBacklinkTitles.add(bl.title);
+          allBacklinks.push(bl);
+        }
+      }
+    }
+
+    // Register all non-colliding candidate routes
+    for (const s of candidateSlugs) {
+      if (!s || registeredSlugs.has(s)) {
+        continue;
+      }
+      registeredSlugs.add(s);
+
+      paths.push({
+        params: { slug: s },
+        props: {
+          note,
+          backlinks: allBacklinks,
+        },
+      });
+    }
+  }
+
+  return paths;
+}
+
+const { note, backlinks = [] } = Astro.props;
+const { Content, headings } = await render(note);
+---
+
+<WikiNoteLayout note={note} headings={headings} backlinks={backlinks}>
+  <Content />
+</WikiNoteLayout>

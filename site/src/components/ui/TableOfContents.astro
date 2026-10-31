@@ -1,0 +1,48 @@
+---
+interface Heading {
+  depth: number;
+  slug: string;
+  text: string;
+}
+
+interface Props {
+  headings: Heading[];
+}
+
+const { headings } = Astro.props;
+const filteredHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 3);
+---
+
+{filteredHeadings.length > 0 && (
+  <nav class="white-card-3d text-zinc-900 rounded-3xl p-6">
+    <div class="flex items-center justify-between border-b border-zinc-200 pb-3 mb-4">
+      <div class="flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-orange-500"></span>
+        <span class="font-bold font-poppins text-xs uppercase tracking-wider text-[#0a1628]">
+          Table of Contents
+        </span>
+      </div>
+      <span class="text-[10px] font-mono text-orange-600 font-bold">// INDEX</span>
+    </div>
+
+    <ul class="space-y-1.5 text-xs">
+      {filteredHeadings.map((heading, index) => (
+        <li class:list={[heading.depth === 3 ? 'pl-3.5 border-l-2 border-zinc-200 ml-1' : '']}>
+          <a
+            href={`#${heading.slug}`}
+            class="group flex items-start gap-2 py-1 text-zinc-700 hover:text-orange-600 transition-colors leading-relaxed font-medium"
+          >
+            {heading.depth === 2 && (
+              <span class="font-mono text-[11px] text-orange-600 font-bold shrink-0">
+                0{index + 1}.
+              </span>
+            )}
+            <span class="group-hover:translate-x-0.5 transition-transform">
+              {heading.text}
+            </span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+)}
