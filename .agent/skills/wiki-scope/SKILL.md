@@ -1,6 +1,6 @@
 ---
 name: wiki-scope
-description: Scans a news or OSINT source document before ingestion, performs 48-hour spatio-temporal event deduplication against existing vault catalogs, filters by intelligence significance, and generates a Scoped Ingestion Manifest with dynamic Event, Actor, Location, and Theme quotas.
+description: Scans a news or OSINT source document before ingestion, performs 48-hour spatio-temporal event deduplication against existing vault catalogs, filters by intelligence significance, and generates a Scoped Ingestion Manifest persisted into the draft source note.
 ---
 
 # Wiki Scope Skill (`wiki-scope`)
@@ -8,7 +8,7 @@ description: Scans a news or OSINT source document before ingestion, performs 48
 ## Objective
 Act as the mandatory epistemic reconnaissance, deduplication, and planning phase prior to compiling any primary news article, social media post, video transcript, or OSINT report from `raw/` into the `wiki/` knowledge graph.
 
-Instead of imposing static extraction limits or creating duplicate event nodes across multiple media reports, `wiki-scope` cross-references the incoming source against `wiki/index.md` and `wiki/glossary.md`, executes **48-Hour Spatio-Temporal Event Deduplication**, separates candidate primitives into **Events**, **Actors**, **Locations**, **Themes/Timelines**, and **Nodes to Refactor**, and outputs a **Scoped Ingestion Manifest**.
+Instead of imposing static extraction limits or creating duplicate event nodes across multiple media reports, `wiki-scope` cross-references the incoming source against `wiki/index.md` and `wiki/glossary.md`, executes **48-Hour Spatio-Temporal Event Deduplication**, separates candidate primitives into **Events**, **Actors**, **Locations**, **Themes/Timelines**, and **Nodes to Refactor**, and persists the **Scoped Ingestion Manifest** directly into the Phase 1 draft source note (`wiki/sources/<source-slug>.md`).
 
 ---
 
@@ -40,33 +40,32 @@ Filter candidate nodes using three qualitative criteria (must score $\ge 0.70$ o
   - Political economy (gold, weapons supply chains), regional diplomacy, and foreign sponsorship.
   - OSINT verification, disinformation debunking, and narrative contradiction analysis.
 
-### 4. Generate the Scoped Ingestion Manifest
-Output the manifest in standard Markdown format (archived into Section 2 of `wiki/ingestions/YYYY-MM-DD/<source-slug>.md`):
+### 4. Generate & Persist the Scoped Ingestion Manifest
+Persist the candidate node lists in two places inside the Phase 1 draft source note (`wiki/sources/<source-slug>.md`):
+1. **YAML Frontmatter Arrays**: `events_to_create`, `actors_to_create`, `locations_to_create`, `themes_to_create`, `nodes_to_refactor`.
+2. **Markdown Body (`## 4. Scoped Ingestion Plan (Pending Approval)`)**:
 
 ```markdown
-### 📋 Scoped Ingestion Manifest: `<source-slug>`
-- **Source Medium & Language**: [e.g., Arabic News Article / Telegram Post / Satellite Report] | **Admiralty Rating**: `[e.g., B2]`
-- **Target Dynamic Quota**: **E New Events** | **A New Actors** | **L New Locations** | **T New Themes/Timelines** | **K Refactors**
+## 4. Scoped Ingestion Plan (Pending Approval)
 
-#### 1. Candidate New Events (E)
-- `[[YYYY-MM-DD Event Title]]` (`subtype: incident | campaign | crisis | diplomatic`): 1-line 5W1H summary & ACLED category.
+> [!WARNING] Phase 1 Review Gate (`status: "draft"`)
+> Review the extracted claims, NATO Admiralty rating, and planned node operations below. When ready to compile these entities into `wiki/` and update the ArcadeDB (`news`) & `ki` indexes, change `status: "draft"` to `status: "approved"` in the frontmatter and run `/ingest wiki/sources/<source-slug>.md` (or `/ingest --approved`).
 
-#### 2. Candidate New Actors (A)
-- `[[Actor Name]]` (`subtype: state_force | armed_group | ...`): Role, affiliation, and ACLED actor type.
+### 4.1. Candidate New Events (E)
+- [[YYYY-MM-DD Event Title]] (`subtype: incident | campaign | crisis | diplomatic`): 1-line 5W1H summary & ACLED category.
 
-#### 3. Candidate New Locations (L)
-- `[[Location Name]]` (`pcode: SD...`, `subtype: city_town | ...`): Admin hierarchy and current control status.
+### 4.2. Candidate New Actors (A)
+- [[Actor Name]] (`subtype: state_force | armed_group | ...`): Role, affiliation, and ACLED actor type.
 
-#### 4. Candidate New Themes / Timelines (T)
-- `[[Theme or Timeline Title]]`: Structural driver ("Why?") or chronological scope.
+### 4.3. Candidate New Locations (L)
+- [[Location Name]] (`pcode: SD...`, `subtype: city_town | ...`): Admin hierarchy and current control status.
 
-#### 5. Existing Nodes to Refactor (K)
-- `[[Existing Note]]`: Specific update (e.g., merge corroborating source, update casualty range, or add `ATTRIBUTION_CONFLICT` to Section 5 Contradiction Matrix).
+### 4.4. Candidate New Themes / Timelines (T)
+- [[Theme or Timeline Title]]: Structural driver ("Why?") or chronological scope.
 
-#### 6. Workload Execution Strategy
-- [Single-thread sequential (Total new nodes ≤ 6) | Map-Reduce parallel subagents (Total new nodes > 6)]
+### 4.5. Existing Nodes to Refactor (K)
+- [[Existing Note]]: Specific update (e.g., merge corroborating source, update casualty range, or add `ATTRIBUTION_CONFLICT` to Section 5 Contradiction Matrix).
 ```
 
-### 5. Setting the Dynamic Quota & Interaction Gate
-- **Fast-Path**: If Total New Nodes ($E + A + L + T$) $\le 6$, proceed automatically into `wiki-ingest`.
-- **Review Gate**: If Total New Nodes ($E + A + L + T$) $> 6$, present the manifest to the user for confirmation before file creation commences.
+### 5. Hand-off to Phase 1 Source Distillation
+- Hand the Scoped Ingestion Manifest directly to `wiki-ingest` (Phase 1) so `wiki/sources/<source-slug>.md` is authored with `status: "draft"` and `compiled: false` and halted for user review.

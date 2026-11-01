@@ -166,36 +166,47 @@ reliability_score: 0.85 # 0.0 to 1.0 derived from Admiralty rating / verificatio
 ```
 - **Additional `location` fields**: `adm_level` (`0`–`4`), `parent_location`, `pcode` (UN OCHA P-Code), `coordinates` (`[lat, lon]`), `current_control`, `humanitarian_ipc_phase` (`1`–`5`).
 - **Additional `actor` fields**: `acled_actor_type`, `leader`, `allies`, `opponents`, `areas_of_operation`.
-- **Additional `source` fields**: `source_outlet`, `raw_file`, `language` (`ar | en | fr | de`), `published_date`, `alignment` (`independent | pro_saf | pro_rsf | state_media | civil_society_err | international_org | osint_verified`).
+- **Additional `source` fields**: `status` (`"draft" | "approved"`), `compiled` (`false | true`), `compiled_at`, `source_outlet`, `raw_file`, `language` (`ar | en | fr | de`), `published_date`, `alignment` (`independent | pro_saf | pro_rsf | state_media | civil_society_err | international_org | osint_verified`), `events_to_create`, `actors_to_create`, `locations_to_create`, `themes_to_create`, `nodes_to_refactor`.
 
 ---
 
 ## 4. Operational Protocols
 
-### Protocol A: Ingestion (`/ingest <file-path>`)
+### Protocol A: Two-Phase Ingestion (`/ingest <path>`)
 
-When directed to ingest a document from `raw/` (or `_input/research/`):
+Ingestion is split into two explicit phases separated by a human-in-the-loop review gate on `wiki/sources/<source-slug>.md` (`status: "draft" | "approved"`):
+
+#### Phase 1: Source Distillation & Scoping (`/ingest <raw-file-path>`)
+When directed to ingest a primary evidence document from `raw/` (or `_input/research/`):
 1. **Verification:** Verify that the file exists and treat it as strictly immutable.
 2. **Context Retrieval, Deduplication & Scoping (`wiki-scope`):**
    - Read `wiki/index.md`, `wiki/glossary.md`, and the target document.
    - **48-Hour Spatio-Temporal Event Deduplication Check**: For every candidate event in the source, check whether an existing note in `wiki/events/` occurred within $\lvert \Delta t_{\text{valid}} \rvert \le 48\text{ hours}$ at the same location (`wiki/locations/`) involving overlapping actors. If a match exists, classify the event under **Nodes to Refactor** rather than creating a duplicate event note.
-   - Separate candidate primitives into **New Events (`$E$`)**, **New Actors (`$A$`)**, **New Locations (`$L$`)**, **New Themes/Timelines (`$T$`)**, and **Nodes to Refactor (`$K$`)**.
-   - Apply the **News & OSINT Significance Filter** ($\ge 0.70$ composite score) and generate the **Scoped Ingestion Manifest**. If total new nodes ($E + A + L + T$) $> 6$, present the manifest to the user before generation.
-3. **Source Distillation (`wiki/sources/<source-slug>.md`):**
-   - Create `wiki/sources/<source-slug>.md`.
-   - Assign the **NATO Admiralty Rating (`A1`–`F6`)**, `alignment`, `language`, and derived `reliability_score`.
-   - Record: 5W1H Executive Summary, Atomic Extracted Claims Table, Bilingual Direct Citations (preserving original Arabic/foreign quotes alongside English translation), and Related Wikilinks.
-4. **Workload-Optimized Multi-Node Compilation:**
+   - Separate candidate primitives into **New Events (`$E$`)**, **New Actors (`$A$`)**, **New Locations (`$L$`)**, **New Themes/Timelines (`$T$`)**, and **Nodes to Refactor (`$K$`)**, applying the **News & OSINT Significance Filter** ($\ge 0.70$ composite score).
+3. **Draft Source Creation (`wiki/sources/<source-slug>.md`):**
+   - Create `wiki/sources/<source-slug>.md` with `status: "draft"` and `compiled: false` in YAML frontmatter, alongside the **NATO Admiralty Rating (`A1`–`F6`)**, `alignment`, `language`, `reliability_score`, and the planned target arrays (`events_to_create`, `actors_to_create`, `locations_to_create`, `themes_to_create`, `nodes_to_refactor`).
+   - Author the 5-section source body: `## 1. 5W1H Source Intelligence Summary & Provenance`, `## 2. Atomic Extracted Claims Table`, `## 3. Bilingual Direct Citations & Forensic Evidence`, `## 4. Scoped Ingestion Plan (Pending Approval)`, and `## 5. Related Primitives`.
+4. **Log & Halt for Review:**
+   - Append to `wiki/log.md`:
+     `## [YYYY-MM-DD] ingest-draft | <source-slug> | Created draft source note in wiki/sources/<source-slug>.md (status: draft) with scoped manifest (E events, A actors, L locations, T themes, K refactors); awaiting approval.`
+   - **HALT** before creating or modifying any notes in `wiki/events/`, `wiki/actors/`, `wiki/locations/`, `wiki/themes/`, `wiki/timelines/`, or `wiki/ingestions/`, and before indexing into ArcadeDB (`news`) or `ki`. Prompt the user to review `wiki/sources/<source-slug>.md` and change `status: "draft"` to `status: "approved"`.
+
+#### Phase 2: Approved Entity Compilation & Database Sync (`/ingest wiki/sources/<source-slug>.md` or `/ingest --approved`)
+When directed to continue ingestion on an approved source note (or all source notes where `status: "approved"` and `compiled: false`):
+1. **Approval Verification:** Read `wiki/sources/<source-slug>.md` and verify `status: "approved"` and `compiled: false`. (If `status: "draft"`, halt and remind the user to set `status: "approved"` first).
+2. **Workload-Optimized Multi-Node Compilation:**
+   - Read the approved target node lists (`events_to_create`, `actors_to_create`, `locations_to_create`, `themes_to_create`, `nodes_to_refactor`) and Atomic Extracted Claims Table from `wiki/sources/<source-slug>.md`.
    - Strictly enforce **Axiom 4 (Clean Wikilinks & Escaped Table Pipes)**, **Axiom 7 (Zero ASCII Box Art)**, and **Axiom 9 (Dual-Flow CoT 6-Stage Section Arcs for `events`, `actors`, `locations`, `themes`)**.
    - Cross-reference `wiki/glossary.md` for every actor and location to prevent transliteration splitting (e.g., *Hemedti* $\to$ `[[Mohamed Hamdan Dagalo]]`, *Gezira* $\to$ `[[Al Jazirah]]`).
    - When refactoring an existing Event note with conflicting source claims, update `## 5. Competing Narratives, Attribution & Contradictions` and `contradiction_flags`.
-5. **Ingestion Dossier Generation (`wiki/ingestions/YYYY-MM-DD/<source-slug>.md`):**
-   - Author a standalone audit dossier in `wiki/ingestions/YYYY-MM-DD/<source-slug>.md` (`type: ingestion`) recording Provenance, Scoped Ingestion Manifest, Compiled Nodes Table, Refactored Nodes & Contradictions Tracked, and Verification Telemetry.
-6. **Batch Catalog, Ledger, and Graph Index Updates:**
-   - Update `wiki/index.md`, `wiki/glossary.md`, and `wiki/overview.md` (if frontline control, humanitarian metrics, or strategic debates shifted).
-   - Synchronize the graph via `ki add -C wiki "<relative-path>"` (for $\le 3$ files) or `./scripts/sync_vault_graph.sh` (for $> 3$ files), and verify `ki status -v -C wiki` reports `✓ READY`.
+3. **Ingestion Dossier & Source Finalization:**
+   - Author the audit dossier in `wiki/ingestions/YYYY-MM-DD/<source-slug>.md` (`type: ingestion`) recording Provenance, Scoped Ingestion Manifest, Compiled Nodes Table, Refactored Nodes & Contradictions Tracked, and Verification Telemetry.
+   - Update `wiki/sources/<source-slug>.md` frontmatter to `compiled: true` and `compiled_at: YYYY-MM-DD`.
+4. **Batch Catalog, Ledger, and Graph Database Synchronization:**
+   - Update `wiki/index.md` (including the newly approved source note and all compiled domain nodes), `wiki/glossary.md`, and `wiki/overview.md` (if frontline control, humanitarian metrics, or strategic debates shifted).
+   - Synchronize the `ki` index and ArcadeDB (`news`) database via `./scripts/sync_vault_graph.sh` and `python3 scripts/ingest_to_arcadedb.py`, and verify `ki status -v -C wiki` reports `✓ READY`.
    - Append to `wiki/log.md`:
-     `## [YYYY-MM-DD] ingest | <source-slug> | Compiled into N notes (E events, A actors, L locations, T themes, K refactors); generated dossier in wiki/ingestions/YYYY-MM-DD/; updated index, SITREP & glossary; synced graph.`
+     `## [YYYY-MM-DD] ingest-compile | <source-slug> | Compiled approved source into N notes (E events, A actors, L locations, T themes, K refactors); generated dossier in wiki/ingestions/YYYY-MM-DD/; updated index, SITREP & glossary; synced ki & ArcadeDB.`
 
 ### Protocol B: Dialectical Intelligence Query (`/query <prompt>`)
 

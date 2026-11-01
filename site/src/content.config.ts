@@ -44,6 +44,9 @@ const wiki = defineCollection({
     aliases: z.array(z.string()).default([]),
     publish: z.boolean().optional(),
     draft: z.boolean().optional(),
+    status: z.enum(['draft', 'approved']).optional(),
+    compiled: z.boolean().optional(),
+    compiled_at: z.any().optional(),
   }).passthrough(),
 });
 

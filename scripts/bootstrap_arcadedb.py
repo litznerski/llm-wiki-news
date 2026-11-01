@@ -155,6 +155,8 @@ DDL_COMMANDS = [
     ("CREATE PROPERTY Source.title IF NOT EXISTS STRING", "Property Source.title"),
     ("CREATE PROPERTY Source.slug IF NOT EXISTS STRING", "Property Source.slug"),
     ("CREATE PROPERTY Source.subtype IF NOT EXISTS STRING", "Property Source.subtype"),
+    ("CREATE PROPERTY Source.status IF NOT EXISTS STRING", "Property Source.status"),
+    ("CREATE PROPERTY Source.compiled IF NOT EXISTS BOOLEAN", "Property Source.compiled"),
     ("CREATE PROPERTY Source.language IF NOT EXISTS STRING", "Property Source.language"),
     ("CREATE PROPERTY Source.alignment IF NOT EXISTS STRING", "Property Source.alignment"),
     ("CREATE PROPERTY Source.admiralty_rating IF NOT EXISTS STRING", "Property Source.admiralty_rating"),

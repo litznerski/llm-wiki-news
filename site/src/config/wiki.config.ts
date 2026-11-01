@@ -66,7 +66,12 @@ export function slugifyWikiTitle(title: string): string {
  * Determines whether a wiki note qualifies for public rendering.
  */
 export function isNotePublished(noteId: string, frontmatter: Record<string, any> = {}): boolean {
-  if (frontmatter.publish === false || frontmatter.draft === true) {
+  if (
+    frontmatter.publish === false ||
+    frontmatter.draft === true ||
+    frontmatter.status === 'draft' ||
+    frontmatter.compiled === false
+  ) {
     return false;
   }
 

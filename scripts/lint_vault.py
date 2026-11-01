@@ -21,8 +21,9 @@ TYPE_SPECIFIC_REQUIRED_FIELDS = {
     "location": ["subtype", "pcode"],
     "theme": ["subtype"],
     "timeline": ["subtype"],
-    "source": ["subtype", "admiralty_rating", "published_date"],
+    "source": ["subtype", "status", "admiralty_rating", "published_date"],
 }
+VALID_SOURCE_STATUSES = {"draft", "approved"}
 EXEMPT_FILES = {"index.md", "overview.md", "log.md", "glossary.md"}
 DISALLOWED_WIKILINK_PREFIXES = (
     "wiki/events/", "wiki/actors/", "wiki/locations/", "wiki/themes/", "wiki/timelines/",
@@ -43,7 +44,8 @@ def parse_frontmatter(content):
     for line in fm_text.splitlines():
         if ":" in line and not line.strip().startswith("-"):
             k, v = line.split(":", 1)
-            data[k.strip()] = v.strip().strip("'\"")
+            val = v.split("#", 1)[0].strip().strip("'\"")
+            data[k.strip()] = val
     return data
 
 
@@ -79,6 +81,7 @@ def extract_links(content):
 def lint(check_cot: bool = False):
     files_by_stem, files_by_rel = get_all_wiki_files()
     inbound_links = {p: 0 for p in files_by_stem.values()}
+    uncompiled_source_paths = set()
     issues = []
 
     all_notes = []
@@ -93,6 +96,7 @@ def lint(check_cot: bool = False):
 
         # 1. Frontmatter check (only for compiled notes, not index/overview/log/glossary)
         fm = None
+        is_uncompiled_source = False
         if p.name not in EXEMPT_FILES:
             fm = parse_frontmatter(content)
             if fm is None:
@@ -104,6 +108,20 @@ def lint(check_cot: bool = False):
                 })
             else:
                 node_type = fm.get("type", "").lower()
+                if node_type == "source":
+                    src_status = fm.get("status", "").lower()
+                    src_compiled = fm.get("compiled", "true").lower()
+                    if src_status and src_status not in VALID_SOURCE_STATUSES:
+                        issues.append({
+                            "type": "Invalid Source Status",
+                            "file": str(rel_path),
+                            "desc": f"Source status '{src_status}' is invalid (expected 'draft' or 'approved')",
+                            "action": "Set status: 'draft' or status: 'approved' in frontmatter"
+                        })
+                    if src_status == "draft" or src_compiled == "false":
+                        is_uncompiled_source = True
+                        uncompiled_source_paths.add(p)
+
                 if node_type != "ingestion":
                     missing = [f for f in REQUIRED_FRONTMATTER_FIELDS if f not in fm]
                     type_req = TYPE_SPECIFIC_REQUIRED_FIELDS.get(node_type, [])
@@ -272,7 +290,7 @@ def lint(check_cot: bool = False):
 
             if target_file:
                 inbound_links[target_file] = inbound_links.get(target_file, 0) + 1
-            elif p.name not in ("glossary.md", "overview.md"):
+            elif p.name not in ("glossary.md", "overview.md") and not is_uncompiled_source:
                 issues.append({
                     "type": "Dead Link",
                     "file": str(rel_path),
@@ -337,7 +355,7 @@ def lint(check_cot: bool = False):
 
     # 7. Orphan detection
     for p, in_count in inbound_links.items():
-        if p.name in EXEMPT_FILES:
+        if p.name in EXEMPT_FILES or p in uncompiled_source_paths:
             continue
         if in_count == 0:
             issues.append({

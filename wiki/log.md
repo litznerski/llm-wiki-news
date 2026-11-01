@@ -18,3 +18,7 @@ All operations follow the format:
 ## [2026-11-01] refactor | Phase 4: FastMCP & Chainlit Intelligence Studio | Updated services/fastmcp/{cot_retriever.py,retrieval/v3_engine.py,retrieval/context_builder.py}, services/frontend/{app.py,chainlit.md}, and setup/safeguard_intent_anchors.md for Sudan News & OSINT 5W1H/GRaSP retrieval, Arabic/English AliasLookup & UN OCHA P-Code entity linking, ClaimDispute hydration, and Intelligence Studio UI.
 
 ## [2026-11-01] refactor | Phase 5: Astro Digital Garden Frontend | Updated site/src/config/{wiki.config.ts,site.ts}, site/src/content.config.ts, site/src/pages/wiki/index.astro, and site/src/components/ui/WikiCard.astro to publish events, actors, locations, themes, timelines, syntheses, and sources with NATO Admiralty ratings and UN OCHA P-Code badges.
+
+## [2026-11-01] task | Split ingestion skill | Authored Two-Phase Ingestion Skill Architecture Proposal in _input/drafts/Two-Phase Ingestion Skill Architecture Proposal.md; updated task status to done, archived task file, and moved card to Done on infrastructure board.
+
+## [2026-11-01] refactor | Two-Phase Ingestion Pipeline | Updated AGENTS.md, .agent/skills/{wiki-ingest,wiki-scope}/SKILL.md, scripts/{lint_vault,bootstrap_arcadedb,ingest_to_arcadedb}.py, and site/src/{config/wiki.config.ts,content.config.ts} to implement Phase 1 draft source distillation (status: draft, compiled: false) and Phase 2 approved entity compilation & ArcadeDB/ki synchronization (status: approved).
