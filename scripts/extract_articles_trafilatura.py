@@ -18,6 +18,11 @@ from typing import Any, Dict, List, Optional, Set, Tuple
 VAULT_ROOT = Path(__file__).resolve().parent.parent
 ARTICLES_DIR = VAULT_ROOT / "raw" / "articles"
 
+# Auto-detect .venv site-packages if running with system python
+for _sp in (VAULT_ROOT / ".venv" / "lib").glob("python3.*/site-packages"):
+    if str(_sp) not in sys.path:
+        sys.path.insert(0, str(_sp))
+
 # Clean filename sanitizer
 INVALID_CHARS_RE = re.compile(r'[/\\:*?"<>|]')
 

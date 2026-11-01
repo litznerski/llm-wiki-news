@@ -15,6 +15,11 @@ from typing import Any, Dict, List, Optional
 
 VAULT_ROOT = Path(__file__).resolve().parent.parent
 
+# Auto-detect .venv site-packages if running with system python
+for _sp in (VAULT_ROOT / ".venv" / "lib").glob("python3.*/site-packages"):
+    if str(_sp) not in sys.path:
+        sys.path.insert(0, str(_sp))
+
 # Sourcing .env if present
 _env_file = VAULT_ROOT / ".env"
 if _env_file.exists():
