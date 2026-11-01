@@ -22,7 +22,7 @@ fatalities_high: 30
 verification_status: "confirmed"
 admiralty_rating: "A1"
 reliability_score: 0.95
-contradiction_flags: []
+contradiction_flags: ["ATTRIBUTION_CONFLICT", "TARGET_FRAMING_CONFLICT"]
 tags: [war-crimes, summary-execution, um-badr, north-kordofan, common-article-3, un-ffm-verified]
 sources:
   - "[[sources/2026-10-28-un-hrc-crp1-el-obeid-civilian-devastation]]"

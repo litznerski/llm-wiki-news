@@ -26,7 +26,7 @@ fatalities_high: 5000
 verification_status: "confirmed"
 admiralty_rating: "A1"
 reliability_score: 0.95
-contradiction_flags: []
+contradiction_flags: ["ATTRIBUTION_CONFLICT", "TARGET_FRAMING_CONFLICT"]
 tags: [darfur, el-fasher, genocide, war-crimes, zaghawa, fur, famine-ipc5]
 sources:
   - "[[sources/2026-02-19-un-news-el-fasher-hallmarks-of-genocide]]"

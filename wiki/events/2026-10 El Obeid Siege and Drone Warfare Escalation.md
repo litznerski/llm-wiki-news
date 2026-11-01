@@ -26,7 +26,7 @@ fatalities_high: 250
 verification_status: "confirmed"
 admiralty_rating: "A1"
 reliability_score: 0.95
-contradiction_flags: []
+contradiction_flags: ["ATTRIBUTION_CONFLICT", "TARGET_FRAMING_CONFLICT"]
 tags: [kordofan, el-obeid, siege, drone-warfare, arbitrary-detention, fact-finding-mission]
 sources:
   - "[[sources/2026-10-28-ohchr-ffm-el-obeid-drone-warfare-repression]]"

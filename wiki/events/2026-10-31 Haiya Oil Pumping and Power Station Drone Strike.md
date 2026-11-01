@@ -24,7 +24,7 @@ fatalities_high: 10
 verification_status: "confirmed"
 admiralty_rating: "B2"
 reliability_score: 0.85
-contradiction_flags: []
+contradiction_flags: ["ATTRIBUTION_CONFLICT"]
 tags: [red-sea-state, haiya, drone-strike, oil-pipeline, electricity-grid, dabanga]
 sources:
   - "[[sources/2026-10-31-dabanga-haiya-oil-electricity-drone-attack]]"

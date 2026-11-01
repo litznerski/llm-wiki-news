@@ -30,7 +30,7 @@ fatalities_high: 0
 verification_status: "confirmed"
 admiralty_rating: "B1"
 reliability_score: 0.88
-contradiction_flags: []
+contradiction_flags: ["ATTRIBUTION_CONFLICT"]
 tags: [un, unsg-election, uae, lana-nusseibeh, human-rights-watch, siha-network, civil-society]
 sources:
   - "[[sources/2026-10-30-the-guardian-sudanese-diaspora-uae-un-nominee-nusseibeh]]"

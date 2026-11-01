@@ -24,7 +24,7 @@ fatalities_high: 140
 verification_status: "confirmed"
 admiralty_rating: "B2"
 reliability_score: 0.85
-contradiction_flags: []
+contradiction_flags: ["ATTRIBUTION_CONFLICT", "MAGNITUDE_DISCREPANCY"]
 tags: [darfur, south-darfur, nyala, market-strike, drone-strike, afp, saf, civilian-casualties]
 sources:
   - "[[sources/2026-10-31-arab-news-un-chief-appalled-drone-strikes-nyala-market]]"
