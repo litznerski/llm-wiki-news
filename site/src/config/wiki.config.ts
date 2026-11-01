@@ -1,6 +1,6 @@
 /**
  * ==============================================================================
- * 🌟 WIKI PUBLISHING CONFIGURATION — OPTION C: TIERED HYBRID ENGINE
+ * 🌟 WIKI PUBLISHING CONFIGURATION — SUDAN NEWS & OSINT KNOWLEDGE GRAPH
  * ==============================================================================
  * Controls selective publishing of compiled Obsidian knowledge vault notes
  * (wiki/) onto the Astro site without mutating raw vault markdown files.
@@ -13,9 +13,9 @@ export interface WikiPublishConfig {
   includedFolders: string[];
   /** Folders withheld from publishing by default */
   excludedFolders: string[];
-  /** Explicit note IDs to force-publish (relative to wiki/, e.g. "sources/key-paper.md") */
+  /** Explicit note IDs to force-publish (relative to wiki/, e.g. "overview") */
   explicitIncludes: string[];
-  /** Explicit note IDs to withhold (e.g. "concepts/Unfinished Idea.md") */
+  /** Explicit note IDs to withhold */
   explicitExcludes: string[];
   /** Minimum reliability score (0.0 - 1.0) required to publish (if score is present) */
   minReliabilityScore: number;
@@ -26,23 +26,28 @@ export interface WikiPublishConfig {
 export const wikiPublishConfig: WikiPublishConfig = {
   vaultRoot: '../wiki',
   includedFolders: [
-    'concepts',
-    'entities',
+    'events',
+    'actors',
+    'locations',
+    'themes',
+    'timelines',
     'syntheses',
     'sources',
   ],
   excludedFolders: [
     'ingestions',
   ],
-  explicitIncludes: [],
+  explicitIncludes: [
+    'overview',
+    'glossary',
+  ],
   explicitExcludes: [],
-  minReliabilityScore: 0.80,
+  minReliabilityScore: 0.70,
   urlPrefix: '/wiki',
 };
 
 /**
  * Standardized slugification function converting note titles to clean URL paths.
- * Normalizes accents/umlauts and strips invalid characters.
  */
 export function slugifyWikiTitle(title: string): string {
   if (!title) return '';
@@ -58,18 +63,13 @@ export function slugifyWikiTitle(title: string): string {
 }
 
 /**
- * Determines whether a wiki note qualifies for public rendering based on Option C rules:
- * 1. Explicit `publish: false` or `draft: true` in frontmatter strictly withholds the note.
- * 2. Note in explicitExcludes is withheld.
- * 3. Note in includedFolders OR explicitIncludes OR explicit `publish: true` is included.
- * 4. Must meet minReliabilityScore (if reliability_score is defined).
+ * Determines whether a wiki note qualifies for public rendering.
  */
 export function isNotePublished(noteId: string, frontmatter: Record<string, any> = {}): boolean {
   if (frontmatter.publish === false || frontmatter.draft === true) {
     return false;
   }
 
-  // Normalize noteId (remove leading slashes or .md extension)
   const cleanId = noteId.replace(/^\.?\//, '').replace(/\.md$/, '');
   const idWithExt = `${cleanId}.md`;
 
@@ -100,55 +100,53 @@ export function isNotePublished(noteId: string, frontmatter: Record<string, any>
 }
 
 /**
- * Deterministically maps a wiki note to one of the site's primary topic domains:
- * - Learning Architecture
- * - Cognitive Science
- * - EdTech
- * - Architecture
+ * Deterministically maps a wiki note to one of the site's primary Sudan OSINT topic domains:
+ * - Military Operations & Battles
+ * - Actors & Alliances
+ * - Locations & Territorial Control
+ * - War Economy & Humanitarian Crisis
  */
 export function getWikiCategory(data: Record<string, any> = {}): string {
   if (data.category && typeof data.category === 'string') {
     const norm = data.category.toLowerCase().trim();
-    if (norm.includes('learning')) return 'Learning Architecture';
-    if (norm.includes('cognit')) return 'Cognitive Science';
-    if (norm.includes('edtech') || norm.includes('education')) return 'EdTech';
-    if (norm.includes('architect') || norm.includes('infra') || norm.includes('graph')) return 'Architecture';
+    if (norm.includes('military') || norm.includes('battle') || norm.includes('event')) return 'Military Operations & Battles';
+    if (norm.includes('actor') || norm.includes('alliance') || norm.includes('force')) return 'Actors & Alliances';
+    if (norm.includes('location') || norm.includes('territor') || norm.includes('state')) return 'Locations & Territorial Control';
+    if (norm.includes('humanitarian') || norm.includes('econom') || norm.includes('theme')) return 'War Economy & Humanitarian Crisis';
     return data.category;
   }
+
+  if (data.type === 'event' || data.type === 'timeline') return 'Military Operations & Battles';
+  if (data.type === 'actor') return 'Actors & Alliances';
+  if (data.type === 'location') return 'Locations & Territorial Control';
+  if (data.type === 'theme' || data.type === 'synthesis' || data.type === 'source') return 'War Economy & Humanitarian Crisis';
 
   const tags: string[] = Array.isArray(data.tags) ? data.tags.map((t: string) => t.toLowerCase()) : [];
 
   const scores: Record<string, number> = {
-    'Learning Architecture': 0,
-    'Cognitive Science': 0,
-    'EdTech': 0,
-    'Architecture': 0,
+    'Military Operations & Battles': 0,
+    'Actors & Alliances': 0,
+    'Locations & Territorial Control': 0,
+    'War Economy & Humanitarian Crisis': 0,
   };
 
   const tagPatterns: Record<string, string[]> = {
-    'Learning Architecture': [
-      'learning-architecture', 'instructional-design', 'pedagogical-governance', 'socratic-ai',
-      'socratic-questioning', 'addie', 'isd-models', 'pedagogy', 'pro-learner-ai', 'curriculum',
-      'higher-education', 'adult-learning', 'academic-integrity', 'post-plagiarism', 'assessment',
-      'instructional', 'pedagogical', 'scaffolding', 'faculty', 'teacher-education',
+    'Military Operations & Battles': [
+      'battle', 'shelling', 'airstrike', 'drone', 'siege', 'offensive', 'ceasefire',
+      'incident', 'campaign', 'frontline', 'combat', 'artillery', 'timeline',
     ],
-    'Cognitive Science': [
-      'cognitive-science', 'cognitive-psychology', 'learning-theory', 'learning-sciences',
-      'epistemology', 'cognitive-load', 'cognitive-friction', 'cognitive-surrender',
-      'metacognition', 'memory-consolidation', 'ioed', 'synthetic-fluency', 'feynman-technique',
-      'desirable-difficulties', 'psychology', 'epistemic', 'criminology', 'cognitive', 'cognitive-debt',
+    'Actors & Alliances': [
+      'saf', 'rsf', 'armed-group', 'state-force', 'militia', 'coalition', 'commander',
+      'political-body', 'civil-society', 'err', 'joint-force', 'taqaddum', 'sumoud',
     ],
-    'EdTech': [
-      'edtech', 'educational-technology', 'generative-ai', 'ai-literacy', 'human-ai-interaction',
-      'ai-governance', 'prompt-engineering', 'llm', 'intelligent-tutoring', 'ai-learning-paradox',
-      'waymo-effect', 'unesco', 'generative-video', 'physics-ai', 'ai-ethics', 'latent-diffusion',
-      'open-webui', 'claude', 'token-budget',
+    'Locations & Territorial Control': [
+      'darfur', 'khartoum', 'kordofan', 'jazirah', 'gezira', 'port-sudan', 'el-fasher',
+      'nyala', 'omdurman', 'bahri', 'sennar', 'white-nile', 'blue-nile', 'gedaref',
+      'kassala', 'red-sea', 'northern', 'river-nile', 'idp-camp', 'border-crossing',
     ],
-    'Architecture': [
-      'architecture', 'pkm', 'graphrag', 'neo4j', 'rag', 'obsidian', 'mono-vault',
-      'governed-mono-vault', 'chain-of-thought', 'information-retrieval', 'devops', 'software',
-      'content-engineering', 'distribution', 'publishing', 'digital-marketing', 'seo',
-      'compilation', 'platform', 'tool', 'analytics', 'database', 'graph-data-science',
+    'War Economy & Humanitarian Crisis': [
+      'famine', 'ipc', 'displacement', 'humanitarian', 'war-economy', 'gold', 'arms',
+      'supply-chain', 'sanctions', 'diplomacy', 'jeddah', 'geneva', 'disinformation',
     ],
   };
 
@@ -160,20 +158,13 @@ export function getWikiCategory(data: Record<string, any> = {}): string {
     }
   }
 
-  let bestCat = 'Learning Architecture';
+  let bestCat = 'Military Operations & Battles';
   let maxScore = 0;
   for (const [cat, score] of Object.entries(scores)) {
     if (score > maxScore) {
       maxScore = score;
       bestCat = cat;
     }
-  }
-
-  if (maxScore === 0) {
-    if (data.type === 'source') return 'EdTech';
-    if (data.subtype === 'software' || data.subtype === 'platform') return 'Architecture';
-    if (data.subtype === 'researcher') return 'Cognitive Science';
-    return 'Learning Architecture';
   }
 
   return bestCat;

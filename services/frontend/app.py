@@ -659,18 +659,18 @@ async def execute_toulmin_drilldown(
 ):
     """Executes targeted Toulmin drilldown via OpenRouter LLM or deterministic fallback."""
     drilldown_prompt = (
-        "You are the knowledge lab cognitive assistant and epistemology compiler.\n"
-        f"TARGET CONCEPT: [[{concept}]]\n"
-        f"REQUESTED TOULMIN SECTIONS / ROLES: {', '.join(selected_roles)}\n\n"
+        "You are the Sudan News & OSINT intelligence analyst and cognitive compiler for llm-wiki-news.\n"
+        f"TARGET NODE: [[{concept}]]\n"
+        f"REQUESTED 5W1H / GRaSP DIMENSIONS: {', '.join(selected_roles)}\n\n"
         f"VAULT EPISTEMIC CONTEXT:\n{active_context.get('injected_prompt', '')}\n\n"
         "INSTRUCTIONS FOR DRILLDOWN:\n"
-        f"Synthesize an in-depth, rigorous explanation specifically focusing on the requested role(s): {', '.join(selected_roles)}.\n"
-        "- If WARRANT is requested, focus on causal anatomy and underlying mechanics.\n"
-        "- If GROUNDS is requested, focus on empirical manifestations and evidence.\n"
-        "- If SOLUTION is requested, focus on prescriptive mitigations and counter-architectures.\n"
-        "- If REBUTTAL is requested, focus on defeasible boundaries and empirical contradictions.\n"
-        "- If BRIDGES is requested, focus on macro-CoT relationships to other vault concepts.\n"
-        "Cite all concept notes using clean [[wikilinks]]. Ground your statements strictly in the provided context."
+        f"Synthesize an in-depth, source-grounded OSINT assessment focusing on the requested dimension(s): {', '.join(selected_roles)}.\n"
+        "- If WARRANT is requested, focus on tactical mechanics, chronology, command hierarchy, and strategic/war-economy motives.\n"
+        "- If GROUNDS is requested, focus on humanitarian impact, displacement, IPC phase, territorial control, and alliances.\n"
+        "- If REBUTTAL is requested, focus on competing narratives (e.g., SAF vs. RSF attribution), casualty discrepancies, and NATO Admiralty ratings.\n"
+        "- If SOLUTION is requested, focus on Emergency Response Rooms (ERR) interventions, humanitarian access, and diplomatic mediations.\n"
+        "- If BRIDGES is requested, focus on Macro-CoT relationships ([:COMMANDED_BY], [:ALLIED_WITH], [:LOCATED_IN], [:OCCURRED_AT], [:TRIGGERS]).\n"
+        "Cite all events, actors, locations, and sources using clean [[wikilinks]]. Ground your statements strictly in the provided context."
     )
 
     remaining_actions = (
@@ -870,10 +870,10 @@ async def on_chat_start():
     active_m = get_effective_model(valves)
     llm_indicator = "ON" if valves.get("enable_llm", True) else "OFF"
     welcome_msg = (
-        "### 🏛️ Welcome to <span class=\"brand-knowledge-lab\"><span class=\"brand-knowledge\">knowledge</span><span class=\"brand-lab\">lab</span></span> Learning Studio\n\n"
-        "Explore the compiled knowledge graph, query foundational Golden Syntheses, and inspect empirical reasoning structures from ArcadeDB.\n\n"
+        "### 🛰️ Welcome to the Sudan News & OSINT Intelligence Studio (`llm-wiki-news`)\n\n"
+        "Explore the compiled 5W1H conflict knowledge graph, query acting entities & UN OCHA P-Code locations, and inspect competing narratives (`ClaimDispute`) and NATO Admiralty ratings from ArcadeDB (`news`).\n\n"
         f"**Active Mode**: `{valves['operating_mode']}` | **LLM Synthesis**: `{llm_indicator}` (`{active_m}`) | **Developer Mode**: `{'ON' if valves.get('developer_mode', True) else 'OFF'}`.\n\n"
-        "Ask any question about the knowledge vault to begin (e.g. *\"What is cognitive surrender?\"* or *\"Explain Prompt Dilution\"*):\n\n"
+        "Ask any intelligence question to begin (e.g., *\"Who commands the Rapid Support Forces?\"*, *\"What is the status of North Darfur (SD02)?\"*, or *\"Explain the Sudanese Joint Force coalition\"*):\n\n"
         "---\n"
         "*System Inspector:* Active Valves & Status"
     )
@@ -914,7 +914,7 @@ async def on_message(message: cl.Message):
     if active_context:
         selected_roles = parse_user_role_selection(user_query)
         if selected_roles:
-            concept = active_context.get("concept", "Knowledge Primitives")
+            concept = active_context.get("concept", "Sudan")
             await execute_toulmin_drilldown(
                 concept=concept,
                 active_context=active_context,
@@ -927,7 +927,7 @@ async def on_message(message: cl.Message):
     cl.user_session.set("active_context", None)
 
     retrieval_data: Dict[str, Any] = {}
-    anchor_concept = "Knowledge Primitives"
+    anchor_concept = "Sudan"
     tier = "tier_2_traversal"
 
     # STAGE 1: Delegate ALL retrieval & flow logic to FastMCP /api/v1/flow
@@ -963,16 +963,16 @@ async def on_message(message: cl.Message):
                         title = retrieval_data.get("title", "Foundational Synthesis")
                         conf = retrieval_data.get("confidence", 0.85)
                         lat = retrieval_data.get("latency_ms", round((time.time() - t0) * 1000, 2))
-                        step.name = "Tier 1: Pre-Compiled Golden Synthesis Loaded"
+                        step.name = "Tier 1: Pre-Compiled Intelligence Synthesis Loaded"
                         step.output = f"Loaded synthesis [[{title}]] (Confidence: {conf*100:.0f}%, Latency: {lat}ms)"
                         anchor_concept = title
                     else:
-                        anchor_concept = retrieval_data.get("concept", "Knowledge Primitives")
+                        anchor_concept = retrieval_data.get("concept", "Sudan")
                         roles = retrieval_data.get("roles_covered", [])
                         in_window = retrieval_data.get("concepts_in_window", [])
                         lat = retrieval_data.get("latencies", {}).get("total_latency_ms", round((time.time() - t0) * 1000, 2))
-                        step.name = "Tier 2: CoT Graph Traversal"
-                        step.output = f"Anchored on [[{anchor_concept}]] | Roles: {', '.join(roles)} | Context window: {len(in_window)} concepts | Latency: {lat}ms"
+                        step.name = "Tier 2: 5W1H CoT Graph Traversal"
+                        step.output = f"Anchored on [[{anchor_concept}]] | Roles: {', '.join(roles)} | Context window: {len(in_window)} nodes | Latency: {lat}ms"
                 else:
                     step.output = f"FastMCP returned status code {resp.status_code}."
         except Exception as e:
@@ -994,8 +994,8 @@ async def on_message(message: cl.Message):
             turn_entry["node_data"] = {
                 "concept_name": anchor_concept,
                 "pagerank": 0.0152,
-                "community": 2,
-                "aliases": ["Cognitive Abdication", "Synthetic Deference"],
+                "community": 1,
+                "aliases": [anchor_concept, "See wiki/glossary.md"],
                 "roles_covered": retrieval_data.get("roles_covered", ["CLAIM", "GROUNDS", "WARRANT"]),
                 "tier": tier
             }
@@ -1003,15 +1003,13 @@ async def on_message(message: cl.Message):
         cl.user_session.set("dev_traces", dev_traces)
 
         dev_card = render_developer_sidebar(dev_traces)
-        # In Developer Mode, manage sidebar strictly via cl.ElementSidebar to avoid message-level duplicates
         await cl.ElementSidebar.set_title("Developer Trace")
         await cl.ElementSidebar.set_elements([dev_card])
     elif status not in ("blocked", "fast_respond"):
-        # When Developer Mode is off, show standalone ArcadeDB Inspector
         node_card = render_arcadedb_inspector(anchor_concept, {
             "pagerank": 0.0152,
-            "community": 2,
-            "aliases": ["Cognitive Abdication", "Synthetic Deference"],
+            "community": 1,
+            "aliases": [anchor_concept, "See wiki/glossary.md"],
             "roles_covered": retrieval_data.get("roles_covered", ["CLAIM", "GROUNDS", "WARRANT"]),
             "tier": tier
         })
@@ -1023,10 +1021,9 @@ async def on_message(message: cl.Message):
         response_text = retrieval_data.get("injected_prompt", "Request blocked by safety policy.")
         await cl.Message(content=response_text).send()
     elif status == "fast_respond":
-        response_text = retrieval_data.get("injected_prompt", "Hello! How can I assist your learning today?")
+        response_text = retrieval_data.get("injected_prompt", "Hello! How can I assist your Sudan OSINT analysis today?")
         await cl.Message(content=response_text).send()
     else:
-        # Cache active context for subsequent turns
         cl.user_session.set("active_context", {
             "concept": anchor_concept,
             "tier": tier,
@@ -1048,14 +1045,14 @@ async def on_message(message: cl.Message):
         llm_telemetry = None
         if valves.get("enable_llm", True) and valves.get("openrouter_api_key"):
             turn1_system_prompt = (
-                "You are the knowledge lab cognitive assistant and epistemology compiler.\n"
+                "You are the Sudan News & OSINT intelligence analyst and cognitive compiler for llm-wiki-news.\n"
                 "You are provided with verified knowledge vault context from ArcadeDB (news).\n\n"
                 f"VAULT CONTEXT:\n{retrieval_data.get('injected_prompt', '')}\n\n"
                 "CRITICAL INSTRUCTIONS FOR TURN 1:\n"
-                "1. Deliver ONLY the concise Definitional Anchor (Claim / Core Theoretical Thesis) for the requested concept.\n"
-                "2. Keep your explanation strictly concise (under 150 words). Be razor-sharp, analytical, and epistemic.\n"
-                "3. Cite all concepts and primary sources using standard Obsidian wikilinks [[Concept Title]] (NEVER enclose wikilinks in backticks).\n"
-                "4. Do NOT explain causal mechanics, empirical grounds, or prescriptive solutions yet. The user will select those in the next turn.\n"
+                "1. Deliver ONLY the concise 5W1H Intelligence Anchor (Identity, Classification, Leadership/P-Code, or Event 5W1H Summary) for the requested node.\n"
+                "2. Keep your explanation strictly concise (under 150 words). Be analytical, objective, and source-grounded.\n"
+                "3. Cite all events, actors, locations, and sources using standard Obsidian wikilinks [[Canonical Title]] (NEVER enclose wikilinks in backticks).\n"
+                "4. Do NOT output all tactical mechanics, humanitarian impacts, or full contradiction matrices yet. The analyst will select those dimensions in the next turn.\n"
             )
 
             generated_text, llm_telemetry = await stream_openrouter_synthesis(

@@ -1,6 +1,6 @@
 /**
  * ==============================================================================
- * 🌟 DEV.LOG — SINGLE SOURCE OF TRUTH CONFIGURATION (Knowledge Lab)
+ * 🛰️ SUDAN NEWS & OSINT KNOWLEDGE GRAPH — SITE CONFIGURATION
  * ==============================================================================
  */
 
@@ -100,107 +100,107 @@ export interface SiteConfig {
 }
 
 export const siteConfig: SiteConfig = {
-  name: "Knowledge Lab",
-  logoLetter: "K",
-  title: "Knowledge Lab | Sovereign Knowledge Graph & Socratic Studio",
+  name: "Sudan OSINT Graph",
+  logoLetter: "S",
+  title: "Sudan News & OSINT Knowledge Graph | 5W1H Conflict Intelligence Studio",
   description:
-    "Local-first sovereign knowledge graph and Socratic AI studio powered by Obsidian, ArcadeDB, FastMCP, and Astro 5.",
+    "Multilingual Sudan News & Open-Source Intelligence (OSINT) Knowledge Graph powered by Obsidian, ArcadeDB, FastMCP, and Astro.",
   url: "http://localhost:4322",
   favicon: "/favicon.svg",
   defaultOgImage: "/brand/banner.png",
 
   author: {
-    name: "Knowledge Architect",
-    role: "Knowledge Engineer & Researcher",
+    name: "OSINT Cognitive Compiler",
+    role: "Conflict Intelligence & Graph Architect",
     avatar: "/brand/avatar.png",
-    bio: "Compiling atomic concepts, grounded entity networks, and Socratic learning environments with local-first AI.",
-    location: "Global",
-    status: "Cultivating Sovereign Knowledge Graph",
+    bio: "Compiling 5W1H conflict events, acting entities, UN OCHA P-Code locations, NATO Admiralty ratings, and GRaSP contradiction matrices.",
+    location: "Sudan Theatre (SD01–SD18)",
+    status: "Monitoring Active Frontlines & Humanitarian Telemetry",
     social: {
       linkedin: "",
-      email: "architect@example.com",
+      email: "osint@example.com",
     },
   },
 
   hero: {
-    greeting: "Autonomous Knowledge Compiler & Socratic Studio",
-    badge: "Local-First AI & Knowledge Graph",
+    greeting: "5W1H Conflict Intelligence & Contradiction Compiler",
+    badge: "NATO Admiralty Rated • UN OCHA P-Codes • GRaSP Matrix",
     tagline:
-      "A sovereign, agent-managed knowledge architecture combining Obsidian markdown, ArcadeDB multi-model graph storage, and FastMCP reasoning middleware.",
+      "A sovereign, multilingual news and OSINT knowledge graph tracking events, acting entities, territorial control, war economy drivers, and competing narratives across Sudan.",
     primaryButton: {
-      text: "Explore Knowledge Graph",
+      text: "Explore Intelligence Graph",
       href: "/wiki",
     },
     secondaryButton: {
-      text: "Learning Studio",
+      text: "OSINT Studio",
       href: "/assistant",
     },
   },
 
   navLinks: [
     { text: "Home", href: "/" },
-    { text: "Knowledge Graph", href: "/wiki" },
-    { text: "Categories", href: "/categories" },
+    { text: "Intelligence Graph", href: "/wiki" },
+    { text: "Theatres & Domains", href: "/categories" },
     { text: "Tags", href: "/tags" },
-    { text: "Learning Studio", href: "/assistant" },
+    { text: "OSINT Studio", href: "/assistant" },
   ],
 
   categories: [
-    { name: "Architecture", desc: "Knowledge graphs, governed mono-vaults, and systemic system design." },
-    { name: "Concepts", desc: "Atomic theoretical frameworks, methodologies, and abstractions." },
-    { name: "Entities", desc: "Concrete profiles across researchers, organizations, and software platforms." },
-    { name: "Syntheses", desc: "Multi-document dialectical analyses and learning path roadmaps." },
+    { name: "Military Operations & Battles", desc: "Discrete 5W1H conflict incidents, sieges, airstrikes, and chronological campaign timelines." },
+    { name: "Actors & Alliances", desc: "State forces, paramilitaries, Darfur armed movements, civil society ERRs, and commanders." },
+    { name: "Locations & Territorial Control", desc: "UN OCHA P-Code anchored states (SD01–SD18), cities, IDP camps, and trade corridors." },
+    { name: "War Economy & Humanitarian Crisis", desc: "Structural conflict drivers, IPC food insecurity telemetry, supply chains, and source provenance." },
   ],
 
   about: {
-    philosophyTitle: "Sovereign Knowledge Architecture",
+    philosophyTitle: "5W1H & GRaSP Conflict Intelligence Architecture",
     philosophyParagraphs: [
-      "This platform transforms an Obsidian markdown vault into an active cognitive substrate.",
-      "By integrating multi-model graph traversal with ArcadeDB and FastMCP, knowledge is continuously synthesized, interconnected, and made navigable through Socratic sparring.",
+      "Every incoming Arabic, English, French, or German report is distilled into structured 5W1H primitives: Event, Date & Time, Location (UN OCHA P-Code), Acting Entities, Tactical Mechanics (What?), and Strategic Motives (Why?).",
+      "Rather than overwriting conflicting claims, competing narratives between belligerents and outlets are preserved side-by-side in GRaSP Contradiction Matrices graded on the NATO Admiralty Scale (A1–F6).",
     ],
-    quote: "Autonomous compilation preserves deep causal models and transforms passive reading into active mastery.",
+    quote: "In conflict monitoring, competing narratives are primary intelligence signal—never overwrite a contradiction.",
   },
 
   newsletter: {
-    badge: "Knowledge Updates",
-    title: "Subscribe to Vault Updates",
-    description: "Occasional dispatches on newly compiled research and conceptual frameworks.",
-    placeholder: "researcher@example.com",
+    badge: "SITREP Dispatches",
+    title: "Subscribe to Sudan SITREP Updates",
+    description: "Periodic dispatches on newly verified conflict events, frontline shifts, and humanitarian assessments.",
+    placeholder: "analyst@example.com",
     buttonText: "Subscribe",
-    successMessage: "Thank you for subscribing!",
+    successMessage: "Subscribed to SITREP alerts.",
   },
 
   notFound: {
     badge: "HTTP_STATUS // 404_NOT_FOUND",
-    title: "Page Not Found",
-    description: "The note or resource you requested does not exist or has been moved.",
+    title: "Intelligence Node Not Found",
+    description: "The event, actor, location, or source note you requested does not exist or has been archived.",
     homeButtonText: "Return Home",
-    browseButtonText: "Browse Knowledge Graph",
+    browseButtonText: "Browse Intelligence Graph",
   },
 
   search: {
-    modalTitle: "Search Knowledge Base",
-    placeholder: "Search concepts, entities, sources...",
+    modalTitle: "Search Sudan OSINT Graph",
+    placeholder: "Search events, actors, P-Codes (SD01-SD18), sources...",
   },
 
   ui: {
-    latestPostsBadge: "Recent Notes",
-    latestPostsTitle: "Latest Distillations & Syntheses",
-    categoriesTitle: "Browse by Domain",
-    tagsTitle: "Popular Tags",
-    shareTitle: "Share This Note",
-    shareDescription: "Found this note valuable? Share with fellow researchers.",
+    latestPostsBadge: "Recent Intelligence",
+    latestPostsTitle: "Latest Compiled Events, Actors & Syntheses",
+    categoriesTitle: "Browse by Intelligence Domain",
+    tagsTitle: "Active Theatre & Topic Tags",
+    shareTitle: "Share Intelligence Note",
+    shareDescription: "Share this verified 5W1H intelligence note with fellow analysts.",
     shareCopiedMessage: "Link copied to clipboard!",
-    tocTitle: "Table of Contents",
-    authorCardTitle: "About the Compiler",
+    tocTitle: "6-Stage CoT Structure",
+    authorCardTitle: "About the OSINT Compiler",
     writtenByText: "Compiled by",
   },
 
   footer: {
-    tagline: "Sovereign Knowledge Base & Socratic Learning Studio",
-    copyright: "Knowledge Lab",
+    tagline: "Sudan News & OSINT Knowledge Graph (llm-wiki-news)",
+    copyright: "Sudan OSINT Graph",
     brandDescription:
-      "A local-first, autonomous knowledge engine powered by Obsidian, ArcadeDB, FastMCP, and Astro 5.",
+      "A local-first 5W1H conflict intelligence and contradiction-tracking engine powered by Obsidian, ArcadeDB, FastMCP, and Astro.",
   },
 };
 

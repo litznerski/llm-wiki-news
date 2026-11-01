@@ -3,15 +3,12 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import siteConfig from '../../config/site';
 import { url } from '../../utils/paths';
 import { getCollection } from 'astro:content';
-import { isNotePublished, slugifyWikiTitle } from '../../config/wiki.config';
+import { isNotePublished } from '../../config/wiki.config';
 import WikiCard from '../../components/ui/WikiCard.astro';
 import { 
   Network, 
-  ShieldCheck, 
   MessageSquare,
-  Search,
-  ArrowRight,
-  BookOpen
+  Search
 } from 'lucide-astro';
 
 const allNotes = await getCollection('wiki');
@@ -24,15 +21,18 @@ publishedNotes.sort((a, b) => {
   return titleA.localeCompare(titleB);
 });
 
-const conceptsCount = publishedNotes.filter((n) => (n.data?.type || 'concept') === 'concept').length;
-const entitiesCount = publishedNotes.filter((n) => n.data?.type === 'entity').length;
+const eventsCount = publishedNotes.filter((n) => n.data?.type === 'event').length;
+const actorsCount = publishedNotes.filter((n) => n.data?.type === 'actor').length;
+const locationsCount = publishedNotes.filter((n) => n.data?.type === 'location').length;
+const themesCount = publishedNotes.filter((n) => n.data?.type === 'theme').length;
+const timelinesCount = publishedNotes.filter((n) => n.data?.type === 'timeline').length;
 const sourcesCount = publishedNotes.filter((n) => n.data?.type === 'source').length;
 const synthesesCount = publishedNotes.filter((n) => n.data?.type === 'synthesis').length;
 ---
 
 <BaseLayout
-  title={`Knowledge Wiki & Conceptual Index — ${siteConfig.name}`}
-  description="Atomic theoretical frameworks, cognitive architecture models, entities, and syntheses compiled from karimoo lab research."
+  title={`Sudan OSINT Intelligence Graph — ${siteConfig.name}`}
+  description="5W1H conflict events, acting entities, UN OCHA P-Code locations, war economy themes, and NATO Admiralty-graded sources."
 >
   <!-- Page Header -->
   <div class="mb-10 p-7 sm:p-10 kepler-card rounded-3xl shadow-xl relative overflow-hidden">
@@ -40,26 +40,37 @@ const synthesesCount = publishedNotes.filter((n) => n.data?.type === 'synthesis'
       <div class="max-w-2xl">
         <div class="kepler-chip-orange mb-3">
           <Network class="w-3.5 h-3.5 text-orange-700" />
-          <span>Compiled Knowledge Graph</span>
+          <span>Compiled 5W1H & GRaSP Intelligence Graph</span>
         </div>
         <h1 class="text-3xl sm:text-5xl font-extrabold font-poppins text-white tracking-tight leading-tight">
-          Knowledge Wiki & Primitives
+          Sudan News & OSINT Graph
         </h1>
         <p class="text-sm sm:text-base text-zinc-200 mt-3 font-normal leading-relaxed">
-          Atomic concepts, cognitive friction architectures, learning models, and dialectical research notes authored and governed within the lab.
+          Multilingual 5W1H conflict events, acting entities, UN OCHA P-Code locations, structural conflict drivers, and side-by-side GRaSP contradiction matrices.
         </p>
 
         <!-- Metric Badges -->
         <div class="flex flex-wrap items-center gap-3 mt-5 font-mono text-xs">
           <span class="px-3 py-1.5 rounded-full bg-white/10 border border-white/15 text-white">
-            <strong class="text-orange-400 font-bold">{publishedNotes.length}</strong> Published Primitives
+            <strong class="text-orange-400 font-bold">{publishedNotes.length}</strong> Published Nodes
           </span>
           <span class="px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-zinc-300">
-            <strong class="text-sky-300 font-bold">{conceptsCount}</strong> Concepts
+            <strong class="text-rose-300 font-bold">{eventsCount}</strong> Events
           </span>
           <span class="px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-zinc-300">
-            <strong class="text-indigo-300 font-bold">{entitiesCount}</strong> Entities
+            <strong class="text-indigo-300 font-bold">{actorsCount}</strong> Actors
           </span>
+          <span class="px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-zinc-300">
+            <strong class="text-cyan-300 font-bold">{locationsCount}</strong> Locations
+          </span>
+          <span class="px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-zinc-300">
+            <strong class="text-sky-300 font-bold">{themesCount}</strong> Themes
+          </span>
+          {timelinesCount > 0 && (
+            <span class="px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-zinc-300">
+              <strong class="text-purple-300 font-bold">{timelinesCount}</strong> Timelines
+            </span>
+          )}
           {sourcesCount > 0 && (
             <span class="px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-zinc-300">
               <strong class="text-amber-300 font-bold">{sourcesCount}</strong> Sources
@@ -80,7 +91,7 @@ const synthesesCount = publishedNotes.filter((n) => n.data?.type === 'synthesis'
           class="px-5 py-3 rounded-full kepler-btn-orange text-xs font-bold uppercase tracking-wider text-white shadow-lg hover:scale-105 transition-all flex items-center justify-center gap-2"
         >
           <MessageSquare class="w-4 h-4" />
-          <span>Open Learning Studio</span>
+          <span>Open OSINT Studio</span>
         </a>
       </div>
     </div>
@@ -92,7 +103,7 @@ const synthesesCount = publishedNotes.filter((n) => n.data?.type === 'synthesis'
         <input
           id="wiki-filter-input"
           type="text"
-          placeholder="Filter primitives by title, tag, or alias..."
+          placeholder="Filter by title, P-Code (SD01-SD18), Arabic alias, or tag..."
           class="w-full pl-10 pr-4 py-2 rounded-full bg-black/25 border border-white/20 text-white text-xs font-mono placeholder:text-zinc-400 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all"
         />
       </div>
@@ -106,16 +117,28 @@ const synthesesCount = publishedNotes.filter((n) => n.data?.type === 'synthesis'
           All
         </button>
         <button
-          data-type="concept"
+          data-type="event"
           class="wiki-filter-btn px-3.5 py-1.5 text-xs font-semibold rounded-full kepler-btn-navy text-zinc-300 transition-all cursor-pointer"
         >
-          Concepts
+          Events
         </button>
         <button
-          data-type="entity"
+          data-type="actor"
           class="wiki-filter-btn px-3.5 py-1.5 text-xs font-semibold rounded-full kepler-btn-navy text-zinc-300 transition-all cursor-pointer"
         >
-          Entities
+          Actors
+        </button>
+        <button
+          data-type="location"
+          class="wiki-filter-btn px-3.5 py-1.5 text-xs font-semibold rounded-full kepler-btn-navy text-zinc-300 transition-all cursor-pointer"
+        >
+          Locations
+        </button>
+        <button
+          data-type="theme"
+          class="wiki-filter-btn px-3.5 py-1.5 text-xs font-semibold rounded-full kepler-btn-navy text-zinc-300 transition-all cursor-pointer"
+        >
+          Themes
         </button>
         {sourcesCount > 0 && (
           <button
@@ -146,7 +169,7 @@ const synthesesCount = publishedNotes.filter((n) => n.data?.type === 'synthesis'
 
   <!-- Empty State Message -->
   <div id="wiki-empty-msg" class="hidden p-12 text-center white-card-3d text-zinc-900 rounded-3xl mt-6">
-    <p class="text-sm font-mono text-zinc-500">No knowledge primitives match your active filter.</p>
+    <p class="text-sm font-mono text-zinc-500">No intelligence nodes match your active filter.</p>
   </div>
 </BaseLayout>
 
