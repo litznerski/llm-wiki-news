@@ -1,60 +1,72 @@
 ---
 name: wiki-scope
-description: Scans a source document before ingestion, cross-references existing vault catalogs, filters by pedagogical significance, and generates a Scoped Ingestion Manifest with dynamic concept/entity quotas.
+description: Scans a news or OSINT source document before ingestion, performs 48-hour spatio-temporal event deduplication against existing vault catalogs, filters by intelligence significance, and generates a Scoped Ingestion Manifest with dynamic Event, Actor, Location, and Theme quotas.
 ---
 
 # Wiki Scope Skill (`wiki-scope`)
 
 ## Objective
-Act as the mandatory epistemic reconnaissance and planning phase prior to compiling any primary document into the `wiki/` knowledge graph. 
+Act as the mandatory epistemic reconnaissance, deduplication, and planning phase prior to compiling any primary news article, social media post, video transcript, or OSINT report from `raw/` into the `wiki/` knowledge graph.
 
-Instead of imposing static or arbitrary extraction limits, `wiki-scope` analyzes the incoming document against the current state of the knowledge graph (`wiki/index.md` and `wiki/glossary.md`), separates candidate concepts from entities, filters out trivial noise, and outputs a **Scoped Ingestion Manifest** that defines the dynamic compilation quota.
+Instead of imposing static extraction limits or creating duplicate event nodes across multiple media reports, `wiki-scope` cross-references the incoming source against `wiki/index.md` and `wiki/glossary.md`, executes **48-Hour Spatio-Temporal Event Deduplication**, separates candidate primitives into **Events**, **Actors**, **Locations**, **Themes/Timelines**, and **Nodes to Refactor**, and outputs a **Scoped Ingestion Manifest**.
 
 ---
 
 ## Execution Sequence
 
 ### 1. Document & Vault Cross-Referencing
-1. Read the target document in `raw/` using standard viewer.
-2. Read `wiki/index.md` and `wiki/glossary.md` to map existing vault topography.
-3. Extract candidate primitives into three distinct pools:
-   - **Candidate Concepts**: Abstract frameworks, cognitive mechanics, pedagogical models, or empirical phenomena.
-   - **Candidate Entities**: Concrete researchers, historical figures, organizations, software platforms, or neural models.
-   - **Existing Nodes to Refactor**: Notes already present in `wiki/concepts/` or `wiki/entities/` where the new source introduces new evidence, modern extensions, or empirical contradictions.
+1. Read the target document in `raw/` (or `_input/research/`) using `view_file`.
+2. Read `wiki/index.md` and `wiki/glossary.md` to map existing vault topography, Arabic/English aliases, kunyas, and UN OCHA P-Codes (`SD01`–`SD18`).
+3. Extract candidate primitives into five distinct pools:
+   - **Candidate Events (`wiki/events/`)**: Discrete conflict incidents (`incident`), multi-day military operations (`campaign`), diplomatic talks/agreements (`diplomatic`), or humanitarian emergencies (`crisis`).
+   - **Candidate Actors (`wiki/actors/`)**: State forces (`state_force`), paramilitaries/rebel groups/militias (`armed_group`), political coalitions/foreign states (`political_body`), civil society/ERRs/NGOs (`civil_society`), key commanders/leaders (`person`), and media/OSINT outlets (`media_source`).
+   - **Candidate Locations (`wiki/locations/`)**: Sudan States (`state_adm1`), Localities (`locality_adm2`), Cities/Towns (`city_town`), Neighborhoods/Sites (`neighborhood_site`), IDP Camps (`idp_camp`), Infrastructure (`infrastructure`), and Border Crossings (`border_crossing`).
+   - **Candidate Themes & Timelines (`wiki/themes/`, `wiki/timelines/`)**: Enduring structural drivers ("Why?"), war economy supply chains, military doctrines, or monthly chronological ledgers.
+   - **Existing Nodes to Refactor**: Notes already present in `wiki/` where the new source introduces corroborating evidence, updated casualty/displacement counts, shifts in territorial control, or **competing/contradictory narratives**.
 
-### 2. Pedagogical Significance Filtering
-Filter candidate concepts and entities using three qualitative criteria (must score $\ge 0.70$ on composite significance):
-- **Mechanistic Depth**: Does the concept possess internal causal mechanisms, structured steps, or theoretical foundations? (Reject descriptive buzzwords and trivial generic nouns like "video lecture", "email", or "dashboard").
-- **Network Interconnectivity**: Can this node plausibly connect to at least $\ge 2$ existing nodes or themes in `wiki/overview.md`?
-- **Domain Relevance**: Does the item directly advance `Knowledge Lab`'s core research axes:
-  - Cognitive friction, Socratic AI, and learning architecture.
-  - Generative AI governance, ISD models, and cognitive debt.
-  - Personal knowledge management and compounding intelligence.
-  - Digital marketing architecture and unit economics.
+### 2. 48-Hour Spatio-Temporal Event Deduplication Rule
+Before proposing any **New Event**, verify whether an existing Event note in `wiki/events/` covers the same real-world incident:
+$$\lvert t_{\text{valid}}(\text{candidate}) - t_{\text{valid}}(\text{existing}) \rvert \le 48\text{ hours} \quad \land \quad \text{Location}(\text{candidate}) \cap \text{Location}(\text{existing}) \neq \emptyset$$
+- **If a match exists**: Do **NOT** create a new Event note. Classify the existing Event note under **Nodes to Refactor** (to append the new source, update casualty ranges, or record competing claims in `## 5. Competing Narratives, Attribution & Contradictions`).
+- **If no match exists**: Propose a new canonical Event note named `YYYY-MM-DD <Canonical Event Title>.md` (for discrete incidents) or `<Campaign Title>.md` (for campaigns).
 
-### 3. Generate the Scoped Ingestion Manifest
-Output the manifest in standard Markdown format (which is presented to the user during scoping and subsequently archived into Section 2 of `wiki/ingestions/YYYY-MM-DD/<source-slug>.md`):
+### 3. News & OSINT Significance Filtering
+Filter candidate nodes using three qualitative criteria (must score $\ge 0.70$ on composite significance):
+- **5W1H Evidentiary Specificity**: Does the candidate event, actor, or location possess concrete spatio-temporal anchoring, identifiable actors, or verifiable impact? (Reject vague background mentions or generic nouns).
+- **Network & Causal Interconnectivity**: Can this node connect to $\ge 2$ existing nodes (e.g., linking an incident to its `[[Location]]`, `[[Acting Entities]]`, and parent `[[Campaign]]` or `[[Theme]]`)?
+- **Sudan Domain Relevance**: Does the item directly advance intelligence tracking across:
+  - Kinetic frontlines, territorial control, and military operations in Sudan.
+  - Humanitarian crisis indicators, famine (IPC phases), displacement (IDPs), and civilian protection (ERRs).
+  - Political economy (gold, weapons supply chains), regional diplomacy, and foreign sponsorship.
+  - OSINT verification, disinformation debunking, and narrative contradiction analysis.
+
+### 4. Generate the Scoped Ingestion Manifest
+Output the manifest in standard Markdown format (archived into Section 2 of `wiki/ingestions/YYYY-MM-DD/<source-slug>.md`):
 
 ```markdown
 ### 📋 Scoped Ingestion Manifest: `<source-slug>`
-- **Source Complexity**: [Compact / Moderate / Deep Research / Monograph]
-- **Target Dynamic Quota**: **N New Concepts** | **M New Entities** | **K Refactors**
+- **Source Medium & Language**: [e.g., Arabic News Article / Telegram Post / Satellite Report] | **Admiralty Rating**: `[e.g., B2]`
+- **Target Dynamic Quota**: **E New Events** | **A New Actors** | **L New Locations** | **T New Themes/Timelines** | **K Refactors**
 
-#### 1. Candidate Concepts (N)
-- `[[Concept Name]]`: Brief 1-line justification of mechanism & significance.
+#### 1. Candidate New Events (E)
+- `[[YYYY-MM-DD Event Title]]` (`subtype: incident | campaign | crisis | diplomatic`): 1-line 5W1H summary & ACLED category.
 
-#### 2. Candidate Entities (M)
-- `[[Entity Name]]`: Role, affiliation, or key contribution.
+#### 2. Candidate New Actors (A)
+- `[[Actor Name]]` (`subtype: state_force | armed_group | ...`): Role, affiliation, and ACLED actor type.
 
-#### 3. Nodes to Refactor (K)
-- `[[Existing Note]]`: Specific update (e.g., add contradiction, update empirical stats, or add sub-framework).
+#### 3. Candidate New Locations (L)
+- `[[Location Name]]` (`pcode: SD...`, `subtype: city_town | ...`): Admin hierarchy and current control status.
 
-#### 4. Workload Execution Strategy
-- [Single-thread sequential (Total nodes ≤ 6) | Map-Reduce parallel subagents (Total nodes > 6)]
+#### 4. Candidate New Themes / Timelines (T)
+- `[[Theme or Timeline Title]]`: Structural driver ("Why?") or chronological scope.
+
+#### 5. Existing Nodes to Refactor (K)
+- `[[Existing Note]]`: Specific update (e.g., merge corroborating source, update casualty range, or add `ATTRIBUTION_CONFLICT` to Section 5 Contradiction Matrix).
+
+#### 6. Workload Execution Strategy
+- [Single-thread sequential (Total new nodes ≤ 6) | Map-Reduce parallel subagents (Total new nodes > 6)]
 ```
 
-### 4. Setting the Dynamic Quota & Interaction Gate
-- The manifest's counts ($N$ concepts + $M$ entities) become the strict, explicit compilation target for `wiki-ingest`.
-- **Fast-Path**: If Total Nodes ($N + M$) $\le 6$, proceed automatically into `wiki-ingest`.
-- **Review Gate**: If Total Nodes ($N + M$) $> 6$, present the manifest to the user for confirmation (`"proceed"` or adjustments) before file creation commences.
-- **Permanent Archival**: Upon completion of compilation, the manifest and evaluation decisions are permanently stored in the ingestion dossier at `wiki/ingestions/YYYY-MM-DD/<source-slug>.md`.
+### 5. Setting the Dynamic Quota & Interaction Gate
+- **Fast-Path**: If Total New Nodes ($E + A + L + T$) $\le 6$, proceed automatically into `wiki-ingest`.
+- **Review Gate**: If Total New Nodes ($E + A + L + T$) $> 6$, present the manifest to the user for confirmation before file creation commences.

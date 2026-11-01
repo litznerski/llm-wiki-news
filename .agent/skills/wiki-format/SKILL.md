@@ -114,8 +114,10 @@ In GitHub-Flavored Markdown (GFM) and Obsidian, tables use vertical pipes (`|`) 
 
 #### Shortest Canonical Wikilinks
 Obsidian automatically resolves notes by stem across the vault. Redundant directory prefixes must be stripped from wikilinks to maintain clean, portable markdown:
-- Avoid: `[[wiki/concepts/Concept Name]]` $\rightarrow$ Use: `[[Concept Name]]`
-- Avoid: `[[wiki/entities/Entity Name]]` $\rightarrow$ Use: `[[Entity Name]]`
+- Avoid: `[[wiki/events/Event Title]]` $\rightarrow$ Use: `[[Event Title]]`
+- Avoid: `[[wiki/actors/Actor Name]]` $\rightarrow$ Use: `[[Actor Name]]`
+- Avoid: `[[wiki/locations/Location Name]]` $\rightarrow$ Use: `[[Location Name]]`
+- Avoid: `[[wiki/themes/Theme Name]]` $\rightarrow$ Use: `[[Theme Name]]`
 - Sources retain canonical subfolder prefix: `[[sources/<source-slug>]]`
 
 ---
@@ -127,7 +129,7 @@ When asked to audit or format a file (or when performing automated vault linting
    - Scan target files for code blocks (` ``` `) containing ASCII borders (`+---`, `|---`, `+===`, `|   |`).
    - Scan target files for malformed backticked wikilinks (` `[[...]]` `).
    - Scan table rows (`| ... |`) for unescaped pipes inside wikilinks (`\[\[[^\]\n]*?(?<!\\)\|[^\]\n]*?\]\]`).
-   - Scan for non-canonical wikilink path prefixes (`[[wiki/concepts/...]]` or `[[wiki/entities/...]]`).
+   - Scan for non-canonical wikilink path prefixes (`[[wiki/events/...]]`, `[[wiki/actors/...]]`, `[[wiki/locations/...]]`, `[[wiki/themes/...]]`).
    - Validate table column counts against delimiter rows (`| :--- | ... |`).
 2. **Classification**: Determine whether the issue represents a data table, an architecture/flow diagram, a UI panel/blueprint, a malformed backticked link, an unescaped table pipe, or a prefixed path.
 3. **Refactoring**: Replace the block in-place with its native Obsidian equivalent, escape table pipes (`\|`), strip malformed backticks, and shorten path prefixes.

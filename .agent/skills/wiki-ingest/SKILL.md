@@ -1,147 +1,110 @@
 ---
 name: wiki-ingest
-description: Compiles unorganized documents, transcripts, PDFs, and videos from raw/ into atomic Obsidian wiki notes using dynamic pre-scoping and optimized workload pipelines.
+description: Compiles multilingual news articles, social media posts, transcripts, PDFs, satellite reports, and videos from raw/ into atomic Obsidian wiki notes (events, actors, locations, themes, timelines, sources) using dynamic pre-scoping, NATO Admiralty scoring, and GRaSP contradiction tracking.
 ---
 
-# Wiki Ingest Skill
+# Wiki Ingest Skill (`wiki-ingest`)
 
 ## Objective
-Ingest uncompiled primary evidence from `raw/` (Markdown notes, research dossiers, web articles, PDFs, transcripts, and video recordings), dynamically scope conceptual primitives via `wiki-scope`, compile atomic notes across `wiki/concepts/` and `wiki/entities/`, refactor existing knowledge, and maintain vault indices.
+Ingest uncompiled primary evidence from `raw/` (`raw/articles/`, `raw/social/`, `raw/videos/`, `raw/transcripts/`, `raw/reports/`, `raw/satellite/`), dynamically scope and deduplicate primitives via `wiki-scope`, compile atomic notes across `wiki/events/`, `wiki/actors/`, `wiki/locations/`, `wiki/themes/`, and `wiki/timelines/`, refactor existing knowledge with explicit contradiction tracking, and synchronize the unified graph index.
 
 ---
 
 ## Supported Source Types & Parsing Procedures
 
-### 1. Markdown & Text Clippings (`raw/articles/`, `raw/notes/`, `raw/research/`)
-- Read directly via standard file viewer.
+### 1. News Articles & Social Media Artefacts (`raw/articles/`, `raw/social/`, `_input/research/`)
+- Read directly via `view_file`. Preserve original publication timestamps, author/channel handles, and URLs.
 
-### 2. PDF Documents (`raw/projects/`, `raw/papers/`, `raw/books/`)
-- Extract text using the installed `pypdf` parser:
-  ```bash
-  python3 -c "import pypdf; reader=pypdf.PdfReader('raw/path/to/doc.pdf'); print('\n'.join([p.extract_text() or '' for p in reader.pages]))" > /tmp/parsed_source.txt
-  ```
+### 2. PDF Reports & Satellite Dossiers (`raw/reports/`, `raw/satellite/`)
+- View directly via `view_file` (or extract text via `pypdf` for large multi-page documents). Record imagery acquisition dates, coordinates, and thermal/crater findings.
 
 ### 3. Spoken Transcripts (`raw/transcripts/`)
-- Read full markdown/vtt/srt transcript directly.
-- Preserve temporal timestamps (e.g., `[04:15]`) in citations inside the distillation note.
+- Read full transcript directly and preserve temporal timestamps (e.g., `[04:15]`) in citations.
 
-### 4. Direct Multimodal Video Files (`raw/videos/`, `raw/assets/videos/`)
-- **File size < 100 MB**: Ingest directly using the multimodal binary `view_file` tool.
-  - Analyze both spoken audio and on-screen visual presentation slides, software demos, and diagrams.
-  - Record key visual diagrams or slide timestamps in the distillation note.
-- **File size ≥ 100 MB**: Advise the user to extract or provide the transcript in `raw/transcripts/<slug>.md` (e.g. via MacWhisper, YouTube transcript, or local whisper) to avoid binary size limits and repository bloat.
+### 4. Direct Multimodal Video Files (`raw/videos/`)
+- **File size < 100 MB**: Ingest directly using `view_file`. Analyze spoken audio (including Arabic speech/chants), uniform insignias, vehicle markings, weapon systems, and visible landmarks for geolocation/chronolocation.
+- **File size ≥ 100 MB**: Advise the user to provide or extract the transcript in `raw/transcripts/<slug>.md`.
 
 ---
 
 ## Execution Sequence
 
 ### 1. Path & Immutability Verification
-- Confirm the target file is inside `raw/`.
-- Never modify, rename, or delete any file in `raw/`.
+- Confirm the target file exists in `raw/` (or `_input/research/`).
+- Never modify, rename, or delete any primary evidence file in `raw/`.
 
-### 2. Pre-Ingestion Scoping (`wiki-scope`)
+### 2. Pre-Ingestion Scoping & Event Deduplication (`wiki-scope`)
 - Read `wiki/index.md`, `wiki/glossary.md`, and the target document.
-- Run the `wiki-scope` protocol to filter candidate primitives by pedagogical significance ($\ge 0.70$).
-- Output the **Scoped Ingestion Manifest** setting the dynamic quotas:
-  - **$N$ New Concepts**
-  - **$M$ New Entities**
-  - **$K$ Nodes to Refactor**
-- **Gating**: If $N + M \le 6$, proceed automatically. If $N + M > 6$, present the manifest to the user before generating notes.
+- Run the `wiki-scope` protocol (including the **48-Hour Spatio-Temporal Event Deduplication Check** and **$\ge 0.70$ News & OSINT Significance Filter**).
+- Output the **Scoped Ingestion Manifest** setting dynamic quotas: **$E$ New Events**, **$A$ New Actors**, **$L$ New Locations**, **$T$ New Themes/Timelines**, and **$K$ Nodes to Refactor**.
+- **Gating**: If $E + A + L + T \le 6$, proceed automatically. If $> 6$, present the manifest to the user before generating notes.
 
-### 3. Cross-Lingual Normalization (Axiom 6)
-- If the source is in another language (e.g., German), translate and compile all syntheses, concepts, and entities exclusively in **English**.
-- Preserve original foreign terms in frontmatter `aliases` and register canonical mappings in `wiki/glossary.md`.
+### 3. Cross-Lingual Normalization & Bilingual Quote Preservation (Axiom 6)
+- Translate and compile all narrative prose, event titles, and analysis in `wiki/` exclusively in **English**.
+- Cross-reference `wiki/glossary.md` to map Arabic script, Sudanese kunyas (e.g., *Hemedti / حميدتي* $\to$ `[[Mohamed Hamdan Dagalo]]`, *Al-Burhan / البرهان* $\to$ `[[Abdel Fattah al-Burhan]]`), acronyms, and transliteration variants (*Gezira* $\to$ `[[Al Jazirah]]`, *Al-Fashir* $\to$ `[[El Fasher]]`) to canonical node titles.
+- In `wiki/sources/<source-slug>.md`, preserve key eyewitness or official quotes in **both English translation and original Arabic/foreign script** inside blockquotes for forensic traceability.
 
 ### 4. Source Distillation (`wiki/sources/<source-slug>.md`)
-- Create standard YAML frontmatter (`title`, `type: source`, `tags`, `last_updated`, `sources`, `reliability_score`).
-- Record: Primary Thesis, Methodology / Context, Key Findings (with page or timestamp citations), Direct Quotes, and Related Concepts/Entities.
+- Author `wiki/sources/<source-slug>.md` with mandatory YAML frontmatter:
+  - `title`, `type: "source"`, `subtype` (`news_article | social_post | video_osint | satellite_report | official_communique | ngo_report | eyewitness`), `source_outlet`, `raw_file`, `language`, `published_date`, `ingested_date`, `alignment` (`independent | pro_saf | pro_rsf | state_media | civil_society_err | international_org | osint_verified`), `admiralty_source_reliability` (`A`–`F`), `admiralty_info_credibility` (`1`–`6`), `admiralty_rating` (e.g., `"B2"`), `reliability_score` (`0.0`–`1.0`), `events_covered`, `actors_mentioned`, `locations_mentioned`, `tags`.
+- Record:
+  1. **5W1H Source Intelligence Summary & Provenance**
+  2. **Atomic Extracted Claims Table** (Claim, 5W1H Tuple, Modality [`confirmed | probable | alleged | denied | debunked`], Target Wiki Node)
+  3. **Bilingual Direct Citations & Forensic Evidence**
+  4. **Related Primitives**
 
-### 5. Multi-Node Compilation & Workload Optimization
+### 5. Multi-Node Compilation & Dual-Flow CoT Enforcement
 
-#### Universal Formatting Invariant (MANDATORY across all compilation & refactors)
-- **Zero ASCII Box Art (Axiom 7 & `wiki-format`)**: NEVER author or preserve raw ASCII box-drawing characters (`┌`, `└`, `├`, `│`, `+---+`, `|`, `+===+`) inside code fences (` ``` `).
-- **Clean Wikilinks (Axiom 4)**: NEVER author or wrap `[[wikilinks]]` in inline code backticks (e.g., `` `[[sources/slug]]` `` or ``(`[[sources/slug]]`)``). In-text citations must always be formatted cleanly as `([[sources/slug]])` or `[[Concept Name]]`. Backticks force Obsidian to render them as inert monospace `<code>` elements, breaking hover previews and graph indexing.
-- **Table Pipe Invariant (Escaped Pipes in Tables)**: Within GitHub-Flavored Markdown (GFM) tables, vertical pipes (`|`) serve as column delimiters. Therefore, any wikilink with an alias inside a table cell MUST escape the pipe character as `\|` (e.g., `| [[Target\|Display Text]] |`) or use canonical unaliased wikilinks `[[Target]]`. An unescaped pipe (e.g., `| [[Target|Display Text]] |`) breaks table syntax, splits the wikilink across multiple table columns, and prevents Obsidian from parsing the link.
-- **Canonical Shortest Wikilink Invariant**: All wikilinks to concepts and entities in `wiki/` must use direct note titles without redundant directory prefixes (e.g., use `[[Concept Name]]` or `[[Entity Name]]`, NEVER `[[wiki/concepts/...]]` or `[[wiki/entities/...]]`). Source distillations should be linked using the standard canonical prefix `[[sources/<source-slug>]]`.
-- **Dual-Flow Chain of Thought Invariant (Axiom 9 & Option 4)**:
-  - **Concept Notes (`wiki/concepts/`)**: Every compiled or refactored concept note in `wiki/concepts/` must follow an explicit, graduated reasoning progression using canonical heading anchors:
-    1. Definitional Anchor (`DEFINITIONAL_ANCHOR`: `1. Core Thesis / Definition`)
-    2. Causal Mechanism (`MECHANISTIC_DEEPEN`: `2. Causal Anatomy & Underlying Mechanics`)
-    3. Failure Mode / Dilemma (`MANIFESTATION_TRAP` / `DILEMMA_PROBLEM`: `3. Manifestations & Failure Modes`)
-    4. Prescriptive Solution (`PRESCRIPTIVE_SOLUTION`: `4. Prescriptive Mitigations & Counter-Architectures`)
-    5. Dialectical Boundary (`EMPIRICAL_BOUNDARY`: `5. Empirical Boundaries & Contradictions`)
-    6. Synthesis Touchpoints (`SYNTHESIS_CATALOG`: `## Related Notes`)
-    When authoring prescriptive solution sections, explicitly link to counter-architecture concepts to establish `[:REMEDIES_DILEMMA]` handshakes; in mechanism sections, link to foundational concepts to establish `[:EXTENDS_THEORY]`; in failure sections, link to pathological modes to establish `[:PRECIPITATES]`.
-  - **Entity Notes (`wiki/entities/`)**: Declare `subtype: researcher | organization | software | platform` and follow the corresponding archetypal Micro-CoT arc:
-    - *Researcher (`subtype: researcher`)*: Epistemic Role (`1.`) $\to$ Theoretical Foundations (`2.`) $\to$ Contested Paradigms (`3.`) $\to$ Canonical Models (`4.`) $\to$ [[Knowledge Lab]] Deployment (`5.`) $\to$ `## Related Primitives`. Establish `[:ORIGINATES_THEORY]`, `[:CRITIQUES_PARADIGM]`, and `[:INTELLECTUAL_LINEAGE]` handshakes.
-    - *Organization (`subtype: organization`)*: Institutional Mandate (`1.`) $\to$ Systemic Pathology (`2.`) $\to$ Operational Architecture (`3.`) $\to$ Ecosystem Network (`4.`) $\to$ [[Knowledge Lab]] Analogue (`5.`) $\to$ `## Related Primitives`. Establish `[:OPERATIONALIZES]` and `[:CHAMPIONS_SOLUTION]` handshakes.
-    - *Software (`subtype: software`)*: Architectural Identity (`1.`) $\to$ Execution Model (`2.`) $\to$ Bottlenecks Solved (`3.`) $\to$ [[Knowledge Lab]] Stack Topology (`4.`) $\to$ Telemetry & Limits (`5.`) $\to$ `## Related Primitives`. Establish `[:OPERATIONALIZES]` handshakes.
-- **Tabular Data & Matrices**: Convert to standard GitHub-Flavored Markdown (GFM) tables (`| Col 1 | Col 2 |`).
-- **Architectures, Workflows, & Funnels**: Convert to native `mermaid` diagrams (`flowchart TD`, `flowchart LR`, `sequenceDiagram`).
-- **Equations, Equations Panels, & UI Cards**: Convert to Obsidian Callouts (`> [!NOTE]`, `> [!SETTINGS]`, `> [!EXAMPLE]`) with LaTeX math blocks (`$$...$$`).
-- **Refactoring Sanity Rule**: When refactoring an existing note, ALWAYS audit and convert any legacy ASCII tables or box art in that note into native Obsidian components.
+#### Universal Formatting & Link Invariants (Axioms 4 & 7)
+- **Zero ASCII Box Art**: Use GFM tables, Mermaid diagrams, and Obsidian callouts (`> [!NOTE]`). Never use raw ASCII box-drawing characters (`┌`, `└`, `+---+`).
+- **Clean Wikilink Invariant**: Never wrap wikilinks in inline code backticks (`` `[[...]]` ``).
+- **Table Pipe Invariant**: Escape any internal pipe inside a wikilink in a GFM table as `\|` (e.g., `| [[Target\|Alias]] |`) or use unaliased `[[Target]]`.
+- **Shortest Canonical Wikilink Invariant**: Link to events, actors, locations, themes, and timelines using direct titles (`[[El Fasher]]`, `[[Rapid Support Forces]]`), NEVER `[[wiki/locations/El Fasher]]`. Link to sources as `[[sources/<source-slug>]]`.
+- **Mermaid Clean Label Invariant**: Never place `[[...]]` or unquoted special characters (`:&()`) inside Mermaid node labels.
 
-#### Execution Workflows
-Compile the dynamic manifest using one of two execution paths:
-- **Small Workload ($N + M \le 6$)**: Compile notes sequentially within the primary agent session, strictly enforcing the Universal Formatting Invariant on every new and refactored note.
-- **High-Volume Workload ($N + M > 6$)**: Execute **Map-Reduce Parallelization**:
-  1. **Map**: Invoke 2–3 parallel subagents using `invoke_subagent` (type `self`), partitioning the manifest:
-     - Worker 1: Compiles Concepts Batch A.
-     - Worker 2: Compiles Concepts Batch B.
-     - Worker 3: Compiles Entities & executes Refactors.
-  2. Each worker authors atomic Markdown files following the mandatory frontmatter schema, internal mechanisms, bidirectional `[[wikilinks]]`, and the Universal Formatting Invariant.
-  3. **Reduce**: The parent agent verifies completed files, conducts a formatting audit, and performs atomic ledger consolidation.
+#### Ingest-Time Dual-Flow CoT Section Arcs (Axiom 9)
+Structure every newly created or refactored note according to its canonical 6-stage epistemic arc:
 
-#### Formatting Audit & Validation Gate
-Before proceeding to catalog and ledger updates, validate all newly created and refactored files:
-1. Scan for disallowed code fences containing `┌`, `└`, `+---`, `|---`, or text box borders.
-2. Scan for malformed backticked wikilinks (`` `[[...]]` ``). If detected, strip backticks immediately.
-3. Scan table rows (`| ... |`) for unescaped pipes inside wikilinks (`\[\[[^\]\n]*?(?<!\\)\|[^\]\n]*?\]\]`). If found, escape them as `\|`.
-4. Check for non-canonical path prefixes in concept/entity links (`[[wiki/concepts/...]]` or `[[wiki/entities/...]]`) and strip `wiki/concepts/` or `wiki/entities/`.
-5. Run `python3 scripts/lint_vault.py` to ensure zero graph or formatting errors before index synchronization.
+1. **Event Notes (`wiki/events/`, `type: event`, `subtype: incident | campaign | crisis | diplomatic`)**:
+   - Lead Callout: `> [!NOTE] 5W1H Event Intelligence Anchor` (What, When [$t_{\text{valid}}$ vs. $t_{\text{reported}}$], Where [`pcode`], Who, Impact, Admiralty Verification).
+   - `## 1. Event Anchor & 5W1H Summary` (`EVENT_ANCHOR`) $\to$ links establish `[:OCCURRED_AT]`, `[:PART_OF_CAMPAIGN]`, `[:INVOLVES_ACTOR]`.
+   - `## 2. Chronological Sequence & Tactical Mechanics ("What & How")` (`CHRONOLOGICAL_MECHANICS`) $\to$ links establish `[:PRECEDES]`, `[:PERPETRATED_BY]`, `[:TARGETED]`.
+   - `## 3. Causal Drivers & Strategic Motives ("Why")` (`CAUSAL_MOTIVES`) $\to$ links establish `[:TRIGGERED_BY]`, `[:RETALIATES_FOR]`, `[:MOTIVATED_BY]`.
+   - `## 4. Humanitarian, Territorial & Geopolitical Impact` (`IMPACT_ASSESSMENT`) $\to$ links establish `[:SHIFTS_CONTROL_TO]`, `[:DISPLACES_POPULATION]`.
+   - `## 5. Competing Narratives, Attribution & Contradictions` (`CONTRADICTION_MATRIX`) $\to$ GFM Claim Comparison Matrix contrasting belligerent, local monitor, and OSINT accounts; links establish `[:CORROBORATES]`, `[:CONTRADICTS_CLAIM]`, `[:ATTRIBUTES_BLAME_TO]`, `[:DEBUNKS]`.
+   - `## Related Primitives` (`SYNTHESIS_CATALOG`).
 
-### 6. Ingestion Summary Dossier Generation (`wiki/ingestions/YYYY-MM-DD/<source-slug>.md`)
-- Author a dedicated, comprehensive audit report in `wiki/ingestions/YYYY-MM-DD/<source-slug>.md` (creating the `YYYY-MM-DD/` date subfolder if it does not already exist).
-- **Mandatory Frontmatter**:
-  ```yaml
-  ---
-  title: "Ingestion: <source-slug>"
-  type: "ingestion"
-  tags: [ingestion, audit]
-  date: YYYY-MM-DD
-  source: "[[sources/<source-slug>]]"
-  concepts_created:
-    - "[[concepts/Concept Name]]"
-  entities_created:
-    - "[[entities/Entity Name]]"
-  nodes_refactored:
-    - "[[concepts/Refactored Note]]"
-  ---
-  ```
-- **Required Sections**:
-  1. **Provenance & Execution Context**: Origin file in `raw/`, source distillation link, date, compiler session, workload strategy.
-  2. **Scoped Ingestion Manifest & Scoring**: Composite pedagogical significance score ($\ge 0.70$), dynamic quotas ($N, M, K$), and candidate primitive evaluation table.
-  3. **Compiled Knowledge Nodes**: GFM table listing Source, Concepts, and Entities with 1-line mechanistic summaries.
-  4. **Refactored Nodes & Epistemic Evolution**: GFM table detailing modified sections, empirical updates, and contradiction tracking.
-  5. **Verification & Graph Telemetry**: Formatting audit (0 ASCII box art, zero backticked wikilinks), `ki status` reporting, and vault linter output.
+2. **Actor Notes (`wiki/actors/`, `type: actor`, `subtype: state_force | armed_group | political_body | civil_society | person | media_source`)**:
+   - `## 1. Identity, Classification & Leadership Anchor` (`ACTOR_ANCHOR`)
+   - `## 2. Historical Lineage, Factions & Command Structure` (`COMMAND_LINEAGE`) $\to$ `[:COMMANDED_BY]`, `[:SPLINTERED_FROM]`
+   - `## 3. Strategic Objectives, Ideology & Political Economy ("Why")` (`STRATEGIC_DOCTRINE`) $\to$ `[:MOTIVATED_BY]`
+   - `## 4. Operational Capabilities, Alliances & Foreign Backing` (`ALLIANCE_NETWORK`) $\to$ `[:ALLIED_WITH]`, `[:SPONSORED_BY]`
+   - `## 5. Chronological Event Footprint & Accountability Record` (`EVENT_FOOTPRINT`) $\to$ `[:PARTICIPATED_IN]`, `[:CONTROLS_TERRITORY]`
+   - `## Related Primitives` (`SYNTHESIS_CATALOG`).
+
+3. **Location Notes (`wiki/locations/`, `type: location`, `subtype: country | state_adm1 | locality_adm2 | city_town | neighborhood_site | idp_camp | infrastructure | border_crossing`)**:
+   - `## 1. Geopolitical Identity & Strategic Significance` (`LOCATION_ANCHOR`) $\to$ `[:LOCATED_IN]`
+   - `## 2. Territorial Control History & Armed Presence` (`TERRITORIAL_CONTROL`)
+   - `## 3. Key Infrastructure, Trade Corridors & Resources` (`INFRASTRUCTURE_LOGISTICS`)
+   - `## 4. Humanitarian Status, Displacement & Civil Services` (`HUMANITARIAN_STATUS`)
+   - `## 5. Chronological Log of Major Conflict Events` (`EVENT_LOG`)
+   - `## Related Primitives` (`SYNTHESIS_CATALOG`).
+
+4. **Theme Notes (`wiki/themes/`, `type: theme`, `subtype: war_economy | humanitarian_driver | military_doctrine | political_dynamic | information_warfare`)**:
+   - `## 1. Core Thesis & Structural Mechanism ("Why")` (`DEFINITIONAL_ANCHOR`)
+   - `## 2. Historical Roots & Political Economy Anatomy` (`MECHANISTIC_DEEPEN`)
+   - `## 3. Operational Manifestations Across Frontlines` (`MANIFESTATION_TRAP`)
+   - `## 4. Humanitarian, Regional & Diplomatic Consequences` (`IMPACT_ASSESSMENT`)
+   - `## 5. Empirical Debates, Uncertainties & Competing Analyses` (`EMPIRICAL_BOUNDARY`)
+   - `## Related Primitives` (`SYNTHESIS_CATALOG`).
+
+### 6. Ingestion Dossier Generation (`wiki/ingestions/YYYY-MM-DD/<source-slug>.md`)
+- Author a standalone audit dossier in `wiki/ingestions/YYYY-MM-DD/<source-slug>.md` (`type: "ingestion"`), listing `events_created`, `actors_created`, `locations_created`, `themes_created`, `nodes_refactored`, and `contradictions_logged`.
 
 ### 7. Batch Catalog, Ledger & Graph Synchronization
-- Register new concepts and entities in `wiki/glossary.md`.
-- Add all newly created notes with 1-line summaries to `wiki/index.md` (including registering the ingestion dossier under `## Ingestions`).
-- Re-evaluate and update `wiki/overview.md` if high-level paradigm insights or debates have shifted.
-- **Synchronize Unified Graph & Vector Index**:
-  - The `ki` vault marker is at `wiki/.ki/vault.yaml`. When executing from the repository root, always use `-C wiki` with relative paths inside `wiki/`.
-  - For small updates ($\le 3$ files): Run `ki add -C wiki "<relative-path>"` sequentially for each file (e.g., `for f in "sources/<source-slug>.md" "concepts/<note>.md" "ingestions/YYYY-MM-DD/<source-slug>.md"; do ki add -C wiki "$f"; done`). Note that `ki add` takes only ONE target at a time.
-    Follow with graph enrichment, CoT reasoning flow extraction, and embeddings:
-    `uv run scripts/enrich_graph.py`
-    `uv run scripts/extract_dual_flow_cot.py`
-    `uv run scripts/extract_entity_cot.py`
-    `uv run scripts/run_gds_analytics.py`
-    `uv run scripts/embed_graph_sections.py`
-  - For larger updates or batch refactors ($> 3$ files): Run the master pipeline:
-    `./scripts/sync_vault_graph.sh`
-    This performs full AST re-indexing (`ki index wiki`), schema enrichment (`enrich_graph.py`), Dual-Flow CoT reasoning extraction (`extract_dual_flow_cot.py`), Epistemic Entity Arcs extraction (`extract_entity_cot.py`), GDS centrality & community calculation (`run_gds_analytics.py`), and Ollama section vector embedding (`embed_graph_sections.py`).
-  - **Verification Gate**: Run `ki status -v -C wiki` to verify that the index reports `✓ READY`.
-  - **Unified Knowledge Verification Gate**: Confirm that `section_vector_idx`, CoT edges (`[:PROGRESSES_TO]`, `[:REMEDIES_DILEMMA]`), and GDS properties (`gds_pagerank`, `gds_community`) are populated in Neo4j. This native Neo4j pipeline fully replaces legacy external vector stores (`oikb`), directly serving Open WebUI via the Dynamic Cypher tool and GraphRAG filter.
+- Register new actors, locations (with P-Codes), and Arabic/English aliases in `wiki/glossary.md`.
+- Add all newly created notes with 1-line summaries to `wiki/index.md`.
+- Update `wiki/overview.md` (Living SITREP) if territorial control, humanitarian indicators, or major narrative contradictions shifted.
+- Synchronize the graph via `ki add -C wiki "<relative-path>"` (for $\le 3$ files) or `./scripts/sync_vault_graph.sh` (for $> 3$ files) and verify `ki status -v -C wiki` reports `✓ READY`.
 - Append to `wiki/log.md`:
-  `## [YYYY-MM-DD] ingest | <source-slug> | Compiled into N notes (X concepts, Y entities, Z refactors); generated dossier in wiki/ingestions/YYYY-MM-DD/; updated index; synced ki graph, GDS metrics & vector index.`
+  `## [YYYY-MM-DD] ingest | <source-slug> | Compiled into N notes (E events, A actors, L locations, T themes, K refactors); generated dossier in wiki/ingestions/YYYY-MM-DD/; updated index, SITREP & glossary; synced graph.`
