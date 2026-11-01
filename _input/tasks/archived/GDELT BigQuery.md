@@ -1,7 +1,14 @@
+---
+title: "GDELT BigQuery Ingestion Pipeline: Retrieval & Trafilatura Extraction"
+status: "done"
+completed_at: 2026-11-01
+deliverable: "[[_input/drafts/GDELT BigQuery Ingestion and Trafilatura Article Extraction Plan.md]]"
+---
+
 I want to use Google BigQuery with the GDELT data to identify relevant news article.
 
 I want to start with the following query:
-```
+```sql
 WITH verified_publishers AS (
 
 SELECT domain, tier FROM UNNEST([
@@ -38,8 +45,6 @@ STRUCT('sudanspost.com', 'Regional / Local Field')
 
 )
 
-  
-
 SELECT
 
 PARSE_TIMESTAMP('%Y%m%d%H%M%S', CAST(g.DATE AS STRING)) AS published_at,
@@ -49,8 +54,6 @@ vp.tier,
 g.SourceCommonName AS publisher,
 
 g.DocumentIdentifier AS article_url,
-
-  
 
 -- Extracts and displays ONLY Sudan-specific locations (strips Washington, Cairo, Geneva, etc.)
 
@@ -63,8 +66,6 @@ FROM UNNEST(SPLIT(g.V2Locations, ';')) AS loc
 WHERE REGEXP_CONTAINS(loc, r'^[1-5]#[^#]+#SU#')
 
 ) AS sudan_locations,
-
-  
 
 -- Dynamic Classification: War Economy, Economy & Livelihoods, or Security / Conflict
 
@@ -102,8 +103,6 @@ ELSE 'Security / Conflict'
 
 END AS topic_focus,
 
-  
-
 -- Sentiment score (-10 to +10)
 
 CAST(SPLIT(g.V2Tone, ',')[OFFSET(0)] AS FLOAT64) AS tone_score,
@@ -128,15 +127,11 @@ WHERE
 
 g._PARTITIONDATE = DATE_SUB(CURRENT_DATE(), INTERVAL 3 DAY)
 
-  
-
 -- 2. Strict Sudan Geographic Requirement:
 
 -- Requires at least one location block whose 3rd field is FIPS code 'SU'
 
 AND REGEXP_CONTAINS(g.V2Locations, r'(^|;)[1-5]#[^#]+#SU#')
-
-  
 
 -- 3. Geographic & Entity Exclusions:
 
@@ -149,8 +144,6 @@ AND NOT REGEXP_CONTAINS(LOWER(g.DocumentIdentifier), r'south[-_]?sudan')
 -- Exclude Iraqi Prime Minister Al-Sudani false positives
 
 AND NOT REGEXP_CONTAINS(LOWER(CONCAT(IFNULL(g.DocumentIdentifier, ''), ' ', IFNULL(g.V2Persons, ''))), r'al[-_ ]?sudani')
-
-  
 
 -- 4. Thematic Filter: Conflict OR Economic Crisis
 
@@ -204,7 +197,7 @@ LIMIT 150;
 Task1: 
 1. Create a python script that retrieves the data and saves the output in a JSON in a new folder "/root/news" in.
 2. Create a python script that uses the URL from the news JSON to retrieve the articles using Trafilatura and save it into /raw/articles
+3. Add research if required
 
 Deliverables:
 Create an implementation plan, save in /drafts
-
