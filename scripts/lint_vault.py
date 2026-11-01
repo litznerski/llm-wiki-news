@@ -339,6 +339,14 @@ def lint(check_cot: bool = False):
                     (5, r"##\s*5[\.\:]\s*Empirical Debates", "5. Empirical Debates, Uncertainties & Competing Analyses"),
                     (6, r"##\s*(6[\.\:]\s*)?(Related Primitives|Related Notes)", "Related Primitives"),
                 ]
+            elif "timelines/" in rel_str:
+                canonical_stages = [
+                    (1, r"##\s*1[\.\:]\s*Temporal Scope", "1. Temporal Scope, Theatre Coverage & Strategic Periodization"),
+                    (2, r"##\s*2[\.\:]\s*Chronological Event", "2. Chronological Event & Citation Ledger (Bitemporal Sequence)"),
+                    (3, r"##\s*3[\.\:]\s*Causal Escalation", "3. Causal Escalation Chains, Turning Points & Tempo Analysis"),
+                    (4, r"##\s*4[\.\:]\s*Cumulative Humanitarian", "4. Cumulative Humanitarian, Territorial & Attribution Telemetry"),
+                    (5, r"##\s*(5[\.\:]\s*)?(Related Primitives|Related Notes)", "Related Primitives"),
+                ]
             elif "citations/" in rel_str:
                 canonical_stages = [
                     (1, r"##\s*1[\.\:]\s*Speaker Provenance", "1. Speaker Provenance, Institutional Role & Context"),

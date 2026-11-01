@@ -3,8 +3,8 @@ title: "2026-10-23 UN News: Sudan Drone Strikes Killed at Least 306 People in Th
 type: source
 subtype: news_article
 status: approved
-compiled: false
-compiled_at:
+compiled: true
+compiled_at: 2026-11-01
 source_outlet: "[[UN News]]"
 raw_file: raw/articles/Sudan Drone strikes killed at least 306 people in three weeks.md
 url: https://news.un.org/en/story/2026/10/1168661
@@ -38,6 +38,9 @@ locations_to_create:
   - "[[Abyei]]"
 themes_to_create:
   - "[[Drone Proliferation and Double-Tap Strike Doctrine in Sudan]]"
+timelines_to_create:
+  - "[[2026-10 Sudan Conflict Chronicle]]"
+  - "[[Sudan Drone Warfare and Double-Tap Strike Timeline]]"
 citations_to_create:
   - "[[2026-10-23 Volker Türk Condemnation of Sudan Drone Escalation and Arms Influx]]"
   - "[[2026-10-23 Seif Magango Statement on Evisceration of Civilian Infrastructure in Sudan]]"
@@ -54,7 +57,7 @@ tags:
   - civilian-casualties
   - ohchr
   - unisfa
-  - source-draft
+  - source-compiled
 sources:
   - raw/articles/Sudan Drone strikes killed at least 306 people in three weeks.md
 aliases:
@@ -74,15 +77,15 @@ aliases:
 > - **Publication Date ($t_{\text{reported}}$)**: `2026-10-23` | **Valid Event Window ($t_{\text{valid}}$)**: `2026-10-01` to `2026-10-23`
 > - **Language**: English (`en`) | **Editorial Alignment**: `international_org`
 > - **NATO Admiralty Rating**: **`A2`** (`A` — UN human rights office & on-ground peacekeeping force with direct field verification; `2` — Probably true: aggregate casualty figures verified by UN monitors and [[UNISFA]] hospital intake, while specific belligerent attributions for several strikes are reported with `alleged` epistemic modality).
-> - **Ingestion Status**: `draft` (`compiled: false`) — **Awaiting human review before Phase 2 entity compilation.**
+> - **Ingestion Status**: `approved` (`compiled: true`, `compiled_at: 2026-11-01`) — **Compiled into 24 `wiki/` entities (see [[ingestions/2026-11-01/2026-10-23-un-news-sudan-drone-strikes-306-killed]]).**
 
 ---
 
 ## 1. 5W1H Source Intelligence Summary & Provenance
 
-On **23 October 2026**, [[UN News]] reported that UN High Commissioner for Human Rights [[Volker Türk]] ([[OHCHR]]) and the **United Nations Security Council** issued formal condemnations following a severe three-week escalation in unmanned aerial vehicle (UAV / drone) strikes across Sudan during the first three weeks of October 2026 (`2026-10-01` to `2026-10-23`). According to [[OHCHR]] documentation and statements by Spokesperson [[Seif Magango]], drone attacks attributed to both the [[Sudanese Armed Forces]] (SAF) and the [[Rapid Support Forces]] (RSF) killed **at least 306 people** and injured hundreds more across [[West Kordofan]], [[Blue Nile State]], [[Abyei]], Darfur, and [[Khartoum State]] ([[2026-10 Sudan Drone Warfare Escalation]]).
+On **23 October 2026**, [[UN News]] reported that UN High Commissioner for Human Rights [[Volker Türk]] ([[OHCHR]]) and the **United Nations Security Council** issued formal condemnations following a severe three-week escalation in unmanned aerial vehicle (UAV / drone) strikes across Sudan during the first three weeks of October 2026 (`2026-10-01` to `2026-10-23`). According to [[OHCHR]] documentation and statements by Spokesperson [[Seif Magango]], drone attacks attributed to both the [[Sudanese Armed Forces]] (SAF) and the [[Rapid Support Forces]] (RSF) killed **at least 306 people** and injured hundreds more across [[West Kordofan]], [[Blue Nile State]], [[Abyei]], Darfur, and **Khartoum State** ([[2026-10 Sudan Drone Warfare Escalation]], [[2026-10 Sudan Conflict Chronicle]]).
 
-The report highlights a systematic pattern in which drones—now accounting for the **majority of conflict-related civilian deaths in Sudan in 2026**—struck civilian homes, markets, hospitals, power stations, water infrastructure, and internally displaced persons (IDP) shelters ([[Drone Proliferation and Double-Tap Strike Doctrine in Sudan]]):
+The report highlights a systematic pattern in which drones—now accounting for the **majority of conflict-related civilian deaths in Sudan in 2026**—struck civilian homes, markets, hospitals, power stations, water infrastructure, and internally displaced persons (IDP) shelters ([[Drone Proliferation and Double-Tap Strike Doctrine in Sudan]], [[Sudan Drone Warfare and Double-Tap Strike Timeline]]):
 
 1. **Ghubeish & El Nuhud IDP Shelter Strikes (`2026-10-06` to `2026-10-10`)**: Alleged drone strikes attributed to [[Sudanese Armed Forces]] ("military government forces") hit shelters for displaced people in Ghubeish and El Nuhud in [[West Kordofan]] (`SD18`), killing **at least 25 civilians**, including women and children.
 2. **Abu Shendi IDP Gold-Mining Strike (`2026-10-09`)**: An alleged [[Rapid Support Forces]] drone struck a crowd of displaced civilians engaged in artisanal gold mining near a displacement site in Abu Shendi, [[Blue Nile State]] (`SD17`), killing **at least 31 people**, predominantly women and children.
@@ -96,7 +99,7 @@ The report highlights a systematic pattern in which drones—now accounting for 
 
 | Claim ID | Atomic Claim Summary | 5W1H Tuple (When / Where / Who / What) | Epistemic Modality | Target Wiki Node |
 | :--- | :--- | :--- | :--- | :--- |
-| **C-01** | Drone strikes across Sudan killed at least 306 people and injured hundreds more in the first three weeks of October 2026, now accounting for the majority of conflict-related civilian deaths in Sudan in 2026. | `2026-10-01`–`2026-10-23` \| Sudan (Kordofan, Darfur, [[Blue Nile State]], [[Khartoum State]]) \| [[Sudanese Armed Forces]] & [[Rapid Support Forces]] \| 306+ killed | `confirmed` ([[OHCHR]] / [[Volker Türk]]) | [[2026-10 Sudan Drone Warfare Escalation]] |
+| **C-01** | Drone strikes across Sudan killed at least 306 people and injured hundreds more in the first three weeks of October 2026, now accounting for the majority of conflict-related civilian deaths in Sudan in 2026. | `2026-10-01`–`2026-10-23` \| Sudan (Kordofan, Darfur, [[Blue Nile State]], Khartoum State) \| [[Sudanese Armed Forces]] & [[Rapid Support Forces]] \| 306+ killed | `confirmed` ([[OHCHR]] / [[Volker Türk]]) | [[2026-10 Sudan Drone Warfare Escalation]] |
 | **C-02** | Alleged SAF drone strikes on IDP shelters in Ghubeish and El Nuhud ([[West Kordofan]]) between 6 and 10 October 2026 killed at least 25 civilians, including women and children. | `2026-10-06`–`2026-10-10` \| Ghubeish & El Nuhud, [[West Kordofan]] (`SD18`) \| Alleged [[Sudanese Armed Forces]] $\to$ IDPs \| 25+ killed | `alleged` (attribution) / `confirmed` (casualties) | [[2026-10 Sudan Drone Warfare Escalation]] |
 | **C-03** | On 9 October 2026, an alleged RSF drone struck displaced people engaged in artisanal gold mining near a displacement site in Abu Shendi ([[Blue Nile State]]), killing at least 31 people, mostly women and children. | `2026-10-09` \| Abu Shendi, [[Blue Nile State]] (`SD17`) \| Alleged [[Rapid Support Forces]] $\to$ IDPs \| 31+ killed | `alleged` (attribution) / `confirmed` (casualties) | [[2026-10 Sudan Drone Warfare Escalation]] |
 | **C-04** | On 11 October 2026, an RSF-attributed drone strike hit Um Darfa hospital in [[Blue Nile State]], seriously injuring two health workers and leaving the hospital non-operational. | `2026-10-11` \| Um Darfa, [[Blue Nile State]] (`SD17`) \| [[Rapid Support Forces]] $\to$ Um Darfa Hospital \| 2 injured, hospital closed | `probable` ([[OHCHR]]) | [[2026-10 Sudan Drone Warfare Escalation]] |
@@ -140,16 +143,13 @@ Each direct statement below is mapped to its **Speaker (`Actor: person`)**, thei
 
 ---
 
-## 4. Scoped Ingestion Plan (Pending Approval)
+## 4. Scoped Ingestion Plan (Approved & Compiled)
 
-> [!WARNING] Phase 1 Review Gate (`status: "draft"`)
-> This source note is currently in **`status: "draft"`** (`compiled: false`). Review the NATO Admiralty rating (`A2`), extracted claims, and planned node operations below.
-> - You may add, remove, or rename any target nodes in the frontmatter arrays (`events_to_create`, `actors_to_create`, `locations_to_create`, `themes_to_create`, `citations_to_create`, `nodes_to_refactor`) or below.
-> - When ready to compile these entities into `wiki/` and synchronize the `ki` and ArcadeDB (`news`) databases, change `status: "draft"` to **`status: "approved"`** in the YAML frontmatter and run:
->   `/ingest wiki/sources/2026-10-23-un-news-sudan-drone-strikes-306-killed.md` (or `/ingest --approved`).
+> [!TIP] Phase 2 Compilation Complete (`status: "approved"`, `compiled: true`)
+> All 24 scoped primitives below have been compiled into `wiki/` and audited in [[ingestions/2026-11-01/2026-10-23-un-news-sudan-drone-strikes-306-killed]].
 
 ### 4.1. Candidate New Events (`events_to_create`: 3)
-- [[2026-10 Sudan Drone Warfare Escalation]] (`subtype: campaign`, `event_category: Explosions/Remote violence`, `fatalities_best: 306`): Nationwide October 2026 UAV strike campaign by [[Sudanese Armed Forces]] and [[Rapid Support Forces]] across [[West Kordofan]], [[Blue Nile State]], [[Abyei]], Darfur, and [[Khartoum State]], encompassing the 6–10 Oct Ghubeish/El Nuhud IDP shelter strikes (25 killed), 9 Oct Abu Shendi gold-mining IDP strike (31 killed), and 11 Oct Um Darfa hospital strike.
+- [[2026-10 Sudan Drone Warfare Escalation]] (`subtype: campaign`, `event_category: Explosions/Remote violence`, `fatalities_best: 306`): Nationwide October 2026 UAV strike campaign by [[Sudanese Armed Forces]] and [[Rapid Support Forces]] across [[West Kordofan]], [[Blue Nile State]], [[Abyei]], Darfur, and **Khartoum State**, encompassing the 6–10 Oct Ghubeish/El Nuhud IDP shelter strikes (25 killed), 9 Oct Abu Shendi gold-mining IDP strike (31 killed), and 11 Oct Um Darfa hospital strike.
 - [[2026-10-18 Dibab Double-Tap Drone Strike]] (`subtype: incident`, `event_category: Explosions/Remote violence`, `pcode: SD18`, `fatalities_best: 139`): Repeat "double-tap" drone strike on a transportation truck in [[Rapid Support Forces]]-controlled Dibab, [[West Kordofan]], killing at least 139 people.
 - [[2026-10-19 Abyei Amiet Market and Todach Drone Strike]] (`subtype: incident`, `event_category: Explosions/Remote violence`, `pcode: SD18001`, `fatalities_best: 80`): Drone attack on Amiet Market and Todach in demilitarized [[Abyei]] killing >80 civilians, injuring >27 evacuated by [[UNISFA]], and triggering a UN Security Council war crimes warning.
 
@@ -158,7 +158,7 @@ Each direct statement below is mapped to its **Speaker (`Actor: person`)**, thei
   - [[UN News]] (`subtype: media_source`, `editorial_alignment: international_org`, `baseline_admiralty_reliability: A`): Official United Nations news service publishing verified reports from UN agencies, peacekeeping missions, and the Security Council.
 - **State Forces, Armed Groups & International Bodies (`4`)**:
   - [[Sudanese Armed Forces]] (`subtype: state_force`, `acled_actor_type: State Forces`): Official state military of Sudan, attributed by [[OHCHR]] with October 2026 drone strikes including alleged strikes on IDP shelters in Ghubeish and El Nuhud ([[West Kordofan]]).
-  - [[Rapid Support Forces]] (`subtype: armed_group`, `acled_actor_type: Rebel/Paramilitary Forces`): Paramilitary force commanded by [[Mohamed Hamdan Dagalo]], attributed by [[OHCHR]] with the 9 Oct Abu Shendi IDP gold-mining drone strike and 11 Oct Um Darfa hospital strike in [[Blue Nile State]], and controlling Dibab in [[West Kordofan]].
+  - [[Rapid Support Forces]] (`subtype: armed_group`, `acled_actor_type: Rebel/Paramilitary Forces`): Paramilitary force commanded by **Mohamed Hamdan Dagalo (Hemedti)**, attributed by [[OHCHR]] with the 9 Oct Abu Shendi IDP gold-mining drone strike and 11 Oct Um Darfa hospital strike in [[Blue Nile State]], and controlling Dibab in [[West Kordofan]].
   - [[OHCHR]] (`subtype: political_body`): Office of the United Nations High Commissioner for Human Rights, primary UN human rights verification body documenting conflict casualties and IHL violations in Sudan.
   - [[UNISFA]] (`subtype: state_force`): United Nations Interim Security Force for Abyei, mandated peacekeeping force in demilitarized [[Abyei]].
 - **Quoted Persons (`person`: 5)**:
@@ -176,14 +176,18 @@ Each direct statement below is mapped to its **Speaker (`Actor: person`)**, thei
 ### 4.4. Candidate New Themes (`themes_to_create`: 1)
 - [[Drone Proliferation and Double-Tap Strike Doctrine in Sudan]] (`subtype: military_doctrine`): Structural analysis of how external arms transfers and UAV proliferation transformed drones into the leading cause of civilian deaths in Sudan by 2026, featuring "double-tap" strikes on first responders, IDP camps, markets, and hospitals.
 
-### 4.5. Candidate New Citations (`citations_to_create`: 5)
+### 4.5. Candidate New Timelines (`timelines_to_create`: 2)
+- [[2026-10 Sudan Conflict Chronicle]] (`subtype: monthly_chronicle`, `start_date: 2026-10-01`, `end_date: 2026-10-31`, `admiralty_rating: A2`): Monthly bitemporal chronicle aggregating October 2026 kinetic events, casualties (`306+` killed), and forensic statements across [[West Kordofan]], [[Blue Nile State]], and [[Abyei]].
+- [[Sudan Drone Warfare and Double-Tap Strike Timeline]] (`subtype: thematic_timeline`, `start_date: 2026-10-01`, `end_date: 2026-10-23`, `admiralty_rating: A2`): Thematic escalation ledger tracking UAV proliferation and repeat "double-tap" strike mechanics across Sudan.
+
+### 4.6. Candidate New Citations (`citations_to_create`: 5)
 - [[2026-10-23 Volker Türk Condemnation of Sudan Drone Escalation and Arms Influx]] (`subtype: official_statement`, `speaker: "[[Volker Türk]]"`, `affiliated_organization: "[[OHCHR]]"`, `speech_act: condemnation`)
 - [[2026-10-23 Seif Magango Statement on Evisceration of Civilian Infrastructure in Sudan]] (`subtype: official_statement`, `speaker: "[[Seif Magango]]"`, `affiliated_organization: "[[OHCHR]]"`, `speech_act: casualty_report`)
 - [[2026-10-23 Muhammad Farooq First-Responder Account of Amiet Market Fire]] (`subtype: eyewitness_testimony`, `speaker: "[[Muhammad Farooq]]"`, `affiliated_organization: "[[UNISFA]]"`, `speech_act: eyewitness_account`)
 - [[2026-10-23 Adebowale Ajabge Report on UNISFA Emergency Response and Todach Evacuations]] (`subtype: official_statement`, `speaker: "[[Adebowale Ajabge]]"`, `affiliated_organization: "[[UNISFA]]"`, `speech_act: casualty_report`)
 - [[2026-10-23 Angelina Musa Diaw Survivor Testimony on Amiet Market Destruction]] (`subtype: eyewitness_testimony`, `speaker: "[[Angelina Musa Diaw]]"`, `affiliated_organization: null`, `speech_act: eyewitness_account`)
 
-### 4.6. Existing Nodes to Refactor (`nodes_to_refactor`: 0)
+### 4.7. Existing Nodes to Refactor (`nodes_to_refactor`: 0)
 - *None (initial vault ingestion).*
 
 ---
@@ -197,3 +201,4 @@ Each direct statement below is mapped to its **Speaker (`Actor: person`)**, thei
 - **Planned Standalone Citations**: [[2026-10-23 Volker Türk Condemnation of Sudan Drone Escalation and Arms Influx]], [[2026-10-23 Seif Magango Statement on Evisceration of Civilian Infrastructure in Sudan]], [[2026-10-23 Muhammad Farooq First-Responder Account of Amiet Market Fire]], [[2026-10-23 Adebowale Ajabge Report on UNISFA Emergency Response and Todach Evacuations]], [[2026-10-23 Angelina Musa Diaw Survivor Testimony on Amiet Market Destruction]]
 - **Planned Locations**: [[West Kordofan]], [[Blue Nile State]], [[Abyei]]
 - **Planned Themes**: [[Drone Proliferation and Double-Tap Strike Doctrine in Sudan]]
+- **Planned Timelines**: [[2026-10 Sudan Conflict Chronicle]], [[Sudan Drone Warfare and Double-Tap Strike Timeline]]

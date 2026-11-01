@@ -35,7 +35,8 @@ Operate a **two-phase, human-reviewed ingestion pipeline** for primary evidence 
   - Scope the publishing **`source_outlet`** (e.g., `[[UN News]]`) as an `Actor` (`subtype: "media_source"`).
   - Scope every **named speaker or eyewitness** quoted in Section 3 as an `Actor` (`subtype: "person"`) with `role_title` and `affiliated_organization`.
   - Scope every **key verbatim statement or eyewitness testimony** in Section 3 into `citations_to_create` (`wiki/citations/`).
-  - Separate candidates into `events_to_create` ($E$), `actors_to_create` ($A$), `locations_to_create` ($L$), `themes_to_create` ($T$), `citations_to_create` ($C$), and `nodes_to_refactor` ($K$).
+  - **Mandatory Monthly Chronicle & Campaign/Thematic Timeline Rule**: For every calendar month `YYYY-MM` covered by candidate events in the source, check whether `[[YYYY-MM Sudan Conflict Chronicle]]` exists in `wiki/timelines/`. If it does not exist, add `[[YYYY-MM Sudan Conflict Chronicle]]` (`subtype: "monthly_chronicle"`) to `timelines_to_create`; if it already exists, add it to `nodes_to_refactor`. Also scope any longitudinal `campaign_timeline`, `thematic_timeline`, or `diplomatic_timeline`.
+  - Separate candidates into `events_to_create` ($E$), `actors_to_create` ($A$), `locations_to_create` ($L$), `themes_to_create` ($T$), `timelines_to_create` ($TL$), `citations_to_create` ($C$), and `nodes_to_refactor` ($K$).
 
 ### Step 1.3: Draft Source Note Creation (`wiki/sources/<source-slug>.md`)
 Author `wiki/sources/<source-slug>.md` with `status: "draft"` and `compiled: false`:
@@ -67,6 +68,8 @@ actors_to_create:
   - "[[Quoted Person Name]]"
 locations_to_create: []
 themes_to_create: []
+timelines_to_create:
+  - "[[YYYY-MM Sudan Conflict Chronicle]]"
 citations_to_create:
   - "[[YYYY-MM-DD Quoted Person Name Statement Topic]]"
 nodes_to_refactor: []
@@ -80,12 +83,12 @@ Include five mandatory sections in `wiki/sources/<source-slug>.md`:
 1. `## 1. 5W1H Source Intelligence Summary & Provenance` (including `> [!NOTE] Source Provenance & Admiralty Assessment` callout linking to `source_outlet`)
 2. `## 2. Atomic Extracted Claims Table` (Claim ID, Atomic Claim, 5W1H Tuple, Modality [`confirmed | probable | alleged | denied | debunked`], Target Wiki Node)
 3. `## 3. Bilingual Direct Citations & Forensic Evidence` (preserving both English translation and original Arabic/foreign script in blockquotes, and explicitly linking each blockquote to its `[[Speaker Person Actor]]`, their `[[Affiliated Organization]]`, and its standalone `[[Citation Entity]]` in `wiki/citations/`)
-4. `## 4. Scoped Ingestion Plan (Pending Approval)` (listing Candidate New Events, Actors [Forces, Organizations, `source_outlet`, and `person` speakers], Locations, Themes/Timelines, Standalone Citations, and Existing Nodes to Refactor)
+4. `## 4. Scoped Ingestion Plan (Pending Approval)` (listing Candidate New Events, Actors [Forces, Organizations, `source_outlet`, and `person` speakers], Locations, Themes, Timelines [`monthly_chronicle`, `campaign_timeline`, `thematic_timeline`], Standalone Citations, and Existing Nodes to Refactor)
 5. `## 5. Related Primitives`
 
 ### Step 1.4: Log & Halt for Review
 - Append to `wiki/log.md`:
-  `## [YYYY-MM-DD] ingest-draft | <source-slug> | Created draft source note in wiki/sources/<source-slug>.md (status: draft) with scoped manifest (E events, A actors, L locations, T themes, C citations, K refactors); awaiting approval.`
+  `## [YYYY-MM-DD] ingest-draft | <source-slug> | Created draft source note in wiki/sources/<source-slug>.md (status: draft) with scoped manifest (E events, A actors, L locations, T themes, TL timelines, C citations, K refactors); awaiting approval.`
 - **STOP**: Do NOT create or modify any notes in `wiki/events/`, `wiki/actors/`, `wiki/locations/`, `wiki/themes/`, `wiki/timelines/`, `wiki/citations/`, or `wiki/ingestions/`. Do NOT update `wiki/index.md` or `wiki/overview.md`, and do NOT run `ingest_to_arcadedb.py` or `sync_vault_graph.sh`.
 - Inform the user that `wiki/sources/<source-slug>.md` is ready for review in `status: "draft"`.
 
@@ -96,7 +99,7 @@ Include five mandatory sections in `wiki/sources/<source-slug>.md`:
 ### Step 2.1: Approval & State Verification
 - Read `wiki/sources/<source-slug>.md` (or scan all `wiki/sources/*.md` if invoked with `--approved`).
 - Verify `status: "approved"` and `compiled: false`.
-- Read the approved target arrays (`events_to_create`, `actors_to_create`, `locations_to_create`, `themes_to_create`, `citations_to_create`, `nodes_to_refactor`) and Section 2/3 from `wiki/sources/<source-slug>.md`.
+- Read the approved target arrays (`events_to_create`, `actors_to_create`, `locations_to_create`, `themes_to_create`, `timelines_to_create`, `citations_to_create`, `nodes_to_refactor`) and Section 2/3 from `wiki/sources/<source-slug>.md`.
 
 ### Step 2.2: Multi-Node Compilation & Dual-Flow CoT Enforcement
 
@@ -104,7 +107,7 @@ Include five mandatory sections in `wiki/sources/<source-slug>.md`:
 - **Zero ASCII Box Art**: Use GFM tables, Mermaid diagrams, and Obsidian callouts (`> [!NOTE]`).
 - **Clean Wikilink Invariant**: Never wrap wikilinks in inline code backticks (`` `[[...]]` ``).
 - **Table Pipe Invariant**: Escape any internal pipe inside a wikilink in a GFM table as `\|` (e.g., `| [[Target\|Alias]] |`) or use unaliased `[[Target]]`.
-- **Shortest Canonical Wikilink Invariant**: Link to events, actors, locations, themes, timelines, and citations using direct titles (`[[El Fasher]]`, `[[Volker Türk]]`, `[[2026-10-23 Volker Türk Condemnation of Sudan Drone Escalation and Arms Influx]]`), NEVER with directory prefixes. Link to sources as `[[sources/<source-slug>]]`.
+- **Shortest Canonical Wikilink Invariant**: Link to events, actors, locations, themes, timelines, and citations using direct titles (`[[El Fasher]]`, `[[Volker Türk]]`, `[[2026-10 Sudan Conflict Chronicle]]`, `[[2026-10-23 Volker Türk Condemnation of Sudan Drone Escalation and Arms Influx]]`), NEVER with directory prefixes. Link to sources as `[[sources/<source-slug>]]`.
 - **Mermaid Clean Label Invariant**: Never place `[[...]]` or unquoted special characters (`:&()`) inside Mermaid node labels.
 
 #### Ingest-Time Dual-Flow CoT Section Arcs (Axiom 9)
@@ -139,7 +142,14 @@ Structure every newly created or refactored note according to its canonical epis
    - `## 4. Humanitarian, Regional & Diplomatic Consequences` (`IMPACT_ASSESSMENT`)
    - `## 5. Empirical Debates, Uncertainties & Competing Analyses` (`EMPIRICAL_BOUNDARY`)
    - `## Related Primitives` (`SYNTHESIS_CATALOG`)
-5. **Citation Notes (`wiki/citations/`, `type: citation`, `subtype: official_statement | eyewitness_testimony | military_communique | forensic_finding | diplomatic_resolution`)**:
+5. **Timeline Notes (`wiki/timelines/`, `type: timeline`, `subtype: monthly_chronicle | campaign_timeline | thematic_timeline | diplomatic_timeline`)**:
+   - Include `start_date`, `end_date`, `time_horizon`, `theatres_covered`, `events_chronicled`, `citations_chronicled`, `actors_involved`, `themes_linked`, `cumulative_fatalities_low`, `cumulative_fatalities_best`, `cumulative_fatalities_high`, and `admiralty_rating` in frontmatter.
+   - `## 1. Temporal Scope, Theatre Coverage & Strategic Periodization` (`TIMELINE_ANCHOR`)
+   - `## 2. Chronological Event & Citation Ledger (Bitemporal Sequence)` (`CHRONOLOGICAL_LEDGER`)
+   - `## 3. Causal Escalation Chains, Turning Points & Tempo Analysis` (`CAUSAL_ESCALATION`)
+   - `## 4. Cumulative Humanitarian, Territorial & Attribution Telemetry` (`CUMULATIVE_TELEMETRY`)
+   - `## Related Primitives` (`SYNTHESIS_CATALOG`)
+6. **Citation Notes (`wiki/citations/`, `type: citation`, `subtype: official_statement | eyewitness_testimony | military_communique | forensic_finding | diplomatic_resolution`)**:
    - Lead Callout: `> [!QUOTE] Forensic Citation Anchor` (Speaker, Role, Affiliated Organization, Date, Originating Source & Outlet, Speech Act, Admiralty Rating).
    - `## 1. Speaker Provenance, Institutional Role & Context` (`CITATION_ANCHOR`)
    - `## 2. Verbatim Bilingual Citation & Forensic Text` (`VERBATIM_EVIDENCE`)
@@ -147,13 +157,13 @@ Structure every newly created or refactored note according to its canonical epis
    - `## Related Primitives` (`SYNTHESIS_CATALOG`)
 
 ### Step 2.3: Ingestion Dossier & Source Finalization
-- Author a standalone audit dossier in `wiki/ingestions/YYYY-MM-DD/<source-slug>.md` (`type: "ingestion"`), listing `events_created`, `actors_created`, `locations_created`, `themes_created`, `citations_created`, `nodes_refactored`, and `contradictions_logged`.
+- Author a standalone audit dossier in `wiki/ingestions/YYYY-MM-DD/<source-slug>.md` (`type: "ingestion"`), listing `events_created`, `actors_created`, `locations_created`, `themes_created`, `timelines_created`, `citations_created`, `nodes_refactored`, and `contradictions_logged`.
 - Update `wiki/sources/<source-slug>.md` frontmatter to `compiled: true` and `compiled_at: YYYY-MM-DD`.
 
 ### Step 2.4: Batch Catalog, Ledger & Graph Database Synchronization
 - Register new actors (including quoted `person` actors and `media_source` outlets), locations (with P-Codes), and Arabic/English aliases in `wiki/glossary.md`.
-- Add the approved source note, standalone citation notes, and all newly created domain notes with 1-line summaries to `wiki/index.md`.
+- Add the approved source note, timeline notes, standalone citation notes, and all newly created domain notes with 1-line summaries to `wiki/index.md`.
 - Update `wiki/overview.md` (Living SITREP) if territorial control, humanitarian indicators, or major narrative contradictions shifted.
 - Synchronize the `ki` index and ArcadeDB (`news`) multi-model graph database via `./scripts/sync_vault_graph.sh` and `python3 scripts/ingest_to_arcadedb.py`, and verify `ki status -v -C wiki` reports `✓ READY`.
 - Append to `wiki/log.md`:
-  `## [YYYY-MM-DD] ingest-compile | <source-slug> | Compiled approved source into N notes (E events, A actors, L locations, T themes, C citations, K refactors); generated dossier in wiki/ingestions/YYYY-MM-DD/; updated index, SITREP & glossary; synced ki & ArcadeDB.`
+  `## [YYYY-MM-DD] ingest-compile | <source-slug> | Compiled approved source into N notes (E events, A actors, L locations, T themes, TL timelines, C citations, K refactors); generated dossier in wiki/ingestions/YYYY-MM-DD/; updated index, SITREP & glossary; synced ki & ArcadeDB.`

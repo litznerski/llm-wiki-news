@@ -24,9 +24,12 @@ Instead of imposing static extraction limits or creating duplicate event nodes a
      - *Source Outlet (`subtype: "media_source"`)*: The originating media outlet or news agency (`source_outlet`, e.g., `[[UN News]]`, `[[Radio Dabanga]]`, `[[Sudan Tribune]]`) MUST always be scoped as an `Actor` (`subtype: "media_source"`). If it does not exist in `wiki/actors/`, add it to `actors_to_create`; if it already exists, add it to `nodes_to_refactor`.
      - *Quoted Persons (`subtype: "person"`)*: Every named official, military commander, spokesperson, or key eyewitness delivering a direct citation or testimony in Section 3 (`## 3. Bilingual Direct Citations & Forensic Evidence`) MUST be scoped as an `Actor` (`subtype: "person"`) with `role_title` (e.g., `"UN High Commissioner for Human Rights"`, `"Commander, UNISFA Pakistani Battalion"`) and `affiliated_organization` (e.g., `"[[OHCHR]]"`, `"[[UNISFA]]"`).
    - **Candidate Locations (`wiki/locations/`)**: Sudan States (`state_adm1`), Localities (`locality_adm2`), Cities/Towns (`city_town`), Neighborhoods/Sites (`neighborhood_site`), IDP Camps (`idp_camp`), Infrastructure (`infrastructure`), and Border Crossings (`border_crossing`).
-   - **Candidate Themes & Timelines (`wiki/themes/`, `wiki/timelines/`)**: Enduring structural drivers ("Why?"), war economy supply chains, military doctrines, or monthly chronological ledgers.
+   - **Candidate Themes (`wiki/themes/`)**: Enduring structural drivers ("Why?"), war economy supply chains, or military doctrines.
+   - **Candidate Timelines (`wiki/timelines/`, `type: "timeline"`)**:
+     - *Mandatory Monthly Chronicle (`subtype: "monthly_chronicle"`)*: For every calendar month `YYYY-MM` covered by candidate events in the source, check whether `[[YYYY-MM Sudan Conflict Chronicle]]` exists in `wiki/timelines/`. If it does not exist, add `[[YYYY-MM Sudan Conflict Chronicle]]` to `timelines_to_create`. If it already exists, add `[[YYYY-MM Sudan Conflict Chronicle]]` to `nodes_to_refactor` so the newly extracted events, dated sub-incidents, and citations are appended to its Bitemporal Ledger.
+     - *Campaign, Thematic & Diplomatic Timelines (`subtype: campaign_timeline | thematic_timeline | diplomatic_timeline`)*: Scope a dedicated longitudinal timeline whenever the source documents a multi-incident campaign corridor, a dated doctrinal escalation sequence (e.g., `[[Sudan Drone Warfare and Double-Tap Strike Timeline]]`), or a multi-step diplomatic/accountability track.
    - **Candidate Standalone Citations (`wiki/citations/`, `type: "citation"`)**: Every key direct statement, official condemnation, military communiqué, or eyewitness testimony extracted in Section 3 (`## 3. Bilingual Direct Citations & Forensic Evidence`) is scoped into `citations_to_create` as a standalone note `[[YYYY-MM-DD <Speaker Name> <Concise Statement Topic>]]` (`subtype: official_statement | eyewitness_testimony | military_communique | forensic_finding | diplomatic_resolution`), linking the speaker (`Actor: person`), their `affiliated_organization`, the `source_note`, the `source_outlet`, and the referenced events/locations/themes.
-   - **Existing Nodes to Refactor**: Notes already present in `wiki/` where the new source introduces corroborating evidence, updated casualty/displacement counts, shifts in territorial control, or **competing/contradictory narratives**.
+   - **Existing Nodes to Refactor**: Notes already present in `wiki/` where the new source introduces corroborating evidence, updated casualty/displacement counts, shifts in territorial control, new entries for an existing `[[YYYY-MM Sudan Conflict Chronicle]]`, or **competing/contradictory narratives**.
 
 ### 2. 48-Hour Spatio-Temporal Event Deduplication Rule
 Before proposing any **New Event**, verify whether an existing Event note in `wiki/events/` covers the same real-world incident:
@@ -36,13 +39,13 @@ $$\lvert t_{\text{valid}}(\text{candidate}) - t_{\text{valid}}(\text{existing}) 
 
 ### 3. News & OSINT Significance Filtering
 Filter candidate nodes using three qualitative criteria (must score $\ge 0.70$ on composite significance):
-- **5W1H Evidentiary Specificity**: Does the candidate event, actor, location, or citation possess concrete spatio-temporal anchoring, identifiable actors/speakers, or verifiable impact?
-- **Network & Causal Interconnectivity**: Can this node connect to $\ge 2$ existing or planned nodes (e.g., linking a `Citation` to its `[[Speaker]]`, `[[Originating Source]]`, and `[[Target Event]]`)?
+- **5W1H Evidentiary Specificity**: Does the candidate event, actor, location, timeline, or citation possess concrete spatio-temporal anchoring, identifiable actors/speakers, or verifiable impact?
+- **Network & Causal Interconnectivity**: Can this node connect to $\ge 2$ existing or planned nodes (e.g., linking a `Timeline` via `[:CHRONICLES]` to its ordered `Event` and `Citation` nodes)?
 - **Sudan Domain Relevance**: Does the item directly advance intelligence tracking across kinetic frontlines, humanitarian crisis indicators, political economy, or OSINT verification?
 
 ### 4. Generate & Persist the Scoped Ingestion Manifest
 Persist the candidate node lists in two places inside the Phase 1 draft source note (`wiki/sources/<source-slug>.md`):
-1. **YAML Frontmatter Arrays**: `events_to_create`, `actors_to_create`, `locations_to_create`, `themes_to_create`, `citations_to_create`, `nodes_to_refactor`.
+1. **YAML Frontmatter Arrays**: `events_to_create`, `actors_to_create`, `locations_to_create`, `themes_to_create`, `timelines_to_create`, `citations_to_create`, `nodes_to_refactor`.
 2. **Markdown Body (`## 4. Scoped Ingestion Plan (Pending Approval)`)**:
 
 ```markdown
@@ -62,14 +65,18 @@ Persist the candidate node lists in two places inside the Phase 1 draft source n
 ### 4.3. Candidate New Locations (L)
 - [[Location Name]] (`pcode: SD...`, `subtype: city_town | ...`): Admin hierarchy and current control status.
 
-### 4.4. Candidate New Themes / Timelines (T)
-- [[Theme or Timeline Title]]: Structural driver ("Why?") or chronological scope.
+### 4.4. Candidate New Themes (T)
+- [[Theme Title]] (`subtype: military_doctrine | war_economy | ...`): Structural driver ("Why?").
 
-### 4.5. Candidate New Citations (C)
+### 4.5. Candidate New Timelines (TL)
+- [[YYYY-MM Sudan Conflict Chronicle]] (`subtype: monthly_chronicle`): Bitemporal monthly ledger of all dated incidents and citations.
+- [[Campaign or Thematic Timeline Title]] (`subtype: campaign_timeline | thematic_timeline | diplomatic_timeline`): Longitudinal escalation sequence.
+
+### 4.6. Candidate New Citations (C)
 - [[YYYY-MM-DD Speaker Name Statement Topic]] (`subtype: official_statement | eyewitness_testimony | ...`, `speaker: "[[Person Name]]"`): Direct verbatim statement or forensic testimony from Section 3.
 
-### 4.6. Existing Nodes to Refactor (K)
-- [[Existing Note]]: Specific update (e.g., merge corroborating source, update casualty range, or add `ATTRIBUTION_CONFLICT` to Section 5 Contradiction Matrix).
+### 4.7. Existing Nodes to Refactor (K)
+- [[Existing Note]]: Specific update (e.g., merge corroborating source, append new dated rows to an existing `[[YYYY-MM Sudan Conflict Chronicle]]`, update casualty range, or add `ATTRIBUTION_CONFLICT` to Section 5 Contradiction Matrix).
 ```
 
 ### 5. Hand-off to Phase 1 Source Distillation

@@ -28,3 +28,13 @@ All operations follow the format:
 ## [2026-11-01] task | Extention for ingestion | Authored Direct Citations Person Actors and Source Outlet Schema Extension Plan in _input/drafts/; updated task status to done, archived task file, and moved card to Done on infrastructure board.
 
 ## [2026-11-01] refactor | Citation, Person Actor & Source Outlet Schema Extension | Created wiki/citations/; updated AGENTS.md, .agent/skills/{wiki-scope,wiki-ingest}/SKILL.md, scripts/{bootstrap_arcadedb,ingest_to_arcadedb,lint_vault}.py, site/src/{config/wiki.config.ts,content.config.ts}, and refactored wiki/sources/2026-10-23-un-news-sudan-drone-strikes-306-killed.md with UN News (media_source), 5 quoted person actors, and 5 standalone citations.
+
+## [2026-11-01] ingest-compile | 2026-10-23-un-news-sudan-drone-strikes-306-killed | Compiled approved source into 22 notes (3 events, 10 actors, 3 locations, 1 theme, 5 citations, 0 refactors); generated dossier in wiki/ingestions/2026-11-01/; updated index, SITREP & glossary; synced ArcadeDB (210 vertices, 1263 edges, FastRP 768d vectors & PageRank/Betweenness/Louvain OLAP).
+
+## [2026-11-01] task | Wiki Timelines | Authored Wiki Timelines Architecture and Ingestion Integration Plan in _input/drafts/; updated task status to done, archived task file, and moved card to Done on infrastructure board.
+
+## [2026-11-01] refactor | Wiki Timelines Bitemporal Spine & Backfill | Updated AGENTS.md, .agent/skills/{wiki-scope,wiki-ingest}/SKILL.md, and scripts/{lint_vault,bootstrap_arcadedb,ingest_to_arcadedb}.py with the 5-stage Timeline Micro-CoT arc, Mandatory Monthly Chronicle rule, and (:Timeline)-[:CHRONICLES]->(:Event|:Citation) + sequential [:PRECEDES] edges; compiled wiki/timelines/{2026-10 Sudan Conflict Chronicle,Sudan Drone Warfare and Double-Tap Strike Timeline}.md and synced ArcadeDB.
+
+## [2026-11-01] ingest-draft | 2026-10-31-unsg-spokesperson-escalating-drone-attacks-sudan | Created draft source note in wiki/sources/2026-10-31-unsg-spokesperson-escalating-drone-attacks-sudan.md (status: draft, admiralty_rating: A1) with scoped manifest (0 events, 4 actors, 0 locations, 0 themes, 0 timelines, 2 citations, 8 refactors); awaiting approval.
+
+## [2026-11-01] ingest-compile | 2026-10-31-unsg-spokesperson-escalating-drone-attacks-sudan | Compiled approved source into 6 new notes (0 events, 4 actors, 0 locations, 0 themes, 0 timelines, 2 citations) and refactored 8 existing nodes; generated dossier in wiki/ingestions/2026-11-01/; updated index, SITREP & glossary; synced ArcadeDB.

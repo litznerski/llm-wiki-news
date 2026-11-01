@@ -259,6 +259,10 @@ def map_to_toulmin_role(step_type: str, doc_type: str = "event") -> str:
         "CITATION_ANCHOR": "GROUNDS",
         "VERBATIM_EVIDENCE": "WARRANT",
         "FORENSIC_GROUNDING": "CLAIM",
+        "TIMELINE_ANCHOR": "GROUNDS",
+        "CHRONOLOGICAL_LEDGER": "WARRANT",
+        "CAUSAL_ESCALATION": "CLAIM",
+        "CUMULATIVE_TELEMETRY": "BACKING",
         "SYNTHESIS_CATALOG": "BACKING",
     }
     return mapping.get(step_type, "GROUNDS")
@@ -276,6 +280,8 @@ def classify_section(doc_title: str, doc_type: str, heading_text: str, content: 
             return "LOCATION_ANCHOR", ["LocationAnchor", "Summary"]
         if doc_type == "citation":
             return "CITATION_ANCHOR", ["CitationAnchor", "Summary"]
+        if doc_type == "timeline":
+            return "TIMELINE_ANCHOR", ["TimelineAnchor", "Summary"]
         return "DEFINITIONAL_ANCHOR", ["DefinitionalAnchor", "Summary"]
 
     if re.search(r"related primitives|related notes|synthesis catalog", h_lower):
@@ -337,6 +343,16 @@ def classify_section(doc_title: str, doc_type: str, heading_text: str, content: 
         if re.search(r"3[\.\:]|substantive claim|event grounding|forensic grounding", h_lower):
             return "FORENSIC_GROUNDING", ["ForensicGrounding"]
 
+    elif doc_type == "timeline":
+        if re.search(r"1[\.\:]|temporal scope|theatre coverage|periodization", h_lower):
+            return "TIMELINE_ANCHOR", ["TimelineAnchor"]
+        if re.search(r"2[\.\:]|chronological event|citation ledger|bitemporal", h_lower):
+            return "CHRONOLOGICAL_LEDGER", ["ChronologicalLedger"]
+        if re.search(r"3[\.\:]|causal escalation|turning point|tempo", h_lower):
+            return "CAUSAL_ESCALATION", ["CausalEscalation"]
+        if re.search(r"4[\.\:]|cumulative humanitarian|telemetry", h_lower):
+            return "CUMULATIVE_TELEMETRY", ["CumulativeTelemetry"]
+
     return "NARRATIVE_STEP", []
 
 
@@ -353,6 +369,12 @@ def infer_transition_rule(cat1: str, cat2: str) -> Tuple[str, str, float]:
         return ("verbatim_quote_grounding", "Grounds speaker identity and institutional capacity in verbatim bilingual evidence.", 1.0)
     if cat1 == "VERBATIM_EVIDENCE" and cat2 == "FORENSIC_GROUNDING":
         return ("forensic_claim_projection", "Projects verbatim testimony onto specific conflict events, actors, and IHL claims.", 1.0)
+    if cat1 == "TIMELINE_ANCHOR" and cat2 == "CHRONOLOGICAL_LEDGER":
+        return ("bitemporal_ledger_unfolding", "Unpacks the temporal horizon into a bitemporal chronological ledger of events and citations.", 1.0)
+    if cat1 == "CHRONOLOGICAL_LEDGER" and cat2 == "CAUSAL_ESCALATION":
+        return ("causal_escalation_synthesis", "Synthesizes chronological events into causal escalation chains and tempo shifts.", 1.0)
+    if cat1 == "CAUSAL_ESCALATION" and cat2 == "CUMULATIVE_TELEMETRY":
+        return ("cumulative_telemetry_aggregation", "Aggregates cumulative casualty bounds, territorial shifts, and attribution telemetry.", 1.0)
     if cat2 == "SYNTHESIS_CATALOG":
         return ("synthesis_catalog", "Cross-references related events, actors, locations, themes, citations, and sources.", 1.0)
     return ("narrative_progression", "Progresses conflict intelligence analysis across sections.", 0.90)
@@ -574,7 +596,7 @@ def run_direct_ingestion(client: ArcadeDBClient, purge: bool = False, skip_olap:
             "PROGRESSES_TO", "NEXT_SECTION", "HAS_SECTION", "HAS_DIAGRAM", "TAGGED_WITH", "LINKS_TO", "CITES",
             "OCCURRED_AT", "LOCATED_IN", "PERPETRATED_BY", "TARGETED", "PARTICIPATED_IN", "COMMANDED_BY",
             "ALLIED_WITH", "SPONSORED_BY", "AFFILIATED_WITH", "STATED", "CONTAINS_CITATION", "TESTIFIES_TO",
-            "PUBLISHED_BY", "PRECEDES", "TRIGGERS", "RETALIATES_FOR", "PART_OF_CAMPAIGN",
+            "PUBLISHED_BY", "CHRONICLES", "PRECEDES", "TRIGGERS", "RETALIATES_FOR", "PART_OF_CAMPAIGN",
             "MOTIVATED_BY", "CONTROLS_TERRITORY", "DISPLACES_POPULATION", "EMPIRICALLY_GROUNDS",
             "CORROBORATES", "CONTRADICTS_CLAIM", "ATTRIBUTES_BLAME_TO", "DEBUNKS"
         ]:
@@ -667,6 +689,12 @@ def run_direct_ingestion(client: ArcadeDBClient, purge: bool = False, skip_olap:
             "actors_referenced": [clean_wikilink_str(x) for x in (fm.get("actors_referenced", []) if isinstance(fm.get("actors_referenced"), list) else []) if clean_wikilink_str(x)],
             "locations_referenced": [clean_wikilink_str(x) for x in (fm.get("locations_referenced", []) if isinstance(fm.get("locations_referenced"), list) else []) if clean_wikilink_str(x)],
             "themes_referenced": [clean_wikilink_str(x) for x in (fm.get("themes_referenced", []) if isinstance(fm.get("themes_referenced"), list) else []) if clean_wikilink_str(x)],
+            "start_date": str(fm.get("start_date", "")),
+            "end_date": str(fm.get("end_date", "")),
+            "time_horizon": str(fm.get("time_horizon", "month")),
+            "cumulative_fatalities_best": int(fm.get("cumulative_fatalities_best", 0) or 0),
+            "events_chronicled": [clean_wikilink_str(x) for x in (fm.get("events_chronicled", []) if isinstance(fm.get("events_chronicled"), list) else []) if clean_wikilink_str(x)],
+            "citations_chronicled": [clean_wikilink_str(x) for x in (fm.get("citations_chronicled", []) if isinstance(fm.get("citations_chronicled"), list) else []) if clean_wikilink_str(x)],
             "reliability_score": float(fm.get("reliability_score", 0.85)),
             "admiralty_rating": str(fm.get("admiralty_rating", "B2")),
             "pcode": str(fm.get("pcode", "")),
@@ -820,9 +848,18 @@ def run_direct_ingestion(client: ArcadeDBClient, purge: bool = False, skip_olap:
                 )
             elif vclass == "Timeline":
                 client.execute_command(
-                    "UPDATE Timeline SET subtype = :subtype, last_updated = :lu UPSERT WHERE title = :title",
+                    "UPDATE Timeline SET subtype = :subtype, start_date = :sdate, end_date = :edate, "
+                    "time_horizon = :thorizon, cumulative_fatalities_best = :cfat, "
+                    "admiralty_rating = :adm, reliability_score = :rel, "
+                    "last_updated = :lu UPSERT WHERE title = :title",
                     language="sql",
-                    params={"title": title, "subtype": meta["subtype"], "lu": meta["last_updated"]}
+                    params={
+                        "title": title, "subtype": meta["subtype"],
+                        "sdate": meta["start_date"], "edate": meta["end_date"],
+                        "thorizon": meta["time_horizon"], "cfat": meta["cumulative_fatalities_best"],
+                        "adm": meta["admiralty_rating"], "rel": meta["reliability_score"],
+                        "lu": meta["last_updated"]
+                    }
                 )
             elif vclass == "Citation":
                 client.execute_command(
@@ -922,7 +959,7 @@ def run_direct_ingestion(client: ArcadeDBClient, purge: bool = False, skip_olap:
         return node_rid_map.get(canon) or node_rid_map.get(key)
 
     # 5. Connect Graph Relationships
-    print("\n[5/5] Connecting HAS_SECTION, PROGRESSES_TO, LINKS_TO, PUBLISHED_BY, AFFILIATED_WITH, STATED, CONTAINS_CITATION, TESTIFIES_TO, and EMPIRICALLY_GROUNDS edges...")
+    print("\n[5/5] Connecting HAS_SECTION, PROGRESSES_TO, LINKS_TO, PUBLISHED_BY, AFFILIATED_WITH, STATED, CONTAINS_CITATION, TESTIFIES_TO, CHRONICLES, PRECEDES, and EMPIRICALLY_GROUNDS edges...")
     edge_batch: List[str] = []
 
     for sec in sections_records:
@@ -981,7 +1018,35 @@ def run_direct_ingestion(client: ArcadeDBClient, purge: bool = False, skip_olap:
                     "warrant": f"{title} serves as {meta.get('role_title', 'member')} at {meta['affiliated_organization']}"
                 }))
 
-        # 3. Citation edges: Speaker -> STATED -> Citation, Source -> CONTAINS_CITATION -> Citation, Citation -> TESTIFIES_TO -> Event/Actor/Location/Theme
+        # 3. Timeline -> CHRONICLES -> Event/Citation & sequential Event -> PRECEDES -> Event
+        if meta["type"] == "timeline":
+            ev_rids: List[str] = []
+            for idx, ev_name in enumerate(meta.get("events_chronicled", []), 1):
+                ev_rid = resolve_target_rid(ev_name)
+                if ev_rid and ev_rid != doc_rid:
+                    ev_rids.append(ev_rid)
+                    edge_batch.append(json.dumps({
+                        "@type": "edge", "@class": "CHRONICLES",
+                        "@from": doc_rid, "@to": ev_rid,
+                        "sequence_order": idx
+                    }))
+            for idx in range(len(ev_rids) - 1):
+                if ev_rids[idx] != ev_rids[idx + 1]:
+                    edge_batch.append(json.dumps({
+                        "@type": "edge", "@class": "PRECEDES",
+                        "@from": ev_rids[idx], "@to": ev_rids[idx + 1],
+                        "timeline_context": title
+                    }))
+            for c_idx, cit_name in enumerate(meta.get("citations_chronicled", []), 1):
+                cit_rid = resolve_target_rid(cit_name)
+                if cit_rid and cit_rid != doc_rid:
+                    edge_batch.append(json.dumps({
+                        "@type": "edge", "@class": "CHRONICLES",
+                        "@from": doc_rid, "@to": cit_rid,
+                        "sequence_order": c_idx
+                    }))
+
+        # 4. Citation edges: Speaker -> STATED -> Citation, Source -> CONTAINS_CITATION -> Citation, Citation -> TESTIFIES_TO -> Event/Actor/Location/Theme
         if meta["type"] == "citation":
             if meta.get("speaker"):
                 spk_rid = resolve_target_rid(meta["speaker"])
@@ -1014,7 +1079,7 @@ def run_direct_ingestion(client: ArcadeDBClient, purge: bool = False, skip_olap:
                         "speech_act": meta.get("speech_act", "official_statement")
                     }))
 
-        # 4. Source -> EMPIRICALLY_GROUNDS -> Domain Node
+        # 5. Source -> EMPIRICALLY_GROUNDS -> Domain Node
         for s_ref in meta.get("sources", []):
             s_clean = clean_wikilink_str(s_ref)
             src_rid = resolve_target_rid(s_clean)

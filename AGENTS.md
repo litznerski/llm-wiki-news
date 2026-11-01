@@ -66,13 +66,19 @@ The `wiki/` directory is your Codebase.
      4. `4. Humanitarian, Regional & Diplomatic Consequences` (`IMPACT_ASSESSMENT`)
      5. `5. Empirical Debates, Uncertainties & Competing Analyses` (`EMPIRICAL_BOUNDARY`)
      6. `## Related Primitives` (`SYNTHESIS_CATALOG`)
+   - **Timeline Notes (`wiki/timelines/`, `type: timeline`, `subtype: monthly_chronicle | campaign_timeline | thematic_timeline | diplomatic_timeline`)**:
+     1. `1. Temporal Scope, Theatre Coverage & Strategic Periodization` (`TIMELINE_ANCHOR`)
+     2. `2. Chronological Event & Citation Ledger (Bitemporal Sequence)` (`CHRONOLOGICAL_LEDGER`)
+     3. `3. Causal Escalation Chains, Turning Points & Tempo Analysis` (`CAUSAL_ESCALATION`)
+     4. `4. Cumulative Humanitarian, Territorial & Attribution Telemetry` (`CUMULATIVE_TELEMETRY`)
+     5. `## Related Primitives` (`SYNTHESIS_CATALOG`)
    - **Citation Notes (`wiki/citations/`, `type: citation`, `subtype: official_statement | eyewitness_testimony | military_communique | forensic_finding | diplomatic_resolution`)**:
      1. `1. Speaker Provenance, Institutional Role & Context` (`CITATION_ANCHOR`)
      2. `2. Verbatim Bilingual Citation & Forensic Text` (`VERBATIM_EVIDENCE`)
      3. `3. Substantive Claims, Event Grounding & Contradiction Impact` (`FORENSIC_GROUNDING`)
      4. `## Related Primitives` (`SYNTHESIS_CATALOG`)
    - **Macro-CoT Relational Handshakes**:
-     - *Causal & Temporal Flow*: `[:PRECEDES]`, `[:TRIGGERS]`, `[:RETALIATES_FOR]`, `[:PART_OF_CAMPAIGN]`, `[:MOTIVATED_BY]`.
+     - *Causal & Temporal Flow*: `[:CHRONICLES]`, `[:PRECEDES]`, `[:TRIGGERS]`, `[:RETALIATES_FOR]`, `[:PART_OF_CAMPAIGN]`, `[:MOTIVATED_BY]`.
      - *Actor Agency & Participation*: `[:PERPETRATED_BY]`, `[:TARGETED]`, `[:PARTICIPATED_IN]`, `[:COMMANDED_BY]`, `[:ALLIED_WITH]`, `[:SPONSORED_BY]`, `[:DEFECTED_TO]`, `[:AFFILIATED_WITH]`, `[:PUBLISHED_BY]`, `[:STATED]`.
      - *Spatio-Political*: `[:OCCURRED_AT]`, `[:LOCATED_IN]`, `[:CONTROLS_TERRITORY]`, `[:DISPLACES_POPULATION]`.
      - *Provenance, Citation & Contradiction*: `[:EMPIRICALLY_GROUNDS]`, `[:CONTAINS_CITATION]`, `[:TESTIFIES_TO]`, `[:CORROBORATES]`, `[:CONTRADICTS_CLAIM]`, `[:ATTRIBUTES_BLAME_TO]`, `[:DEBUNKS]`.
@@ -106,7 +112,7 @@ The `wiki/` directory is your Codebase.
   - `wiki/actors/`: Acting entities (State Forces, Armed Groups, Political Bodies, Civil Society/ERRs, Quoted Persons with institutional roles, and Media Source Outlets).
   - `wiki/locations/`: Geopolitical nodes anchored to UN OCHA Sudan P-Codes (`ADM1` States, `ADM2` Localities, Cities, IDP Camps, Infrastructure, Border Crossings).
   - `wiki/themes/`: Enduring structural conflict drivers, war economy mechanics, and doctrines ("Why?").
-  - `wiki/timelines/`: Monthly chronicles and campaign timelines ("Date & Time").
+  - `wiki/timelines/`: Monthly chronicles (`YYYY-MM Sudan Conflict Chronicle`), campaign timelines, thematic timelines, and diplomatic timelines tracking Bitemporal sequences ($t_{\text{valid}}$ vs. $t_{\text{reported}}$).
   - `wiki/citations/`: Standalone verbatim citations, official statements, military communiqués, and eyewitness testimonies linked to their speaker (`Actor: person`) and originating `Source`.
   - `wiki/sources/`: Per-artifact provenance distillations with NATO Admiralty ratings (`A1`–`F6`).
   - `wiki/syntheses/`: Archived analytical outputs from complex `/query` investigations.
@@ -166,7 +172,7 @@ tags: [domain-tag, status-tag]
 last_updated: YYYY-MM-DD
 sources: ["[[sources/source-slug]]"]
 aliases: ["Alternative Name", "Arabic Script", "Acronym"]
-admiralty_rating: "B2" # Mandatory for source, citation, and event notes
+admiralty_rating: "B2" # Mandatory for source, citation, timeline, and event notes
 reliability_score: 0.85 # 0.0 to 1.0 derived from Admiralty rating / verification strength
 ---
 ```
@@ -174,8 +180,9 @@ reliability_score: 0.85 # 0.0 to 1.0 derived from Admiralty rating / verificatio
 - **Additional `actor` fields**: `acled_actor_type`, `leader`, `allies`, `opponents`, `areas_of_operation`.
   - **For `actor` (`subtype: "person"`)**: `role_title` (e.g., `"UN High Commissioner for Human Rights"`), `affiliated_organization` (e.g., `"[[OHCHR]]"`).
   - **For `actor` (`subtype: "media_source"`)**: `parent_organization`, `editorial_alignment`, `baseline_admiralty_reliability` (`A`–`F`), `url`.
+- **Additional `timeline` fields**: `subtype` (`monthly_chronicle | campaign_timeline | thematic_timeline | diplomatic_timeline`), `start_date` (`YYYY-MM-DD`), `end_date` (`YYYY-MM-DD`), `time_horizon` (`week | month | quarter | year | multi_year`), `theatres_covered`, `events_chronicled`, `citations_chronicled`, `actors_involved`, `themes_linked`, `cumulative_fatalities_low`, `cumulative_fatalities_best`, `cumulative_fatalities_high`, `admiralty_rating`.
 - **Additional `citation` fields**: `speaker` (`"[[Person Name]]"`), `speaker_role`, `affiliated_organization` (`"[[Organization]]"`), `source_note` (`"[[sources/source-slug]]"`), `source_outlet` (`"[[Outlet Name]]"`), `citation_date` (`YYYY-MM-DD`), `original_language` (`ar | en | fr | de`), `speech_act` (`condemnation | attribution_claim | denial | eyewitness_account | casualty_report | ceasefire_call | war_crimes_warning`), `events_referenced`, `actors_referenced`, `locations_referenced`, `themes_referenced`.
-- **Additional `source` fields**: `status` (`"draft" | "approved"`), `compiled` (`false | true`), `compiled_at`, `source_outlet` (`"[[Outlet Name]]"` — must correspond to a `subtype: media_source` actor in `wiki/actors/`), `raw_file`, `language` (`ar | en | fr | de`), `published_date`, `alignment` (`independent | pro_saf | pro_rsf | state_media | civil_society_err | international_org | osint_verified`), `events_to_create`, `actors_to_create`, `locations_to_create`, `themes_to_create`, `citations_to_create`, `nodes_to_refactor`.
+- **Additional `source` fields**: `status` (`"draft" | "approved"`), `compiled` (`false | true`), `compiled_at`, `source_outlet` (`"[[Outlet Name]]"` — must correspond to a `subtype: media_source` actor in `wiki/actors/`), `raw_file`, `language` (`ar | en | fr | de`), `published_date`, `alignment` (`independent | pro_saf | pro_rsf | state_media | civil_society_err | international_org | osint_verified`), `events_to_create`, `actors_to_create`, `locations_to_create`, `themes_to_create`, `timelines_to_create`, `citations_to_create`, `nodes_to_refactor`.
 
 ---
 
@@ -191,35 +198,36 @@ When directed to ingest a primary evidence document from `raw/` (or `_input/rese
 2. **Context Retrieval, Deduplication & Scoping (`wiki-scope`):**
    - Read `wiki/index.md`, `wiki/glossary.md`, and the target document.
    - **48-Hour Spatio-Temporal Event Deduplication Check**: For every candidate event in the source, check whether an existing note in `wiki/events/` occurred within $\lvert \Delta t_{\text{valid}} \rvert \le 48\text{ hours}$ at the same location (`wiki/locations/`) involving overlapping actors. If a match exists, classify the event under **Nodes to Refactor** rather than creating a duplicate event note.
-   - **Mandatory Source Outlet & Quoted Person/Citation Extraction**:
+   - **Mandatory Source Outlet, Quoted Person/Citation & Monthly/Thematic Timeline Extraction**:
      - Always scope the `source_outlet` as an `Actor` (`subtype: "media_source"`).
      - Extract every named speaker/eyewitness in Section 3 (`## 3. Bilingual Direct Citations & Forensic Evidence`) as an `Actor` (`subtype: "person"`) with `role_title` and `affiliated_organization`.
      - Extract every key direct statement/testimony in Section 3 into `citations_to_create` (`wiki/citations/`, `type: "citation"`).
-   - Separate candidate primitives into **New Events (`$E$`)**, **New Actors (`$A$`, including armed/political entities, quoted `person` actors, and the `media_source` outlet)**, **New Locations (`$L$`)**, **New Themes/Timelines (`$T$`)**, **New Citations (`$C$`)**, and **Nodes to Refactor (`$K$`)**, applying the **News & OSINT Significance Filter** ($\ge 0.70$ composite score).
+     - **Mandatory Monthly Chronicle & Campaign/Thematic Timeline Rule**: For every calendar month `YYYY-MM` covered by candidate events in the source, check whether `[[YYYY-MM Sudan Conflict Chronicle]]` exists in `wiki/timelines/`. If it does not exist, add `[[YYYY-MM Sudan Conflict Chronicle]]` (`subtype: "monthly_chronicle"`) to `timelines_to_create`. If it already exists, add `[[YYYY-MM Sudan Conflict Chronicle]]` to `nodes_to_refactor` so the newly ingested events and citations are appended to its Bitemporal Ledger. Additionally, scope a `campaign_timeline` or `thematic_timeline` whenever the source documents a multi-incident campaign or doctrinal escalation sequence.
+   - Separate candidate primitives into **New Events (`$E$`)**, **New Actors (`$A$`, including armed/political entities, quoted `person` actors, and the `media_source` outlet)**, **New Locations (`$L$`)**, **New Themes (`$T$`)**, **New Timelines (`$TL$`)**, **New Citations (`$C$`)**, and **Nodes to Refactor (`$K$`)**, applying the **News & OSINT Significance Filter** ($\ge 0.70$ composite score).
 3. **Draft Source Creation (`wiki/sources/<source-slug>.md`):**
-   - Create `wiki/sources/<source-slug>.md` with `status: "draft"` and `compiled: false` in YAML frontmatter, alongside the **NATO Admiralty Rating (`A1`–`F6`)**, `alignment`, `language`, `reliability_score`, and the planned target arrays (`events_to_create`, `actors_to_create`, `locations_to_create`, `themes_to_create`, `citations_to_create`, `nodes_to_refactor`).
+   - Create `wiki/sources/<source-slug>.md` with `status: "draft"` and `compiled: false` in YAML frontmatter, alongside the **NATO Admiralty Rating (`A1`–`F6`)**, `alignment`, `language`, `reliability_score`, and the planned target arrays (`events_to_create`, `actors_to_create`, `locations_to_create`, `themes_to_create`, `timelines_to_create`, `citations_to_create`, `nodes_to_refactor`).
    - Author the 5-section source body: `## 1. 5W1H Source Intelligence Summary & Provenance`, `## 2. Atomic Extracted Claims Table`, `## 3. Bilingual Direct Citations & Forensic Evidence` (linking each blockquote to its `[[Speaker]]`, `[[Organization]]`, and `[[Citation Entity]]`), `## 4. Scoped Ingestion Plan (Pending Approval)`, and `## 5. Related Primitives`.
 4. **Log & Halt for Review:**
    - Append to `wiki/log.md`:
-     `## [YYYY-MM-DD] ingest-draft | <source-slug> | Created draft source note in wiki/sources/<source-slug>.md (status: draft) with scoped manifest (E events, A actors, L locations, T themes, C citations, K refactors); awaiting approval.`
+     `## [YYYY-MM-DD] ingest-draft | <source-slug> | Created draft source note in wiki/sources/<source-slug>.md (status: draft) with scoped manifest (E events, A actors, L locations, T themes, TL timelines, C citations, K refactors); awaiting approval.`
    - **HALT** before creating or modifying any notes in `wiki/events/`, `wiki/actors/`, `wiki/locations/`, `wiki/themes/`, `wiki/timelines/`, `wiki/citations/`, or `wiki/ingestions/`, and before indexing into ArcadeDB (`news`) or `ki`. Prompt the user to review `wiki/sources/<source-slug>.md` and change `status: "draft"` to `status: "approved"`.
 
 #### Phase 2: Approved Entity Compilation & Database Sync (`/ingest wiki/sources/<source-slug>.md` or `/ingest --approved`)
 When directed to continue ingestion on an approved source note (or all source notes where `status: "approved"` and `compiled: false`):
 1. **Approval Verification:** Read `wiki/sources/<source-slug>.md` and verify `status: "approved"` and `compiled: false`. (If `status: "draft"`, halt and remind the user to set `status: "approved"` first).
 2. **Workload-Optimized Multi-Node Compilation:**
-   - Read the approved target node lists (`events_to_create`, `actors_to_create`, `locations_to_create`, `themes_to_create`, `citations_to_create`, `nodes_to_refactor`) and Atomic Extracted Claims Table from `wiki/sources/<source-slug>.md`.
-   - Strictly enforce **Axiom 4 (Clean Wikilinks & Escaped Table Pipes)**, **Axiom 7 (Zero ASCII Box Art)**, and **Axiom 9 (Dual-Flow CoT Section Arcs for `events`, `actors`, `locations`, `themes`, `citations`)**.
+   - Read the approved target node lists (`events_to_create`, `actors_to_create`, `locations_to_create`, `themes_to_create`, `timelines_to_create`, `citations_to_create`, `nodes_to_refactor`) and Atomic Extracted Claims Table from `wiki/sources/<source-slug>.md`.
+   - Strictly enforce **Axiom 4 (Clean Wikilinks & Escaped Table Pipes)**, **Axiom 7 (Zero ASCII Box Art)**, and **Axiom 9 (Dual-Flow CoT Section Arcs for `events`, `actors`, `locations`, `themes`, `timelines`, `citations`)**.
    - Cross-reference `wiki/glossary.md` for every actor and location to prevent transliteration splitting (e.g., *Hemedti* $\to$ `[[Mohamed Hamdan Dagalo]]`, *Gezira* $\to$ `[[Al Jazirah]]`).
    - When refactoring an existing Event note with conflicting source claims, update `## 5. Competing Narratives, Attribution & Contradictions` and `contradiction_flags`.
 3. **Ingestion Dossier & Source Finalization:**
    - Author the audit dossier in `wiki/ingestions/YYYY-MM-DD/<source-slug>.md` (`type: ingestion`) recording Provenance, Scoped Ingestion Manifest, Compiled Nodes Table, Refactored Nodes & Contradictions Tracked, and Verification Telemetry.
    - Update `wiki/sources/<source-slug>.md` frontmatter to `compiled: true` and `compiled_at: YYYY-MM-DD`.
 4. **Batch Catalog, Ledger, and Graph Database Synchronization:**
-   - Update `wiki/index.md` (including the newly approved source note and all compiled domain and citation nodes), `wiki/glossary.md`, and `wiki/overview.md` (if frontline control, humanitarian metrics, or strategic debates shifted).
+   - Update `wiki/index.md` (including the newly approved source note and all compiled domain, timeline, and citation nodes), `wiki/glossary.md`, and `wiki/overview.md` (if frontline control, humanitarian metrics, or strategic debates shifted).
    - Synchronize the `ki` index and ArcadeDB (`news`) database via `./scripts/sync_vault_graph.sh` and `python3 scripts/ingest_to_arcadedb.py`, and verify `ki status -v -C wiki` reports `✓ READY`.
    - Append to `wiki/log.md`:
-     `## [YYYY-MM-DD] ingest-compile | <source-slug> | Compiled approved source into N notes (E events, A actors, L locations, T themes, C citations, K refactors); generated dossier in wiki/ingestions/YYYY-MM-DD/; updated index, SITREP & glossary; synced ki & ArcadeDB.`
+     `## [YYYY-MM-DD] ingest-compile | <source-slug> | Compiled approved source into N notes (E events, A actors, L locations, T themes, TL timelines, C citations, K refactors); generated dossier in wiki/ingestions/YYYY-MM-DD/; updated index, SITREP & glossary; synced ki & ArcadeDB.`
 
 ### Protocol B: Dialectical Intelligence Query (`/query <prompt>`)
 
