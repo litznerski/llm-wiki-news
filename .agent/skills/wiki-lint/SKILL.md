@@ -12,7 +12,7 @@ description: Audits the Sudan News & OSINT Obsidian vault for broken links, orph
    `python3 scripts/lint_vault.py`
 3. Parse all bracket patterns `[[...]]`.
 4. Detect:
-   - Index parity drift between local files and Neo4j / ArcadeDB.
+   - Index parity drift between local files and ArcadeDB.
    - Broken link targets.
    - Non-canonical directory prefixes in wikilinks (`[[wiki/events/...]]`, `[[wiki/actors/...]]`, `[[wiki/locations/...]]`, `[[wiki/themes/...]]`).
    - Malformed backticked wikilinks (`` `[[...]]` ``) that render as code spans instead of active links.

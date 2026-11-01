@@ -1,7 +1,7 @@
 # Sudan News & OSINT Glossary: Cross-Lingual Entity & Place Disambiguation Registry (`wiki/glossary.md`)
 
 > [!IMPORTANT] Canonical Disambiguation & Cross-Lingual Normalization Rules
-> Incoming evidence in `raw/` spans Arabic (Modern Standard Arabic and Sudanese vernacular), English, French, and German. The agent must cross-reference this registry during every `/ingest` operation to map foreign script, kunyas (nicknames), acronyms, and transliteration variants to a single **Canonical English Title** in `wiki/`. Automated enrichment (`scripts/enrich_graph.py`) synchronizes this registry into ArcadeDB's `AliasLookup` store and Neo4j search keys.
+> Incoming evidence in `raw/` spans Arabic (Modern Standard Arabic and Sudanese vernacular), English, French, and German. The agent must cross-reference this registry during every `/ingest` operation to map foreign script, kunyas (nicknames), acronyms, and transliteration variants to a single **Canonical English Title** in `wiki/`. Automated compilation (`scripts/ingest_to_arcadedb.py`) synchronizes this registry directly into ArcadeDB's `AliasLookup` store.
 
 ---
 

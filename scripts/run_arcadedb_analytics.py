@@ -3,7 +3,7 @@
 scripts/run_arcadedb_analytics.py
 Native Graph OLAP analytics runner for ArcadeDB in Knowledge Lab.
 Computes PageRank, Betweenness Centrality, and Louvain Community Detection
-directly inside ArcadeDB's engine without external GDS plugins or Neo4j dependencies.
+directly inside ArcadeDB's engine using native Graph OLAP procedures.
 """
 
 import os

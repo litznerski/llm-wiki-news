@@ -3,8 +3,6 @@ scripts/register_openwebui_arcadedb_model.py
 Registers:
 1. Function/Filter: 'arcadedb_fastmcp_inlet_filter' from setup/open_webui_arcadedb_fastmcp_pipe.py
 2. Model: 'knowledge-arcadedb' linked exclusively to 'arcadedb_fastmcp_inlet_filter'
-Preserves:
-- 'llama31lates-default' model linked to 'neo4j_hybrid_graphrag_filter'
 """
 
 import sys
@@ -163,11 +161,9 @@ con.commit()
 # Verify
 f_row = cur.execute("SELECT id, name, is_active, is_global FROM function WHERE id=?", ({repr(filter_id)},)).fetchone()
 m_row = cur.execute("SELECT id, name, base_model_id, meta FROM model WHERE id=?", ({repr(model_id)},)).fetchone()
-neo4j_m = cur.execute("SELECT id, name, meta FROM model WHERE id='llama31lates-default'").fetchone()
 
-print(f"Registered Filter: {{f_row}}")
-print(f"Registered Model: {{m_row[0]}} ({{m_row[1]}} -> base: {{m_row[2]}})")
-print(f"Preserved Neo4j Model: {{neo4j_m[0]}} ({{neo4j_m[1]}})")
+print(f"Registered Filter: {f_row}")
+print(f"Registered Model: {m_row[0]} ({m_row[1]} -> base: {m_row[2]})")
 """
 
     cmd = ["podman", "exec", "-i", "open-webui", "python3", "-"]

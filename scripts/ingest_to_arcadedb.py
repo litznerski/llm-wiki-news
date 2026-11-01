@@ -26,6 +26,7 @@ import urllib.error
 from pathlib import Path
 from functools import lru_cache
 from collections import defaultdict
+from datetime import datetime
 from typing import Any, Dict, List, Optional, Tuple, Set
 
 VAULT_ROOT = Path(__file__).resolve().parent.parent
@@ -574,12 +575,75 @@ def ensure_section_schema(client: ArcadeDBClient):
         "CREATE EDGE TYPE CONTAINS_CITATION IF NOT EXISTS",
         "CREATE EDGE TYPE TESTIFIES_TO IF NOT EXISTS",
         "CREATE EDGE TYPE PUBLISHED_BY IF NOT EXISTS",
+        "CREATE PROPERTY Event.contradiction_flags IF NOT EXISTS LIST OF STRING",
+        "CREATE DOCUMENT TYPE ClaimDispute IF NOT EXISTS",
+        "CREATE PROPERTY ClaimDispute.event_title IF NOT EXISTS STRING",
+        "CREATE PROPERTY ClaimDispute.dimension IF NOT EXISTS STRING",
+        "CREATE PROPERTY ClaimDispute.conflict_type IF NOT EXISTS STRING",
+        "CREATE PROPERTY ClaimDispute.source_a IF NOT EXISTS STRING",
+        "CREATE PROPERTY ClaimDispute.claim_a IF NOT EXISTS STRING",
+        "CREATE PROPERTY ClaimDispute.source_b IF NOT EXISTS STRING",
+        "CREATE PROPERTY ClaimDispute.claim_b IF NOT EXISTS STRING",
+        "CREATE PROPERTY ClaimDispute.resolution_status IF NOT EXISTS STRING",
+        "CREATE PROPERTY ClaimDispute.timestamp IF NOT EXISTS STRING",
+        "CREATE INDEX IF NOT EXISTS ON ClaimDispute (event_title) NOTUNIQUE",
+        "CREATE INDEX IF NOT EXISTS ON ClaimDispute (conflict_type) NOTUNIQUE",
+        "CREATE EDGE TYPE CONTRADICTS_CLAIM IF NOT EXISTS",
+        "CREATE PROPERTY CONTRADICTS_CLAIM.conflict_types IF NOT EXISTS LIST OF STRING",
+        "CREATE PROPERTY CONTRADICTS_CLAIM.conflict_type IF NOT EXISTS STRING",
+        "CREATE PROPERTY CONTRADICTS_CLAIM.event_title IF NOT EXISTS STRING",
+        "CREATE PROPERTY CONTRADICTS_CLAIM.warrant IF NOT EXISTS STRING",
     ]
     for cmd in cmds:
         try:
             client.execute_command(cmd, language="sql")
         except Exception:
             pass
+
+
+def extract_claim_disputes_from_section(event_title: str, default_conflict_types: List[str], sec_content: str) -> List[Dict[str, Any]]:
+    """Extracts structured ClaimDispute records from Section 5 GFM tables."""
+    disputes = []
+    lines = [ln.strip() for ln in sec_content.splitlines() if ln.strip()]
+    table_lines = [ln for ln in lines if ln.startswith("|") and ln.endswith("|")]
+    if len(table_lines) >= 3:
+        headers = [h.strip() for h in table_lines[0].strip("|").split("|")]
+        for row in table_lines[2:]:
+            cols = [c.strip() for c in row.strip("|").split("|")]
+            if len(cols) >= 3:
+                dim = cols[0].strip("*_ ")
+                persp_a_header = headers[1] if len(headers) > 1 else "Perspective A"
+                claim_a = cols[1]
+                persp_b_header = headers[2] if len(headers) > 2 else "Perspective B"
+                claim_b = cols[2]
+
+                ctype = "ATTRIBUTION_CONFLICT"
+                if len(cols) >= 4:
+                    for cf in ["ATTRIBUTION_CONFLICT", "MAGNITUDE_DISCREPANCY", "TARGET_FRAMING_CONFLICT", "CONTROL_DISPUTE", "TEMPORAL_CAUSAL_INVERSION", "MEDIA_FABRICATION_DEBUNK"]:
+                        if cf in cols[3]:
+                            ctype = cf
+                            break
+                elif default_conflict_types:
+                    ctype = default_conflict_types[0]
+
+                res_status = "disputed"
+                if len(cols) >= 4 and "debunked" in cols[3].lower():
+                    res_status = "debunked"
+                elif len(cols) >= 4 and "confirmed" in cols[3].lower():
+                    res_status = "confirmed"
+
+                disputes.append({
+                    "event_title": event_title,
+                    "dimension": dim,
+                    "conflict_type": ctype,
+                    "source_a": persp_a_header,
+                    "claim_a": claim_a,
+                    "source_b": persp_b_header,
+                    "claim_b": claim_b,
+                    "resolution_status": res_status,
+                    "timestamp": datetime.now().isoformat()
+                })
+    return disputes
 
 
 def run_direct_ingestion(client: ArcadeDBClient, purge: bool = False, skip_olap: bool = False):
@@ -604,7 +668,7 @@ def run_direct_ingestion(client: ArcadeDBClient, purge: bool = False, skip_olap:
                 client.execute_command(f"DELETE FROM `{et}`", language="sql")
             except Exception:
                 pass
-        for vt in ["Section", "Diagram", "Event", "Theme", "Timeline", "Citation", "Source", "Synthesis"]:
+        for vt in ["Section", "Diagram", "Event", "Theme", "Timeline", "Citation", "Source", "Synthesis", "ClaimDispute"]:
             try:
                 client.execute_command(f"DELETE FROM `{vt}`", language="sql")
             except Exception:
@@ -629,6 +693,7 @@ def run_direct_ingestion(client: ArcadeDBClient, purge: bool = False, skip_olap:
     tags_set: Set[str] = set()
     sections_records: List[Dict[str, Any]] = []
     diagrams_records: List[Dict[str, Any]] = []
+    disputes_records: List[Dict[str, Any]] = []
     aliases_dict: Dict[str, str] = {}
 
     # Pre-load existing AliasLookup mappings seeded from glossary.md
@@ -713,6 +778,8 @@ def run_direct_ingestion(client: ArcadeDBClient, purge: bool = False, skip_olap:
             "aliases": fm.get("aliases", []) if isinstance(fm.get("aliases"), list) else [],
             "sources": fm.get("sources", []) if isinstance(fm.get("sources"), list) else [],
             "locations": fm.get("locations", []) if isinstance(fm.get("locations"), list) else [],
+            "contradiction_flags": [str(x).strip() for x in (fm.get("contradiction_flags", []) if isinstance(fm.get("contradiction_flags"), list) else []) if str(x).strip()],
+            "contradictions_logged": [str(x).strip() for x in (fm.get("contradictions_logged", []) if isinstance(fm.get("contradictions_logged"), list) else []) if str(x).strip()],
             "path": rel_path,
             "slug": p.stem,
         }
@@ -765,6 +832,11 @@ def run_direct_ingestion(client: ArcadeDBClient, purge: bool = False, skip_olap:
             for target in links:
                 sec_links_to.append((sec_uri, target))
 
+            if st == "CONTRADICTION_MATRIX" and doc_type == "event":
+                c_flags = doc_meta_map[title].get("contradiction_flags", [])
+                disputes = extract_claim_disputes_from_section(title, c_flags, clean_content)
+                disputes_records.extend(disputes)
+
         doc_sections_map[title] = doc_sec_uris
 
         for i in range(len(raw_secs) - 1):
@@ -799,6 +871,7 @@ def run_direct_ingestion(client: ArcadeDBClient, purge: bool = False, skip_olap:
                     "event_sub_type = :esub, event_start_date = :estart, event_end_date = :eend, "
                     "reported_date = :rep, pcode = :pcode, fatalities_best = :fat, "
                     "verification_status = :vstat, admiralty_rating = :adm, reliability_score = :rel, "
+                    "contradiction_flags = :cflags, "
                     "last_updated = :lu UPSERT WHERE title = :title",
                     language="sql",
                     params={
@@ -808,6 +881,7 @@ def run_direct_ingestion(client: ArcadeDBClient, purge: bool = False, skip_olap:
                         "rep": meta["reported_date"], "pcode": meta["pcode"],
                         "fat": meta["fatalities_best"], "vstat": meta["verification_status"],
                         "adm": meta["admiralty_rating"], "rel": meta["reliability_score"],
+                        "cflags": meta.get("contradiction_flags", []),
                         "lu": meta["last_updated"]
                     }
                 )
@@ -935,6 +1009,32 @@ def run_direct_ingestion(client: ArcadeDBClient, purge: bool = False, skip_olap:
         except Exception:
             pass
 
+    if disputes_records:
+        print(f"\n[*] Upserting {len(disputes_records)} ClaimDispute documents from Section 5 matrices...")
+        for disp in disputes_records:
+            try:
+                client.execute_command(
+                    "INSERT INTO ClaimDispute SET event_title = :etitle, dimension = :dim, "
+                    "conflict_type = :ctype, source_a = :sa, claim_a = :ca, "
+                    "source_b = :sb, claim_b = :cb, resolution_status = :rstat, "
+                    "timestamp = :ts",
+                    language="sql",
+                    params={
+                        "etitle": disp["event_title"],
+                        "dim": disp["dimension"],
+                        "ctype": disp["conflict_type"],
+                        "sa": disp["source_a"],
+                        "ca": disp["claim_a"][:1024],
+                        "sb": disp["source_b"],
+                        "cb": disp["claim_b"][:1024],
+                        "rstat": disp["resolution_status"],
+                        "ts": disp["timestamp"]
+                    }
+                )
+                total_vertices += 1
+            except Exception as e:
+                print(f"  [!] Warning upserting ClaimDispute for '{disp.get('event_title')}': {e}")
+
     # 4. Cache RIDs for Edge Generation
     print("\n[4/5] Building in-memory RID resolution maps...")
     node_rid_map: Dict[str, str] = {}
@@ -959,7 +1059,7 @@ def run_direct_ingestion(client: ArcadeDBClient, purge: bool = False, skip_olap:
         return node_rid_map.get(canon) or node_rid_map.get(key)
 
     # 5. Connect Graph Relationships
-    print("\n[5/5] Connecting HAS_SECTION, PROGRESSES_TO, LINKS_TO, PUBLISHED_BY, AFFILIATED_WITH, STATED, CONTAINS_CITATION, TESTIFIES_TO, CHRONICLES, PRECEDES, and EMPIRICALLY_GROUNDS edges...")
+    print("\n[5/5] Connecting HAS_SECTION, PROGRESSES_TO, LINKS_TO, PUBLISHED_BY, AFFILIATED_WITH, STATED, CONTAINS_CITATION, TESTIFIES_TO, CHRONICLES, PRECEDES, EMPIRICALLY_GROUNDS, and CONTRADICTS_CLAIM edges...")
     edge_batch: List[str] = []
 
     for sec in sections_records:
@@ -1090,6 +1190,61 @@ def run_direct_ingestion(client: ArcadeDBClient, purge: bool = False, skip_olap:
                     "weight": meta.get("reliability_score", 0.85),
                     "warrant": f"Empirically grounds {title}"
                 }))
+
+    # 6. Dialectical Contradiction Edges: CONTRADICTS_CLAIM
+    for ev_title, ev_meta in doc_meta_map.items():
+        c_flags = ev_meta.get("contradiction_flags", [])
+        if c_flags:
+            # A. Between opposing Citations linked to an Event/Theme with contradiction_flags
+            ev_citations = [
+                c_title for c_title, c_meta in doc_meta_map.items()
+                if c_meta.get("type") == "citation" and (
+                    ev_title in c_meta.get("events_referenced", []) or
+                    ev_title in c_meta.get("themes_referenced", [])
+                )
+            ]
+            for i in range(len(ev_citations)):
+                for j in range(i + 1, len(ev_citations)):
+                    c1_title = ev_citations[i]
+                    c2_title = ev_citations[j]
+                    c1_rid = resolve_target_rid(c1_title)
+                    c2_rid = resolve_target_rid(c2_title)
+                    c1_meta = doc_meta_map[c1_title]
+                    c2_meta = doc_meta_map[c2_title]
+
+                    is_opposing = (
+                        c1_meta.get("speech_act") != c2_meta.get("speech_act") or
+                        c1_meta.get("speaker") != c2_meta.get("speaker") or
+                        c1_meta.get("speech_act") == "denial" or
+                        c2_meta.get("speech_act") == "denial"
+                    )
+                    if c1_rid and c2_rid and c1_rid != c2_rid and is_opposing:
+                        edge_batch.append(json.dumps({
+                            "@type": "edge", "@class": "CONTRADICTS_CLAIM",
+                            "@from": c1_rid, "@to": c2_rid,
+                            "conflict_types": c_flags,
+                            "conflict_type": c_flags[0] if c_flags else "ATTRIBUTION_CONFLICT",
+                            "event_title": ev_title,
+                            "warrant": f"Contradictory statements between {c1_title} and {c2_title} regarding {ev_title}"
+                        }))
+
+            # B. Between multiple Sources referenced by an Event with contradiction_flags
+            ev_sources = [clean_wikilink_str(s) for s in ev_meta.get("sources", [])]
+            for i in range(len(ev_sources)):
+                for j in range(i + 1, len(ev_sources)):
+                    s1_slug = ev_sources[i]
+                    s2_slug = ev_sources[j]
+                    s1_rid = resolve_target_rid(s1_slug)
+                    s2_rid = resolve_target_rid(s2_slug)
+                    if s1_rid and s2_rid and s1_rid != s2_rid:
+                        edge_batch.append(json.dumps({
+                            "@type": "edge", "@class": "CONTRADICTS_CLAIM",
+                            "@from": s1_rid, "@to": s2_rid,
+                            "conflict_types": c_flags,
+                            "conflict_type": c_flags[0] if c_flags else "ATTRIBUTION_CONFLICT",
+                            "event_title": ev_title,
+                            "warrant": f"Sources provide conflicting accounts or figures regarding {ev_title}"
+                        }))
 
     for i in range(0, len(edge_batch), 500):
         chunk = edge_batch[i:i + 500]

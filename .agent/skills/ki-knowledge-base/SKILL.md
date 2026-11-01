@@ -29,7 +29,7 @@ Rule of thumb: any time you'd otherwise `grep` / `cat` / read across a folder of
 
 ## What `ki` is
 
-A command-line tool that builds a queryable **knowledge graph index** over a directory of markdown. It parses each `.md` into its documents, sections, and the wikilinks between them, stores that structure in Neo4j, and exposes fast search, navigation, and retrieval over it — so you can find and read the right *slice* of content without opening and scanning whole files.
+A command-line tool that builds a queryable **knowledge graph index** over a directory of markdown. It parses each `.md` into its documents, sections, and the wikilinks between them, stores that structure in the knowledge graph, and exposes fast search, navigation, and retrieval over it — so you can find and read the right *slice* of content without opening and scanning whole files.
 
 ## Why use `ki`
 
@@ -39,21 +39,21 @@ It's faster and far cheaper in tokens than raw file ops over a markdown corpus. 
 
 - **Knowledge base** — a directory of markdown you want to search and navigate as a connected whole. Becomes a *vault* once `ki` indexes it.
 - **Vault** — a directory `ki` has marked (`.ki/vault.yaml`) and indexed. The unit of indexing and sync; identified by a slug **uri**, and **bound to one profile**.
-- **Profile** — a named Neo4j database (connection + credentials in `config.yaml`) that holds the graphs for one or more vaults. A privacy/isolation boundary (e.g. personal vs work).
-- **Index** — the knowledge graph in Neo4j (documents, sections, links) built from a vault's markdown. Rebuilt with `ki index`.
+- **Profile** — a named graph database profile (connection + credentials in `config.yaml`) that holds the graphs for one or more vaults. A privacy/isolation boundary (e.g. personal vs work).
+- **Index** — the knowledge graph (documents, sections, links) built from a vault's markdown. Rebuilt with `ki index`.
 - **URI** — the address of a vault / document / section in the index. Copy it from `ki outline` or search results and feed it into `ki get` / `ki outline`. URIs are hierarchical paths, so trim a trailing segment to get an ancestor — no query needed (drop `/h2` → parent section, the whole `#…` → owning doc, `/foo.md` → folder).
-- **`config.yaml`** — `~/.config/ki/config.yaml`; holds profiles + credentials. Does **not** track vaults — Neo4j does.
+- **`config.yaml`** — `~/.config/ki/config.yaml`; holds profiles + credentials. Does **not** track vaults.
 
 ## On First Use In Session
 
 The user is generally thinking about one **directory**: *set up* a knowledge base on it, or *use* the one that's there. Both intents funnel through the same job — **get that directory to a READY vault, then use it.** The only branch that matters is how far along the directory already is.
 
-A vault is a directory marked with `.ki/vault.yaml`, which records the vault's uri and the **profile** (Neo4j database) it's bound to:
+A vault is a directory marked with `.ki/vault.yaml`, which records the vault's uri and the **profile** it's bound to:
 
 ```yaml
 # <vault>/.ki/vault.yaml
 uri: my-notes
-profile: personal        # which neo4j this vault lives in — set once at first index
+profile: default        # profile this vault lives in — set once at first index
 description: "..."
 ```
 
@@ -76,23 +76,23 @@ ki --help            # if missing: curl -sSfL https://knowledge-index.ai/install
 
 Run `ki status`. It resolves **in layers** and reports the first blocking state — each layer needs the one above it to pass:
 
-1. **Disk marker** (no Neo4j needed) — is there a `.ki/` here?
-2. **Neo4j reachability** — `ki status -v` *attempts a connection* to the bound profile and classifies the result (you don't know this until you try).
-3. **Graph state** — only knowable once Neo4j is reachable.
+1. **Disk marker** — is there a `.ki/` here?
+2. **Database reachability** — `ki status -v` *attempts a connection* to the bound profile and classifies the result.
+3. **Graph state** — only knowable once the database is reachable.
 
 Act on the reported state, then re-run until READY:
 
 | State | How `ki status` knows | Action |
 |---|---|---|
-| `NOT_A_VAULT` | no `.ki/` on disk | Setting up. List profiles (`ki profile list` — from `config.yaml`, no Neo4j needed); user picks one to **bind** — never default (personal/work boundary). None yet → `references/configure-profile.md`. Then `ki index . --profile <p> --description "..."` |
-| `NEO4J_DOWN` | connect → `ServiceUnavailable` (nothing listening) | start it → `references/neo4j-troubleshoot.md` |
-| `NEO4J_UNRESPONSIVE` | connect hangs / times out | container up but not ready, or wedged → wait, then `references/neo4j-troubleshoot.md` |
-| `AUTH_ERROR` | connect → authentication failure | profile credentials wrong → `references/configure-profile.md` (re-enter creds) — **not** a restart |
+| `NOT_A_VAULT` | no `.ki/` on disk | Setting up. List profiles (`ki profile list` — from `config.yaml`); user picks one to **bind**. None yet → `references/configure-profile.md`. Then `ki index . --profile <p> --description "..."` |
+| `DB_DOWN` | connect → `ServiceUnavailable` (nothing listening) | start database container |
+| `DB_UNRESPONSIVE` | connect hangs / times out | container up but not ready, or wedged → wait / restart |
+| `AUTH_ERROR` | connect → authentication failure | profile credentials wrong → `references/configure-profile.md` (re-enter creds) |
 | `NOT_INDEXED` | reachable, but no `:Vault` node | `ki index .` (profile already bound) |
 | `STALE` | indexed, but the set or content-hash of `.md` files no longer matches the graph | `ki status -v` shows which files drifted; `ki index .` to resync (see *Re-Indexing*) |
 | `READY` | indexed + in sync | done — start using it (*Usage*) |
 
-Layers 1–2 work even when Neo4j is down (that's how `ki status` reports the Neo4j rows at all). The graph rows below require a reachable Neo4j.
+Layers 1–2 work even when the database is down. The graph rows below require a reachable database.
 
 Edges:
 - Bound profile missing from `config.yaml` (renamed / cloned to another machine) → surface to user; add it with `ki configure` or re-bind by re-indexing (`ki index . --profile <p>`).
@@ -156,16 +156,13 @@ Sometimes the question is about the vault as a whole, not a specific slice:
 - *"If I refactor this, what else will it affect?"*
 
 Two strategies:
-1. **Outline as overview** — read `ki outline --full` as a high-level map of the *whole* vault to summarize its coverage and structure (adjust --depth and recurse on uris as needed). Follow with `ki search/get` for any specifics. Best for *"what's in here."*
-2. **Reason over the graph (via `neo4j-cli`)** — for counts, aggregates, paths, and structural questions search can't express, query the Neo4j graph directly with **`neo4j-cli`**. **Reason over the graph; don't translate the question into a query** — read the schema, think in nodes / relationships / **paths / neighborhoods / centrality**, *then* express that reasoning as Cypher. (`neo4j-cli` and its installed skills already drive this schema-first, graph-shaped flow — lean on them rather than re-deriving it.)
+2. **Reason over the graph (via ArcadeDB & Cypher)** — for counts, aggregates, paths, and structural questions search can't express, query the graph directly with Cypher via `python3 scripts/db_adapter.py` or `scripts/arcadedb_client.py`. **Reason over the graph; don't translate the question into a query** — read the schema, think in nodes / relationships / **paths / neighborhoods / centrality**, *then* express that reasoning as Cypher.
 
-   **Connect by credential *name*, never a password** — `ki configure` / `ki profile sync` registered each profile as a neo4j-cli credential, so pass `--credential <profile>` and the secret stays in neo4j-cli's store:
-   ```sh
-   neo4j-cli query :schema --credential <profile> --format toon     # read the schema FIRST — never guess it
-   neo4j-cli query "<cypher>" --credential <profile> --format json   # then express your graph reasoning as Cypher
+   ```python
+   from scripts.db_adapter import GraphDatabaseAdapter
+   adapter = GraphDatabaseAdapter()
+   results = adapter.execute_cypher("MATCH (e:Event)-[:OCCURRED_AT]->(l:Location) RETURN e.title, l.title LIMIT 10")
    ```
-   - `<profile>` is the vault's bound profile — read it from `ki profile list` or the `.ki/vault.yaml` `profile:` field (both non-secret). If `--credential` reports the name is unknown, run `ki profile sync`.
-   - To scope queries to the vault uri (or any folder, document, section therein) know that **ki URIs are hierarchical**, so filtering `uri` with `STARTS WITH '<uri>/'` filters to the subtree — everything under that vault / folder / document / section. Keep the trailing `/`: `STARTS WITH 'my-notes'` would also match the sibling vault `my-notes-2`.
 
 ### Making Inferences
 
@@ -176,7 +173,7 @@ Sometimes the user wants analysis, not just retrieval:
 - *"Where do these notes reinforce or contradict each other on [topic]?"*
 - *"What's underdeveloped — what's referenced a lot but never fleshed out?"*
 
-Gather context with `ki outline` / `ki search` / `ki get`, but **lean on `neo4j-cli` (`--credential <profile>`, schema first — see above)** — these questions are about the *relationships and aggregates* the graph encodes (link paths, co-occurrence, centrality, clusters) that flat search can't surface: shortest path between two docs, most-linked sections, a node's link neighborhood. Scope to a vault or any other subtree with the hierarchical uri `STARTS WITH` filter noted above.
+Gather context with `ki outline` / `ki search` / `ki get`, and lean on Cypher traversals in ArcadeDB — these questions are about the *relationships and aggregates* the graph encodes (link paths, co-occurrence, centrality, clusters) that flat search can't surface: shortest path between two docs, most-linked sections, a node's link neighborhood.
 
 ### Adding, Updating & Removing Content (incremental)
 
@@ -202,11 +199,11 @@ Run `ki status` (add `-v` to see exactly which files drifted); if it reports `ST
 
 > **`STALE`/`READY` is markdown-only — not bulletproof.** It does **not** notice changes to linked non-markdown attachments (PDFs, decks, images captured as stub nodes), and a vault indexed with a non-default `--max-file-size` can skew the diff. So `READY` guarantees the **markdown** is in sync, not necessarily every attachment. When in doubt — or after bulk/attachment changes — a full `ki index .` is the source of truth.
 
-During indexing, the entire vault is removed from Neo4j then rebuilt to reflect what's on the file system currently. The process can last a couple seconds (for dozens of documents) or a few minutes (for thousands of docs).  During re-indexing the vault should not be used for search or answering questions.
+During indexing, the entire vault is rebuilt to reflect what's on the file system currently. The process can last a couple seconds (for dozens of documents) or a few minutes (for thousands of docs). During re-indexing the vault should not be used for search or answering questions.
 
 ### Other Operations
 
-- `ki configure` / `ki profile list` — manage Neo4j connection profiles.
+- `ki profile list` — inspect connection profiles.
 - `ki vault list` — inspect indexed vaults (uri, description).
 - `ki init <path>` — (advanced) write `.ki/vault.yaml` without indexing.
 - `ki drop <vault>` — remove a whole vault from the index; typed confirmation. Source files untouched.
@@ -216,8 +213,8 @@ During indexing, the entire vault is removed from Neo4j then rebuilt to reflect 
 ## Anti-Patterns
 
 1. **Raw file ops on vault content** — reading/searching a vault with `Read` / `grep` / `cat` instead of `ki`, and spawning sub-agents that default to file reads. Burns the tokens `ki` exists to save.
-2. **Auto-binding a profile** — binding a fresh vault to whatever profile happens to be around (e.g. a stray `$KI_PROFILE`) without confirming. `ki` has **no default profile** — you must `ki index` a new vault with an explicit `--profile`. Profiles are privacy boundaries; confirm the profile once, at first index.
+2. **Auto-binding a profile** — binding a fresh vault to whatever profile happens to be around (e.g. a stray `$KI_PROFILE`) without confirming. Profiles are privacy boundaries; confirm the profile once, at first index.
 3. **Full re-index for a small change** — running `ki index .` (full nuke + rebuild) after editing one file. Use per-target `ki add` / `ki rm`; reserve `ki index .` for bulk edits or refactors.
-4. **Cold-starting Neo4j just to look around** — spinning up a stopped profile's instance only to enumerate vaults.
+4. **Cold-starting database just to look around** — spinning up a stopped profile's instance only to enumerate vaults.
 5. **Switching vault or profile mid-task without confirming** — work one vault + one profile per session; confirm any switch with the user.
 6. **Querying a vault while it's re-indexing**, or **fabricating URIs** — copy URIs from `ki outline` / `ki search`; never guess them.

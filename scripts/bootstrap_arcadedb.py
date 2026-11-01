@@ -253,6 +253,7 @@ DDL_COMMANDS = [
 
     ("CREATE DOCUMENT TYPE ClaimDispute IF NOT EXISTS", "Create document ClaimDispute"),
     ("CREATE PROPERTY ClaimDispute.event_title IF NOT EXISTS STRING", "Property ClaimDispute.event_title"),
+    ("CREATE PROPERTY ClaimDispute.dimension IF NOT EXISTS STRING", "Property ClaimDispute.dimension"),
     ("CREATE PROPERTY ClaimDispute.conflict_type IF NOT EXISTS STRING", "Property ClaimDispute.conflict_type"),
     ("CREATE PROPERTY ClaimDispute.source_a IF NOT EXISTS STRING", "Property ClaimDispute.source_a"),
     ("CREATE PROPERTY ClaimDispute.claim_a IF NOT EXISTS STRING", "Property ClaimDispute.claim_a"),
@@ -309,6 +310,10 @@ DDL_COMMANDS = [
     ("CREATE EDGE TYPE TESTIFIES_TO IF NOT EXISTS", "Create edge TESTIFIES_TO"),
     ("CREATE EDGE TYPE CORROBORATES IF NOT EXISTS", "Create edge CORROBORATES"),
     ("CREATE EDGE TYPE CONTRADICTS_CLAIM IF NOT EXISTS", "Create edge CONTRADICTS_CLAIM"),
+    ("CREATE PROPERTY CONTRADICTS_CLAIM.conflict_types IF NOT EXISTS LIST OF STRING", "Property CONTRADICTS_CLAIM.conflict_types"),
+    ("CREATE PROPERTY CONTRADICTS_CLAIM.conflict_type IF NOT EXISTS STRING", "Property CONTRADICTS_CLAIM.conflict_type"),
+    ("CREATE PROPERTY CONTRADICTS_CLAIM.event_title IF NOT EXISTS STRING", "Property CONTRADICTS_CLAIM.event_title"),
+    ("CREATE PROPERTY CONTRADICTS_CLAIM.warrant IF NOT EXISTS STRING", "Property CONTRADICTS_CLAIM.warrant"),
     ("CREATE EDGE TYPE ATTRIBUTES_BLAME_TO IF NOT EXISTS", "Create edge ATTRIBUTES_BLAME_TO"),
     ("CREATE EDGE TYPE DEBUNKS IF NOT EXISTS", "Create edge DEBUNKS"),
     ("CREATE EDGE TYPE PUBLISHED_BY IF NOT EXISTS", "Create edge PUBLISHED_BY"),

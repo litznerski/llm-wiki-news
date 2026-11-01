@@ -158,6 +158,7 @@ Structure every newly created or refactored note according to its canonical epis
 
 ### Step 2.3: Ingestion Dossier & Source Finalization
 - Author a standalone audit dossier in `wiki/ingestions/YYYY-MM-DD/<source-slug>.md` (`type: "ingestion"`), listing `events_created`, `actors_created`, `locations_created`, `themes_created`, `timelines_created`, `citations_created`, `nodes_refactored`, and `contradictions_logged`.
+- **Mandatory Contradiction Synchronization Invariant**: If `contradictions_logged` is populated in the ingestion dossier (e.g. `[ATTRIBUTION_CONFLICT]`, `[MAGNITUDE_DISCREPANCY]`, `[TARGET_FRAMING_CONFLICT]`), the corresponding newly compiled or refactored Event note(s) in `wiki/events/` MUST have their frontmatter `contradiction_flags` synchronized with these exact flags, and Section 5 of the Event note must provide a side-by-side Claim Comparison Matrix documenting the competing perspectives.
 - Update `wiki/sources/<source-slug>.md` frontmatter to `compiled: true` and `compiled_at: YYYY-MM-DD`.
 
 ### Step 2.4: Batch Catalog, Ledger & Graph Database Synchronization
