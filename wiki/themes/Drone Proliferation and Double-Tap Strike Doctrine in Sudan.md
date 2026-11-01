@@ -13,6 +13,7 @@ last_updated: 2026-11-01
 sources:
   - "[[sources/2026-10-23-un-news-sudan-drone-strikes-306-killed]]"
   - "[[sources/2026-10-31-unsg-spokesperson-escalating-drone-attacks-sudan]]"
+  - "[[sources/2026-10-28-un-hrc-crp1-el-obeid-civilian-devastation]]"
 aliases:
   - "Sudan UAV Warfare Doctrine"
   - "Double-Tap Drone Strikes in Sudan"
@@ -62,7 +63,10 @@ During the [[2026-10 Sudan Drone Warfare Escalation]] (`2026-10-01` to `2026-10-
 | Tactical Pattern | Frontline Manifestation (October 2026) | Attributed Actor | Documented Impact |
 | :--- | :--- | :--- | :--- |
 | **Double-Tap Transport Interdiction** | [[2026-10-18 Dibab Double-Tap Drone Strike]] in [[West Kordofan]] (`SD18`) | Unspecified operator (in [[Rapid Support Forces]]-held zone) | Repeat strike on a transportation truck killed **at least 139 people**. |
+| **Double-Tap Funeral & First-Responder Targeting** | [[2026-10 El Obeid Siege and Drone Warfare Escalation]] in [[El Obeid]], [[North Kordofan]] (`SD02001`) | [[Rapid Support Forces]] | UN FFM Para 19 verifies UAV strikes on civilians approaching to assist previous strike victims and repeat strikes on a funeral gathering ([[2026-10-28 UN FFM Finding on RSF Drone Warfare and Indiscriminate Attacks in El Obeid]]). |
 | **Commercial Market Bombardment in Demilitarized Zones** | [[2026-10-19 Abyei Amiet Market and Todach Drone Strike]] in [[Abyei]] (`SD18001`) | Unspecified operator | **80+ killed**, **27+ injured**, market stalls burned down ([[2026-10-23 Muhammad Farooq First-Responder Account of Amiet Market Fire]]). |
+| **Urban Market Aerial Bombardment** | [[2026-10-27 Nyala Tanqonj Market Drone Strike]] in [[South Darfur]] (`SD03`) | Alleged [[Sudanese Armed Forces]] | **102+ civilians killed**, >100 wounded in crowded livestock market ([[2026-10-31 Stéphane Dujarric Arab News Statement Condemning Nyala Market Drone Strike]]). |
+| **Strategic Hinterland Energy & Utility Interdiction** | [[2026-10-31 Haiya Oil Pumping and Power Station Drone Strike]] in [[Red Sea State]] (`SD07`) | Alleged [[Rapid Support Forces]] (Ethiopian staging alleged) | Precision UAV strike severed municipal power line and damaged Crude Oil Pumping Station 4 ([[2026-10-31 Muawiya Osman Accusation of Ethiopian Base and UAE Proxy Drone Strikes on Sudan Infrastructure]]). |
 | **IDP Shelter Strikes** | Ghubeish and El Nuhud strikes (`2026-10-06` to `2026-10-10`) in [[West Kordofan]] (`SD18`) | Alleged [[Sudanese Armed Forces]] | **25+ displaced civilians killed**, including women and children. |
 | **War-Economy / IDP Livelihood Strikes** | Abu Shendi artisanal gold-mining strike (`2026-10-09`) in [[Blue Nile State]] (`SD17`) | Alleged [[Rapid Support Forces]] | **31+ displaced people killed**, predominantly women and children. |
 | **Medical & Utility Infrastructure Evisceration** | Um Darfa hospital strike (`2026-10-11`) in [[Blue Nile State]] (`SD17`) + power/water strikes | [[Rapid Support Forces]] & [[Sudanese Armed Forces]] | **2 health workers seriously injured**; hospital closed ([[2026-10-23 Seif Magango Statement on Evisceration of Civilian Infrastructure in Sudan]], [[2026-10-31 Stéphane Dujarric UNSG Statement Condemning Escalating Drone Attacks in Sudan and Abyei]]). |
@@ -80,14 +84,15 @@ During the [[2026-10 Sudan Drone Warfare Escalation]] (`2026-10-01` to `2026-10-
 ## 5. Empirical Debates, Uncertainties & Competing Analyses
 
 - **Forensic Attribution Deniability**: Because long-range UAVs and loitering munitions can be launched from distant staging bases without aircrew identification, both [[Sudanese Armed Forces]] and [[Rapid Support Forces]] routinely exploit plausible deniability in high-casualty incidents such as the [[2026-10-18 Dibab Double-Tap Drone Strike]] and the [[2026-10-19 Abyei Amiet Market and Todach Drone Strike]].
+- **Cross-Border Staging Contradictions**: State allegations regarding cross-border launch sites (such as Sudanese MFA claims of Ethiopian staging for the Haiya strike) remain uncorroborated by independent UN monitoring teams, highlighting the informational fog surrounding transnational UAV operations.
 
 ---
 
 ## Related Primitives
 
-- **Grounded Events & Timelines**: [[2026-10 Sudan Drone Warfare Escalation]], [[2026-10-18 Dibab Double-Tap Drone Strike]], [[2026-10-19 Abyei Amiet Market and Todach Drone Strike]], [[2026-10 Sudan Conflict Chronicle]], [[Sudan Drone Warfare and Double-Tap Strike Timeline]]
-- **Actors**: [[Sudanese Armed Forces]], [[Rapid Support Forces]], [[United Nations]], [[OHCHR]], [[UNISFA]], [[UN News]], [[Office of the Spokesperson for the Secretary-General]]
-- **Quoted Persons**: [[António Guterres]], [[Stéphane Dujarric]], [[Volker Türk]], [[Seif Magango]], [[Muhammad Farooq]], [[Adebowale Ajabge]], [[Angelina Musa Diaw]]
-- **Standalone Citations**: [[2026-10-31 Stéphane Dujarric UNSG Statement Condemning Escalating Drone Attacks in Sudan and Abyei]], [[2026-10-31 António Guterres Appeal for Immediate Cessation of Hostilities and Good-Faith Mediation in Sudan]], [[2026-10-23 Volker Türk Condemnation of Sudan Drone Escalation and Arms Influx]], [[2026-10-23 Seif Magango Statement on Evisceration of Civilian Infrastructure in Sudan]], [[2026-10-23 Muhammad Farooq First-Responder Account of Amiet Market Fire]], [[2026-10-23 Adebowale Ajabge Report on UNISFA Emergency Response and Todach Evacuations]], [[2026-10-23 Angelina Musa Diaw Survivor Testimony on Amiet Market Destruction]]
-- **Locations**: [[West Kordofan]], [[Blue Nile State]], [[Abyei]]
-- **Originating Sources**: [[sources/2026-10-23-un-news-sudan-drone-strikes-306-killed]], [[sources/2026-10-31-unsg-spokesperson-escalating-drone-attacks-sudan]]
+- **Grounded Events & Timelines**: [[2026-10 Sudan Drone Warfare Escalation]], [[2026-10-18 Dibab Double-Tap Drone Strike]], [[2026-10-19 Abyei Amiet Market and Todach Drone Strike]], [[2026-10-27 Nyala Tanqonj Market Drone Strike]], [[2026-10-31 Haiya Oil Pumping and Power Station Drone Strike]], [[2026-10 El Obeid Siege and Drone Warfare Escalation]], [[2026-10 Sudan Conflict Chronicle]], [[Sudan Drone Warfare and Double-Tap Strike Timeline]]
+- **Actors**: [[Sudanese Armed Forces]], [[Rapid Support Forces]], [[United Nations]], [[OHCHR]], [[UNISFA]], [[Radio Dabanga]], [[Arab News]], [[Office of the Spokesperson for the Secretary-General]], [[Independent International Fact-Finding Mission for the Sudan]]
+- **Quoted Persons**: [[António Guterres]], [[Stéphane Dujarric]], [[Volker Türk]], [[Seif Magango]], [[Muhammad Farooq]], [[Adebowale Ajabge]], [[Angelina Musa Diaw]], [[Muawiya Osman]], [[Mohamed Chande Othman]]
+- **Standalone Citations**: [[2026-10-31 Stéphane Dujarric UNSG Statement Condemning Escalating Drone Attacks in Sudan and Abyei]], [[2026-10-31 Stéphane Dujarric Arab News Statement Condemning Nyala Market Drone Strike]], [[2026-10-31 António Guterres Appeal for Immediate Cessation of Hostilities and Good-Faith Mediation in Sudan]], [[2026-10-31 Muawiya Osman Accusation of Ethiopian Base and UAE Proxy Drone Strikes on Sudan Infrastructure]], [[2026-11-01 Radio Dabanga Arabic Rendition of UNSG Drone Condemnation and FFM Warning]], [[2026-10-28 UN FFM Finding on RSF Drone Warfare and Indiscriminate Attacks in El Obeid]]
+- **Locations**: [[West Kordofan]], [[Blue Nile State]], [[Abyei]], [[Nyala]], [[Haiya]], [[El Obeid]], [[South Darfur]], [[Red Sea State]]
+- **Originating Sources**: [[sources/2026-10-23-un-news-sudan-drone-strikes-306-killed]], [[sources/2026-10-31-unsg-spokesperson-escalating-drone-attacks-sudan]], [[sources/2026-10-31-arab-news-un-chief-appalled-drone-strikes-nyala-market]], [[sources/2026-10-31-dabanga-haiya-oil-electricity-drone-attack]], [[sources/2026-11-01-dabanga-unsg-guterres-condemns-escalating-drone-attacks]], [[sources/2026-10-28-un-hrc-crp1-el-obeid-civilian-devastation]]

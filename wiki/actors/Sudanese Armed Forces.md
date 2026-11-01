@@ -4,12 +4,16 @@ type: "actor"
 subtype: "state_force"
 acled_actor_type: "State Forces (Inter 1)"
 leader: "Gen. Abdel Fattah al-Burhan"
-allies: []
+allies:
+  - "[[Al-Baraa Ibn Malik Brigade]]"
 opponents:
   - "[[Rapid Support Forces]]"
+  - "[[Sudan People's Liberation Movement-North (al-Hilu)]]"
 areas_of_operation:
   - "[[West Kordofan]]"
   - "[[Blue Nile State]]"
+  - "[[North Kordofan]]"
+  - "[[El Obeid]]"
 tags:
   - sudan
   - saf
@@ -20,6 +24,7 @@ last_updated: 2026-11-01
 sources:
   - "[[sources/2026-10-23-un-news-sudan-drone-strikes-306-killed]]"
   - "[[sources/2026-10-31-unsg-spokesperson-escalating-drone-attacks-sudan]]"
+  - "[[sources/2026-10-28-un-hrc-crp1-el-obeid-civilian-devastation]]"
 aliases:
   - "SAF"
   - "Sudanese Army"
@@ -58,6 +63,8 @@ The **Sudanese Armed Forces (SAF)** constitute the official state military of th
 ## 4. Operational Capabilities, Alliances & Foreign Backing
 
 - **Long-Range UAV & Loitering Munition Capabilities**: As documented by [[OHCHR]] and UN High Commissioner [[Volker Türk]] on 23 October 2026, external arms transfers have significantly expanded drone warfare capabilities across Sudan, making UAV strikes the primary cause of conflict-related civilian deaths in 2026 ([[2026-10-23 Volker Türk Condemnation of Sudan Drone Escalation and Arms Influx]]). On 31 October 2026, [[United Nations]] Secretary-General [[António Guterres]] (via Spokesperson [[Stéphane Dujarric]]) condemned the escalating drone attacks by the conflict parties across Sudan and [[Abyei]] as violations of international humanitarian law and called for an immediate cessation of hostilities ([[2026-10-31 Stéphane Dujarric UNSG Statement Condemning Escalating Drone Attacks in Sudan and Abyei]], [[2026-10-31 António Guterres Appeal for Immediate Cessation of Hostilities and Good-Faith Mediation in Sudan]]).
+- **Paramilitary Auxiliary Integration & Urban Co-Location**: SAF operates closely with Islamist auxiliary battalions, notably the [[Al-Baraa Ibn Malik Brigade]]. In [[El Obeid]], UN FFM Conference Room Paper `A/HRC/65/CRP.1` verified that SAF and aligned forces co-located military billets, artillery emplacements, and Security Cells in dense residential neighborhoods (e.g. Al-Muwazzafeen), failing to take feasible precautions to protect civilian populations from opposing bombardment in violation of IHL ([[2026-10-28 UN FFM Finding on SAF Detention Practices and Torture in El Obeid]]).
+- **Custodial Repression & Security Cells**: SAF, in coordination with General Intelligence Service (GIS), military police, and [[Al-Baraa Ibn Malik Brigade]], operationalized Emergency Security Cells across government-controlled urban centers. In [[El Obeid]], over 2,000 detainees were packed into El Obeid Central Prison (built for 450), subjected to systematic physical torture, incommunicado detention, and fatal conditions amounting to Common Article 3 war crimes ([[Arbitrary Detention and Custodial Torture in the Sudan War]]).
 
 ---
 
@@ -65,19 +72,23 @@ The **Sudanese Armed Forces (SAF)** constitute the official state military of th
 
 | Date ($t_{\text{valid}}$) | Event / Citation Node | Location | Role & Attribution Status | Verified Civilian Impact |
 | :--- | :--- | :--- | :--- | :--- |
-| `2026-10-01` to `2026-10-31` | [[2026-10 Sudan Drone Warfare Escalation]] | Multi-state ([[West Kordofan]], [[Blue Nile State]], [[Abyei]]) | Co-belligerent (`alleged_perpetrator`) alongside [[Rapid Support Forces]] | **306+ civilians killed** nationwide across three weeks ([[sources/2026-10-23-un-news-sudan-drone-strikes-306-killed]]) |
+| `2026-10-01` to `2026-10-31` | [[2026-10 Sudan Drone Warfare Escalation]] | Multi-state ([[West Kordofan]], [[Blue Nile State]], [[Abyei]], [[South Darfur]]) | Co-belligerent (`alleged_perpetrator`) alongside [[Rapid Support Forces]] | **408+ civilians killed** nationwide across October ([[sources/2026-10-23-un-news-sudan-drone-strikes-306-killed]]) |
 | `2026-10-06` to `2026-10-10` | [[2026-10 Sudan Drone Warfare Escalation]] | Ghubeish & El Nuhud, [[West Kordofan]] (`SD18`) | `alleged_perpetrator` ("military government forces") | **25+ civilians killed** (including women and children) when drone strikes hit IDP shelters |
+| `2026-10-10` | [[2026-10-10 Jabal al-Uqaydat Artisanal Gold Mine Airstrikes]] | Jabal al-Uqaydat, Red Sea State / Egypt border | `alleged_perpetrator` (SAF jet aircraft) | **72+ artisanal gold miners killed** and over 100 wounded in cross-border airstrikes |
 | `2026-10-18` | [[2026-10-18 Dibab Double-Tap Drone Strike]] | Dibab, [[West Kordofan]] (`SD18`) | Unconfirmed operator (strike hit transport truck inside [[Rapid Support Forces]]-held Dibab) | **139+ people killed** in a repeat "double-tap" drone strike |
+| `2026-10-27` | [[2026-10-27 Nyala Tanqonj Market Drone Strike]] | [[Nyala]], [[South Darfur]] (`SD03001`) | Alleged aerial / drone bombardment on RSF-controlled city | **102+ civilians killed**, >100 wounded in crowded livestock market |
+| `2026-10-28` | [[2026-10-28 UN FFM Finding on SAF Detention Practices and Torture in El Obeid]] | [[El Obeid]], [[North Kordofan]] (`SD02001`) | Perpetrator (`state_force`) | UN FFM establishes custodial torture, arbitrary detention of 2,000+ civilians, and co-location of billets |
 | `2026-10-31` | [[2026-10-31 Stéphane Dujarric UNSG Statement Condemning Escalating Drone Attacks in Sudan and Abyei]] | Nationwide & [[Abyei]] (`SD18001`) | Condemned as one of "the parties to the conflict" by UNSG [[António Guterres]] | Escalating drone strikes killing hundreds of civilians and hitting health facilities declared **IHL violations**; urgent appeal for cessation of hostilities ([[2026-10-31 António Guterres Appeal for Immediate Cessation of Hostilities and Good-Faith Mediation in Sudan]]) |
 
 ---
 
 ## Related Primitives
 
-- **Primary Opponent**: [[Rapid Support Forces]]
-- **Monitoring & Peacekeeping Bodies**: [[United Nations]], [[OHCHR]], [[UNISFA]], [[UN News]], [[Office of the Spokesperson for the Secretary-General]]
-- **Quoted Officials**: [[António Guterres]] ([[2026-10-31 António Guterres Appeal for Immediate Cessation of Hostilities and Good-Faith Mediation in Sudan]]), [[Stéphane Dujarric]] ([[2026-10-31 Stéphane Dujarric UNSG Statement Condemning Escalating Drone Attacks in Sudan and Abyei]]), [[Volker Türk]] ([[2026-10-23 Volker Türk Condemnation of Sudan Drone Escalation and Arms Influx]]), [[Seif Magango]] ([[2026-10-23 Seif Magango Statement on Evisceration of Civilian Infrastructure in Sudan]])
-- **Events & Timelines**: [[2026-10 Sudan Drone Warfare Escalation]], [[2026-10-18 Dibab Double-Tap Drone Strike]], [[2026-10-19 Abyei Amiet Market and Todach Drone Strike]], [[2026-10 Sudan Conflict Chronicle]], [[Sudan Drone Warfare and Double-Tap Strike Timeline]]
-- **Locations**: [[West Kordofan]], [[Blue Nile State]], [[Abyei]]
-- **Structural Theme**: [[Drone Proliferation and Double-Tap Strike Doctrine in Sudan]]
-- **Originating Sources**: [[sources/2026-10-23-un-news-sudan-drone-strikes-306-killed]], [[sources/2026-10-31-unsg-spokesperson-escalating-drone-attacks-sudan]]
+- **Allied Forces**: [[Al-Baraa Ibn Malik Brigade]]
+- **Primary Opponents**: [[Rapid Support Forces]], [[Sudan People's Liberation Movement-North (al-Hilu)]]
+- **Monitoring & Peacekeeping Bodies**: [[United Nations]], [[OHCHR]], [[UNISFA]], [[Radio Dabanga]], [[Arab News]], [[Independent International Fact-Finding Mission for the Sudan]]
+- **Quoted Officials**: [[António Guterres]], [[Stéphane Dujarric]], [[Volker Türk]], [[Seif Magango]], [[Muawiya Osman]], [[Mohamed Chande Othman]]
+- **Events & Timelines**: [[2026-10 Sudan Drone Warfare Escalation]], [[2026-10-10 Jabal al-Uqaydat Artisanal Gold Mine Airstrikes]], [[2026-10-18 Dibab Double-Tap Drone Strike]], [[2026-10-19 Abyei Amiet Market and Todach Drone Strike]], [[2026-10-27 Nyala Tanqonj Market Drone Strike]], [[2026-10-31 Haiya Oil Pumping and Power Station Drone Strike]], [[2026-10 El Obeid Siege and Drone Warfare Escalation]], [[2026-10 Sudan Conflict Chronicle]], [[Sudan Drone Warfare and Double-Tap Strike Timeline]], [[Sudan Accountability and International Justice Timeline]]
+- **Locations**: [[West Kordofan]], [[Blue Nile State]], [[North Kordofan]], [[El Obeid]], [[Abyei]], [[Nyala]], [[Haiya]], [[Port Sudan]]
+- **Structural Themes**: [[Drone Proliferation and Double-Tap Strike Doctrine in Sudan]], [[Energy Infrastructure Targeting in the Sudan War]], [[Arbitrary Detention and Custodial Torture in the Sudan War]], [[State Surveillance and Civic Space Contraction in Sudan]]
+- **Originating Sources**: [[sources/2026-10-23-un-news-sudan-drone-strikes-306-killed]], [[sources/2026-10-31-unsg-spokesperson-escalating-drone-attacks-sudan]], [[sources/2026-10-31-arab-news-un-chief-appalled-drone-strikes-nyala-market]], [[sources/2026-10-28-un-hrc-crp1-el-obeid-civilian-devastation]]

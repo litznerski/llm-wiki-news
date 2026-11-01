@@ -20,6 +20,7 @@ last_updated: 2026-11-01
 sources:
   - "[[sources/2026-10-23-un-news-sudan-drone-strikes-306-killed]]"
   - "[[sources/2026-10-31-unsg-spokesperson-escalating-drone-attacks-sudan]]"
+  - "[[sources/2026-10-28-un-hrc-crp1-el-obeid-civilian-devastation]]"
 aliases:
   - "Abyei Area"
   - "Abyei PCA Area"
@@ -77,4 +78,4 @@ reliability_score: 0.95
 - **Quoted Persons**: [[Muhammad Farooq]], [[Adebowale Ajabge]], [[Angelina Musa Diaw]], [[Volker Türk]], [[Seif Magango]], [[António Guterres]], [[Stéphane Dujarric]]
 - **Standalone Citations**: [[2026-10-23 Muhammad Farooq First-Responder Account of Amiet Market Fire]], [[2026-10-23 Adebowale Ajabge Report on UNISFA Emergency Response and Todach Evacuations]], [[2026-10-23 Angelina Musa Diaw Survivor Testimony on Amiet Market Destruction]], [[2026-10-31 Stéphane Dujarric UNSG Statement Condemning Escalating Drone Attacks in Sudan and Abyei]], [[2026-10-31 António Guterres Appeal for Immediate Cessation of Hostilities and Good-Faith Mediation in Sudan]]
 - **Structural Theme**: [[Drone Proliferation and Double-Tap Strike Doctrine in Sudan]]
-- **Originating Sources**: [[sources/2026-10-23-un-news-sudan-drone-strikes-306-killed]], [[sources/2026-10-31-unsg-spokesperson-escalating-drone-attacks-sudan]]
+- **Originating Sources**: [[sources/2026-10-23-un-news-sudan-drone-strikes-306-killed]], [[sources/2026-10-31-unsg-spokesperson-escalating-drone-attacks-sudan]], [[sources/2026-10-28-un-hrc-crp1-el-obeid-civilian-devastation]]

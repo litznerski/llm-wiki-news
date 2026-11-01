@@ -17,6 +17,7 @@ tags:
 last_updated: 2026-11-01
 sources:
   - "[[sources/2026-10-23-un-news-sudan-drone-strikes-306-killed]]"
+  - "[[sources/2026-10-28-un-hrc-crp1-el-obeid-civilian-devastation]]"
 aliases:
   - "Blue Nile"
   - "An-Nil al-Azraq"
@@ -32,14 +33,15 @@ reliability_score: 0.90
 > [!IMPORTANT] Geopolitical Location Anchor (`LOCATION_ANCHOR`)
 > - **Canonical Name**: **Blue Nile State** (`النيل الأزرق` / *An-Nil al-Azraq*)
 > - **UN OCHA P-Code**: **`SD17`** | **Administrative Level**: `ADM1` (`state_adm1`)
-> - **Key Localities & Sites**: Ed Damazin (state capital), **Abu Shendi** (displacement and artisanal gold-mining site), and **Um Darfa** (medical facility site).
-> - **Strategic Significance**: Southeastern border region rich in artisanal gold deposits, hydro-electric infrastructure, and agricultural land, increasingly targeted by long-range UAV strikes during the [[2026-10 Sudan Drone Warfare Escalation]] ([[sources/2026-10-23-un-news-sudan-drone-strikes-306-killed]]).
+> - **Key Localities & Sites**: Ed Damazin (state capital), **[[Kurmuk]]** (`SD17002`), **Abu Shendi** (displacement and artisanal gold-mining site), Wad al-Mahi, and **Um Darfa** (medical facility site).
+> - **Strategic Significance**: Southeastern border region bordering Ethiopia, rich in artisanal gold deposits, hydro-electric infrastructure, and agricultural land, increasingly targeted by long-range UAV strikes during the [[2026-10 Sudan Drone Warfare Escalation]] ([[sources/2026-10-23-un-news-sudan-drone-strikes-306-killed]], [[sources/2026-10-28-un-hrc-crp1-el-obeid-civilian-devastation]]).
 
 ---
 
 ## 2. Territorial Control History & Armed Presence
 
-- **[[Rapid Support Forces]] UAV Reach into Blue Nile**: During October 2026, [[OHCHR]] documented multiple drone strikes in [[Blue Nile State]] attributed to the [[Rapid Support Forces]], targeting both displaced civilian livelihoods in **Abu Shendi** and healthcare infrastructure in **Um Darfa** ([[2026-10 Sudan Drone Warfare Escalation]]).
+- **Multiparty Armed Contestation**: Control across Blue Nile is partitioned among the [[Sudanese Armed Forces]] (holding Ed Damazin and Roseires), the [[Sudan People's Liberation Movement-North (al-Hilu)]] (commanding mountainous sectors and southern territory surrounding [[Kurmuk]]), and encroaching [[Rapid Support Forces]] raiding formations.
+- **[[Rapid Support Forces]] UAV Reach into Blue Nile**: During October 2026, [[OHCHR]] and UN monitors documented multiple drone strikes in [[Blue Nile State]] attributed to the [[Rapid Support Forces]], targeting displaced civilian livelihoods in **Abu Shendi**, civilian gatherings in Wad al-Mahi, and healthcare infrastructure in **Um Darfa** ([[2026-10 Sudan Drone Warfare Escalation]]).
 
 ---
 
@@ -47,6 +49,7 @@ reliability_score: 0.90
 
 - **Artisanal Gold Mining (Abu Shendi)**: Displaced communities in **Abu Shendi** rely on informal artisanal gold mining near displacement camps for economic survival. On 9 October 2026, an alleged [[Rapid Support Forces]] drone struck a crowd of displaced people mining gold in Abu Shendi, killing **at least 31 people**, mostly women and children ([[2026-10 Sudan Drone Warfare Escalation]]).
 - **Healthcare Facilities (Um Darfa Hospital)**: On 11 October 2026, an [[Rapid Support Forces]]-attributed drone strike hit **Um Darfa hospital**, seriously injuring two health workers and forcing the facility to cease operations ([[sources/2026-10-23-un-news-sudan-drone-strikes-306-killed]]).
+- **Cross-Border Corridors ([[Kurmuk]])**: The Kurmuk border corridor links Blue Nile to Ethiopia's Benishangul-Gumuz region, serving as a critical humanitarian relief corridor and refugee exit route.
 
 ---
 
@@ -63,14 +66,17 @@ reliability_score: 0.90
 | :--- | :--- | :--- | :--- | :--- |
 | `2026-10-09` | [[2026-10 Sudan Drone Warfare Escalation]] | Abu Shendi | Alleged [[Rapid Support Forces]] $\to$ Displaced gold miners | **31+ civilians killed** (mostly women and children) |
 | `2026-10-11` | [[2026-10 Sudan Drone Warfare Escalation]] | Um Darfa | [[Rapid Support Forces]] $\to$ Um Darfa Hospital | **2 health workers seriously injured**; hospital rendered non-operational |
+| `2026-10-12` | [[2026-10 Sudan Drone Warfare Escalation]] | Wad al-Mahi | Alleged [[Rapid Support Forces]] $\to$ Civilian gathering | **30+ civilians killed** in drone loitering munition strike |
+| `2026-10-28` | UN Fact-Finding Mission Report (`A/HRC/65/CRP.1`) | State-wide & Kurmuk | [[Independent International Fact-Finding Mission for the Sudan]] | Records cross-border displacement, armed tensions, and drone proliferation in Blue Nile |
 
 ---
 
 ## Related Primitives
 
-- **Other Active Theatres**: [[West Kordofan]], [[Abyei]]
+- **Localities & Hubs**: [[Kurmuk]], Abu Shendi, Um Darfa, Wad al-Mahi, Ed Damazin
+- **Other Active Theatres**: [[West Kordofan]], [[Abyei]], [[North Kordofan]]
 - **Major Events**: [[2026-10 Sudan Drone Warfare Escalation]], [[2026-10-18 Dibab Double-Tap Drone Strike]], [[2026-10-19 Abyei Amiet Market and Todach Drone Strike]]
-- **Actors Operating in Theatre**: [[Rapid Support Forces]], [[Sudanese Armed Forces]], [[OHCHR]], [[UN News]]
+- **Actors Operating in Theatre**: [[Rapid Support Forces]], [[Sudanese Armed Forces]], [[Sudan People's Liberation Movement-North (al-Hilu)]], [[OHCHR]], [[UN News]], [[Independent International Fact-Finding Mission for the Sudan]]
 - **Quoted Persons & Citations**: [[Volker Türk]] ([[2026-10-23 Volker Türk Condemnation of Sudan Drone Escalation and Arms Influx]]), [[Seif Magango]] ([[2026-10-23 Seif Magango Statement on Evisceration of Civilian Infrastructure in Sudan]])
 - **Structural Theme**: [[Drone Proliferation and Double-Tap Strike Doctrine in Sudan]]
-- **Originating Source**: [[sources/2026-10-23-un-news-sudan-drone-strikes-306-killed]]
+- **Originating Sources**: [[sources/2026-10-23-un-news-sudan-drone-strikes-306-killed]], [[sources/2026-10-28-un-hrc-crp1-el-obeid-civilian-devastation]]

@@ -2,9 +2,9 @@
 title: "2026-02-19 UN News: 'Hallmarks of Genocide' Found in El Fasher (UN Fact-Finding Mission)"
 type: source
 subtype: news_article
-status: draft
-compiled: false
-compiled_at: null
+status: approved
+compiled: true
+compiled_at: 2026-11-01
 source_outlet: "[[UN News]]"
 raw_file: "raw/articles/Sudan ‘Hallmarks of genocide’ found in El Fasher, UN investigators detail mass killings and ethnic targeting.md"
 url: https://news.un.org/en/story/2026/02/1166997
@@ -64,7 +64,7 @@ aliases:
 > - **Primary Artifact**: `raw/articles/Sudan ‘Hallmarks of genocide’ found in El Fasher, UN investigators detail mass killings and ethnic targeting.md`
 > - **Source URL**: [https://news.un.org/en/story/2026/02/1166997](https://news.un.org/en/story/2026/02/1166997)
 > - **Publishing Source Outlet**: [[UN News]] (`subtype: media_source`, `alignment: international_org`)
-> - **Reporting Journalist / Byline**: `[[Vibhu Mishra]]` (UN News)
+> - **Reporting Journalist / Byline**: [[Vibhu Mishra]] (UN News)
 > - **Investigative Body**: [[Independent International Fact-Finding Mission for the Sudan]]
 > - **Publication Date ($t_{\text{reported}}$)**: `2026-02-19`
 > - **Temporal Scope ($t_{\text{valid}}$)**: `2024-05-01` to `2025-10-31` (focusing on the 500-day siege and late October 2025 RSF takeover of El Fasher)

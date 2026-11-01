@@ -2,9 +2,9 @@
 title: "2026-10-31 Radio Dabanga: Drone Attacks on Haiya Oil Pumping and Electricity Stations (Eastern Sudan)"
 type: source
 subtype: news_article
-status: draft
-compiled: false
-compiled_at: null
+status: approved
+compiled: true
+compiled_at: 2026-11-01
 source_outlet: "[[Radio Dabanga]]"
 raw_file: "raw/articles/هجوم جديد بالمسيرات على محطة ضح النفط وكهرباء هيا شرق السودان.md"
 url: https://www.dabangasudan.org/ar/all-news/article/%d9%87%d8%ac%d9%88%d9%85-%d8%ac%d8%af%d9%8a%d8%af-%d8%a8%d8%a7%d9%84%d9%85%d8%b3%d9%8a%d8%b1%d8%a7%d8%aa-%d8%b9%d9%84%d9%89-%d9%85%d8%ad%d8%b7%d8%a9-%d8%b6%d8%ad-%d8%a7%d9%84%d9%86%d9%81%d8%b7-%d9%88
@@ -65,7 +65,7 @@ aliases:
 > - **Primary Artifact**: `raw/articles/هجوم جديد بالمسيرات على محطة ضح النفط وكهرباء هيا شرق السودان.md`
 > - **Source URL**: [https://www.dabangasudan.org/ar/all-news/article/...](https://www.dabangasudan.org/ar/all-news/article/%d9%87%d8%ac%d9%88%d9%85-%d8%ac%d8%af%d9%8a%d8%af-%d8%a8%d8%a7%d9%84%d9%85%d8%b3%d9%8a%d8%b1%d8%a7%d8%aa-%d8%b9%d9%84%d9%89-%d9%85%d8%ad%d8%b7%d8%a9-%d8%b6%d8%ad-%d8%a7%d9%84%d9%86%d9%81%d8%b7-%d9%88)
 > - **Publishing Source Outlet**: [[Radio Dabanga]] (`subtype: media_source`, `alignment: independent`, `baseline_admiralty_reliability: B`)
-> - **Reporting Journalist / Byline**: `[[Kamal]]` (Radio Dabanga, Khartoum/Amsterdam)
+> - **Reporting Journalist / Byline**: [[Kamal]] (Radio Dabanga, Khartoum/Amsterdam)
 > - **Publication Date ($t_{\text{reported}}$)**: `2026-10-31`
 > - **Temporal Scope ($t_{\text{valid}}$)**: `2026-10-28` to `2026-10-31`
 > - **NATO Admiralty Scale**: **`B2`** (Reliable independent Sudanese media outlet with direct local sources; physical infrastructure damage and official diplomatic briefing corroborated).

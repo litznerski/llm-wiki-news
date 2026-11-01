@@ -2,9 +2,9 @@
 title: "2026-10-28 OHCHR: Independent International Fact-Finding Mission for the Sudan Mandate and Reports Portal"
 type: source
 subtype: official_communique
-status: draft
-compiled: false
-compiled_at: null
+status: approved
+compiled: true
+compiled_at: 2026-11-01
 source_outlet: "[[OHCHR]]"
 raw_file: raw/articles/Independent International Fact-Finding Mission for the Sudan.md
 url: https://www.ohchr.org/en/hr-bodies/hrc/ffm-sudan/index

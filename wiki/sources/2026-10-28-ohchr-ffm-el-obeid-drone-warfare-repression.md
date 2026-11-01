@@ -2,9 +2,9 @@
 title: "2026-10-28 OHCHR: Expanding Drone Warfare and Severe Repression in El-Obeid (UN Fact-Finding Mission)"
 type: source
 subtype: news_article
-status: draft
-compiled: false
-compiled_at: null
+status: approved
+compiled: true
+compiled_at: 2026-11-01
 source_outlet: "[[OHCHR]]"
 raw_file: raw/articles/Sudan Expanding drone warfare and severe repression in El-Obeid put civilians at ever greater risk, UN Fact-Finding Mission says.md
 url: https://www.ohchr.org/en/press-releases/2026/10/sudan-expanding-drone-warfare-and-severe-repression-el-obeid-put-civilians?sub-site=HRC

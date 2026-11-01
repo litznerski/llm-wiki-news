@@ -10,6 +10,8 @@ opponents:
 areas_of_operation:
   - "[[West Kordofan]]"
   - "[[Blue Nile State]]"
+  - "[[North Kordofan]]"
+  - "[[Um Badr]]"
 tags:
   - sudan
   - rsf
@@ -20,6 +22,7 @@ last_updated: 2026-11-01
 sources:
   - "[[sources/2026-10-23-un-news-sudan-drone-strikes-306-killed]]"
   - "[[sources/2026-10-31-unsg-spokesperson-escalating-drone-attacks-sudan]]"
+  - "[[sources/2026-10-28-un-hrc-crp1-el-obeid-civilian-devastation]]"
 aliases:
   - "RSF"
   - "قوات الدعم السريع"
@@ -64,20 +67,26 @@ The **Rapid Support Forces (RSF)** are a powerful paramilitary force commanded b
 
 | Date ($t_{\text{valid}}$) | Event / Citation Node | Location | Role & Attribution Status | Verified Civilian Impact |
 | :--- | :--- | :--- | :--- | :--- |
-| `2026-10-01` to `2026-10-31` | [[2026-10 Sudan Drone Warfare Escalation]] | Multi-state ([[West Kordofan]], [[Blue Nile State]], [[Abyei]]) | Co-belligerent (`alleged_perpetrator`) alongside [[Sudanese Armed Forces]] | **306+ civilians killed** nationwide across three weeks ([[sources/2026-10-23-un-news-sudan-drone-strikes-306-killed]]) |
+| `2025-10` | [[2025-10 El Fasher Siege and RSF Takeover Atrocities]] | [[El Fasher]], [[North Darfur]] | Perpetrator / besieging force | FFM concluded operations bear hallmarks of genocide against Zaghawa and Fur |
+| `2026-09-24` | [[2026-09-24 Um Badr Market Summary Executions]] | [[Um Badr]], [[North Kordofan]] (`SD02005`) | Perpetrator (`armed_group`) | Summary execution of **25 bound detainees** in public market; Common Article 3 war crime verified by UN FFM |
+| `2026-10-01` to `2026-10-31` | [[2026-10 Sudan Drone Warfare Escalation]] | Multi-state ([[West Kordofan]], [[Blue Nile State]], [[Abyei]]) | Co-belligerent (`alleged_perpetrator`) alongside [[Sudanese Armed Forces]] | **408+ civilians killed** nationwide across October |
+| `2026-10-01` | [[2026-10 El Obeid Siege and Drone Warfare Escalation]] | [[El Obeid]], [[North Kordofan]] (`SD02001`) | Alleged perpetrator of drone attack | Loitering munition hit university dormitory housing displaced students, killing 5 and wounding 47 |
 | `2026-10-09` | [[2026-10 Sudan Drone Warfare Escalation]] | Abu Shendi, [[Blue Nile State]] (`SD17`) | `alleged_perpetrator` ([[OHCHR]]) | **31+ displaced people killed** (mostly women and children) while mining gold near an IDP site |
 | `2026-10-11` | [[2026-10 Sudan Drone Warfare Escalation]] | Um Darfa, [[Blue Nile State]] (`SD17`) | `perpetrator` / `alleged_perpetrator` ([[OHCHR]]) | **2 health workers seriously injured**; Um Darfa hospital rendered non-operational |
 | `2026-10-18` | [[2026-10-18 Dibab Double-Tap Drone Strike]] | Dibab, [[West Kordofan]] (`SD18`) | Territorial controller of Dibab | **139+ people killed** when a transport truck in RSF-controlled Dibab was hit in a repeat "double-tap" drone strike |
-| `2026-10-31` | [[2026-10-31 Stéphane Dujarric UNSG Statement Condemning Escalating Drone Attacks in Sudan and Abyei]] | Nationwide & [[Abyei]] (`SD18001`) | Condemned as one of "the parties to the conflict" by UNSG [[António Guterres]] | Escalating drone attacks killing hundreds of civilians and striking health facilities declared **IHL violations**; urgent appeal for cessation of hostilities ([[2026-10-31 António Guterres Appeal for Immediate Cessation of Hostilities and Good-Faith Mediation in Sudan]]) |
+| `2026-10-28` | [[2026-10-28 UN FFM Finding on RSF Drone Warfare and Indiscriminate Attacks in El Obeid]] | [[El Obeid]], [[North Kordofan]] (`SD02001`) | Perpetrator / besieging force | FFM documents systematic use of commercial and military-grade UAVs, double-tap rescue worker strikes, and attacks on schools and hospitals |
+| `2026-10-31` | [[2026-10-31 Haiya Oil Pumping and Power Station Drone Strike]] | [[Haiya]], [[Red Sea State]] (`SD07002`) | Alleged perpetrator of long-range UAV strike | Crude Oil Station 4 damaged; municipal power transmission line severed |
+| `2026-10-31` | [[2026-10-31 Stéphane Dujarric UNSG Statement Condemning Escalating Drone Attacks in Sudan and Abyei]] | Nationwide & [[Abyei]] (`SD18001`) | Condemned as one of "the parties to the conflict" by UNSG [[António Guterres]] | Escalating drone attacks declared **IHL violations**; urgent appeal for cessation of hostilities |
 
 ---
 
 ## Related Primitives
 
 - **Primary Opponent**: [[Sudanese Armed Forces]]
-- **Monitoring & Peacekeeping Bodies**: [[United Nations]], [[OHCHR]], [[UNISFA]], [[UN News]], [[Office of the Spokesperson for the Secretary-General]]
-- **Quoted Officials**: [[António Guterres]] ([[2026-10-31 António Guterres Appeal for Immediate Cessation of Hostilities and Good-Faith Mediation in Sudan]]), [[Stéphane Dujarric]] ([[2026-10-31 Stéphane Dujarric UNSG Statement Condemning Escalating Drone Attacks in Sudan and Abyei]]), [[Volker Türk]] ([[2026-10-23 Volker Türk Condemnation of Sudan Drone Escalation and Arms Influx]]), [[Seif Magango]] ([[2026-10-23 Seif Magango Statement on Evisceration of Civilian Infrastructure in Sudan]])
-- **Events & Timelines**: [[2026-10 Sudan Drone Warfare Escalation]], [[2026-10-18 Dibab Double-Tap Drone Strike]], [[2026-10-19 Abyei Amiet Market and Todach Drone Strike]], [[2026-10 Sudan Conflict Chronicle]], [[Sudan Drone Warfare and Double-Tap Strike Timeline]]
-- **Locations**: [[West Kordofan]], [[Blue Nile State]], [[Abyei]]
-- **Structural Theme**: [[Drone Proliferation and Double-Tap Strike Doctrine in Sudan]]
-- **Originating Sources**: [[sources/2026-10-23-un-news-sudan-drone-strikes-306-killed]], [[sources/2026-10-31-unsg-spokesperson-escalating-drone-attacks-sudan]]
+- **Foreign Patron & Sponsor**: [[United Arab Emirates]]
+- **Monitoring & Peacekeeping Bodies**: [[United Nations]], [[OHCHR]], [[UNISFA]], [[Independent International Fact-Finding Mission for the Sudan]], [[Radio Dabanga]]
+- **Quoted Officials**: [[António Guterres]], [[Stéphane Dujarric]], [[Volker Türk]], [[Mohamed Chande Othman]], [[Mona Rishmawi]]
+- **Events & Timelines**: [[2025-10 El Fasher Siege and RSF Takeover Atrocities]], [[2026-09-24 Um Badr Market Summary Executions]], [[2026-10 El Obeid Siege and Drone Warfare Escalation]], [[2026-10 Sudan Drone Warfare Escalation]], [[2026-10-18 Dibab Double-Tap Drone Strike]], [[2026-10-31 Haiya Oil Pumping and Power Station Drone Strike]], [[2026-10 Sudan Conflict Chronicle]], [[El Fasher Siege and Genocide Investigation Timeline]], [[Sudan Drone Warfare and Double-Tap Strike Timeline]], [[Sudan Accountability and International Justice Timeline]]
+- **Locations**: [[El Fasher]], [[West Kordofan]], [[Blue Nile State]], [[Haiya]], [[Nyala]], [[North Kordofan]], [[El Obeid]], [[Um Badr]]
+- **Structural Themes**: [[Ethnic Cleansing and Genocidal Patterns in Darfur]], [[UAE Foreign Backing and Logistics Network for the Rapid Support Forces]], [[Drone Proliferation and Double-Tap Strike Doctrine in Sudan]]
+- **Originating Sources**: [[sources/2026-10-23-un-news-sudan-drone-strikes-306-killed]], [[sources/2026-10-31-unsg-spokesperson-escalating-drone-attacks-sudan]], [[sources/2026-02-19-un-news-el-fasher-hallmarks-of-genocide]], [[sources/2026-10-31-dabanga-haiya-oil-electricity-drone-attack]], [[sources/2026-10-28-un-hrc-crp1-el-obeid-civilian-devastation]]
