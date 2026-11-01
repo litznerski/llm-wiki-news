@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """
 scripts/lint_vault.py
-Audits the Obsidian vault for broken links, orphan notes, and schema compliance.
-Part of Andrej Karpathy's LLM Wiki implementation.
+Audits the Sudan News & OSINT Obsidian vault (`wiki/`) for broken links, orphan notes,
+non-canonical path prefixes, Mermaid syntax errors, unescaped table pipes,
+and schema compliance (including NATO Admiralty ratings, UN OCHA P-Codes, and Dual-Flow CoT arcs).
 """
 
 import os
@@ -14,7 +15,21 @@ from pathlib import Path
 VAULT_ROOT = Path(__file__).resolve().parent.parent
 WIKI_DIR = VAULT_ROOT / "wiki"
 REQUIRED_FRONTMATTER_FIELDS = ["title", "type", "tags", "last_updated", "sources", "reliability_score"]
+TYPE_SPECIFIC_REQUIRED_FIELDS = {
+    "event": ["subtype", "event_category", "event_start_date", "admiralty_rating"],
+    "actor": ["subtype"],
+    "location": ["subtype", "pcode"],
+    "theme": ["subtype"],
+    "timeline": ["subtype"],
+    "source": ["subtype", "admiralty_rating", "published_date"],
+}
 EXEMPT_FILES = {"index.md", "overview.md", "log.md", "glossary.md"}
+DISALLOWED_WIKILINK_PREFIXES = (
+    "wiki/events/", "wiki/actors/", "wiki/locations/", "wiki/themes/", "wiki/timelines/",
+    "events/", "actors/", "locations/", "themes/", "timelines/",
+    "wiki/concepts/", "wiki/entities/", "concepts/", "entities/"
+)
+
 
 def parse_frontmatter(content):
     """Extract frontmatter dict if present."""
@@ -26,10 +41,11 @@ def parse_frontmatter(content):
     fm_text = parts[1]
     data = {}
     for line in fm_text.splitlines():
-        if ":" in line:
+        if ":" in line and not line.strip().startswith("-"):
             k, v = line.split(":", 1)
-            data[k.strip()] = v.strip()
+            data[k.strip()] = v.strip().strip("'\"")
     return data
+
 
 def get_all_wiki_files():
     """Return dictionary of stem -> Path and relative path -> Path."""
@@ -42,17 +58,15 @@ def get_all_wiki_files():
                 rel = p.relative_to(VAULT_ROOT)
                 files_by_stem[p.stem] = p
                 files_by_rel[str(rel)] = p
-                # also register without extension
                 files_by_rel[str(rel.with_suffix(""))] = p
     return files_by_stem, files_by_rel
 
+
 def extract_links(content):
     """Extract wikilinks from content [[Target|Alias]] -> Target, ignoring code blocks and backticks."""
-    # Strip fenced code blocks
     content_no_code = re.sub(r"```[\s\S]*?```", "", content)
-    # Strip inline code spans
     content_no_code = re.sub(r"`[^`]*`", "", content_no_code)
-    
+
     raw_links = re.findall(r"\[\[(.*?)\]\]", content_no_code)
     cleaned = []
     for link in raw_links:
@@ -60,6 +74,7 @@ def extract_links(content):
         if target:
             cleaned.append(target)
     return cleaned
+
 
 def lint(check_cot: bool = False):
     files_by_stem, files_by_rel = get_all_wiki_files()
@@ -77,6 +92,7 @@ def lint(check_cot: bool = False):
         rel_path = p.relative_to(VAULT_ROOT)
 
         # 1. Frontmatter check (only for compiled notes, not index/overview/log/glossary)
+        fm = None
         if p.name not in EXEMPT_FILES:
             fm = parse_frontmatter(content)
             if fm is None:
@@ -87,14 +103,18 @@ def lint(check_cot: bool = False):
                     "action": "Add required frontmatter header"
                 })
             else:
-                missing = [f for f in REQUIRED_FRONTMATTER_FIELDS if f not in fm]
-                if missing:
-                    issues.append({
-                        "type": "Schema Incomplete",
-                        "file": str(rel_path),
-                        "desc": f"Missing attributes: {', '.join(missing)}",
-                        "action": f"Add {missing} to frontmatter"
-                    })
+                node_type = fm.get("type", "").lower()
+                if node_type != "ingestion":
+                    missing = [f for f in REQUIRED_FRONTMATTER_FIELDS if f not in fm]
+                    type_req = TYPE_SPECIFIC_REQUIRED_FIELDS.get(node_type, [])
+                    missing.extend([f for f in type_req if f not in fm and f not in missing])
+                    if missing:
+                        issues.append({
+                            "type": "Schema Incomplete",
+                            "file": str(rel_path),
+                            "desc": f"Missing attributes for type '{node_type or 'unknown'}': {', '.join(missing)}",
+                            "action": f"Add {missing} to frontmatter"
+                        })
 
         # 2. Check for malformed backticked wikilinks outside fenced code blocks
         content_no_fences = re.sub(r"```[\s\S]*?```", "", content)
@@ -131,7 +151,6 @@ def lint(check_cot: bool = False):
                 if not s or s.startswith("%%"):
                     continue
 
-                # A. Wikilinks inside mermaid [[...]]
                 if "[[" in s and "]]" in s:
                     issues.append({
                         "type": "Mermaid Wikilink Error",
@@ -140,7 +159,6 @@ def lint(check_cot: bool = False):
                         "action": 'Remove [[...]] brackets and use plain text label enclosed in quotes (e.g. `id["Label"]`)'
                     })
 
-                # B. Unquoted special characters in square brackets
                 unquoted_spec = re.search(r'([A-Za-z0-9_]+)\[([^"\n\[\]]*?[:&()][^"\n\[\]]*?)\]', s)
                 if unquoted_spec:
                     issues.append({
@@ -150,7 +168,6 @@ def lint(check_cot: bool = False):
                         "action": f'Enclose label in double quotes: `{unquoted_spec.group(1)}["..."]`'
                     })
 
-                # C. Odd number of quotes
                 clean_q = s.replace(r'\"', '')
                 if clean_q.count('"') % 2 != 0:
                     issues.append({
@@ -171,7 +188,6 @@ def lint(check_cot: bool = False):
             tbl_issues = []
             if not table_rows:
                 return tbl_issues
-            # A. Check for unescaped pipes inside table wikilinks
             for lno, ltext in table_rows:
                 matches = pipe_pattern.findall(ltext)
                 if matches:
@@ -181,7 +197,6 @@ def lint(check_cot: bool = False):
                         "desc": f"Unescaped pipe inside table wikilink: `[[{matches[0]}]]`",
                         "action": "Escape pipe as \\| (e.g. [[Target\\|Alias]]) or use unaliased link"
                     })
-            # B. Check column count consistency against delimiter row
             delim_idx = -1
             delim_cols = 0
             for idx, (lno, ltext) in enumerate(table_rows):
@@ -224,10 +239,17 @@ def lint(check_cot: bool = False):
         if current_table:
             issues.extend(evaluate_table(current_table))
 
-        # 5. Extract links and verify targets
+        # 5. Extract links and verify targets (skippingglossary.md seed links before initial ingestion)
         links = extract_links(content)
         for link in links:
-            # Check if link resolves by relative path or stem
+            if any(link.startswith(pref) for pref in DISALLOWED_WIKILINK_PREFIXES):
+                issues.append({
+                    "type": "Non-Canonical Link Prefix",
+                    "file": str(rel_path),
+                    "desc": f"Wikilink uses redundant directory prefix: `[[{link}]]`",
+                    "action": f"Use shortest canonical title `[[{link.split('/')[-1]}]]`"
+                })
+
             target_file = None
             if link in files_by_rel:
                 target_file = files_by_rel[link]
@@ -250,8 +272,7 @@ def lint(check_cot: bool = False):
 
             if target_file:
                 inbound_links[target_file] = inbound_links.get(target_file, 0) + 1
-            else:
-                # Target doesn't exist
+            elif p.name not in ("glossary.md", "overview.md"):
                 issues.append({
                     "type": "Dead Link",
                     "file": str(rel_path),
@@ -259,36 +280,60 @@ def lint(check_cot: bool = False):
                     "action": f"Create [[{link}]] or fix link"
                 })
 
-        # 6. Generation 3 Dual-Flow CoT Concept Structure Audit (optional via --cot)
-        if check_cot and "concepts/" in str(rel_path):
-            if not re.search(r">\s*\[!IMPORTANT\]\s*Definitional Anchor", content, re.IGNORECASE):
-                issues.append({
-                    "type": "CoT Lead Callout Missing",
-                    "file": str(rel_path),
-                    "desc": "Lead section missing '> [!IMPORTANT] Definitional Anchor' callout",
-                    "action": "Wrap lead definition in '> [!IMPORTANT] Definitional Anchor' callout"
-                })
+        # 6. Sudan News Dual-Flow CoT Structure Audit (optional via --cot)
+        if check_cot and p.name not in EXEMPT_FILES:
+            rel_str = str(rel_path)
+            canonical_stages = []
+            if "events/" in rel_str:
+                canonical_stages = [
+                    (1, r"##\s*1[\.\:]\s*Event Anchor", "1. Event Anchor & 5W1H Summary"),
+                    (2, r"##\s*2[\.\:]\s*Chronological Sequence", "2. Chronological Sequence & Tactical Mechanics"),
+                    (3, r"##\s*3[\.\:]\s*Causal Drivers", "3. Causal Drivers & Strategic Motives"),
+                    (4, r"##\s*4[\.\:]\s*Humanitarian", "4. Humanitarian, Territorial & Geopolitical Impact"),
+                    (5, r"##\s*5[\.\:]\s*Competing Narratives", "5. Competing Narratives, Attribution & Contradictions"),
+                    (6, r"##\s*(6[\.\:]\s*)?(Related Primitives|Related Notes)", "Related Primitives"),
+                ]
+            elif "actors/" in rel_str:
+                canonical_stages = [
+                    (1, r"##\s*1[\.\:]\s*Identity", "1. Identity, Classification & Leadership Anchor"),
+                    (2, r"##\s*2[\.\:]\s*Historical Lineage", "2. Historical Lineage, Factions & Command Structure"),
+                    (3, r"##\s*3[\.\:]\s*Strategic Objectives", "3. Strategic Objectives, Ideology & Political Economy"),
+                    (4, r"##\s*4[\.\:]\s*Operational Capabilities", "4. Operational Capabilities, Alliances & Foreign Backing"),
+                    (5, r"##\s*5[\.\:]\s*Chronological Event Footprint", "5. Chronological Event Footprint & Accountability Record"),
+                    (6, r"##\s*(6[\.\:]\s*)?(Related Primitives|Related Notes)", "Related Primitives"),
+                ]
+            elif "locations/" in rel_str:
+                canonical_stages = [
+                    (1, r"##\s*1[\.\:]\s*Geopolitical Identity", "1. Geopolitical Identity & Strategic Significance"),
+                    (2, r"##\s*2[\.\:]\s*Territorial Control", "2. Territorial Control History & Armed Presence"),
+                    (3, r"##\s*3[\.\:]\s*Key Infrastructure", "3. Key Infrastructure, Trade Corridors & Resources"),
+                    (4, r"##\s*4[\.\:]\s*Humanitarian Status", "4. Humanitarian Status, Displacement & Civil Services"),
+                    (5, r"##\s*5[\.\:]\s*Chronological Log", "5. Chronological Log of Major Conflict Events"),
+                    (6, r"##\s*(6[\.\:]\s*)?(Related Primitives|Related Notes)", "Related Primitives"),
+                ]
+            elif "themes/" in rel_str:
+                canonical_stages = [
+                    (1, r"##\s*1[\.\:]\s*Core Thesis", "1. Core Thesis & Structural Mechanism"),
+                    (2, r"##\s*2[\.\:]\s*Historical Roots", "2. Historical Roots & Political Economy Anatomy"),
+                    (3, r"##\s*3[\.\:]\s*Operational Manifestations", "3. Operational Manifestations Across Frontlines"),
+                    (4, r"##\s*4[\.\:]\s*Humanitarian", "4. Humanitarian, Regional & Diplomatic Consequences"),
+                    (5, r"##\s*5[\.\:]\s*Empirical Debates", "5. Empirical Debates, Uncertainties & Competing Analyses"),
+                    (6, r"##\s*(6[\.\:]\s*)?(Related Primitives|Related Notes)", "Related Primitives"),
+                ]
 
-            canonical_stages = [
-                (1, r"##\s*1[\.\:]\s*Core Thesis", "1. Core Thesis"),
-                (2, r"##\s*2[\.\:]\s*(Causal Anatomy|Underlying Mechanics)", "2. Causal Anatomy & Underlying Mechanics"),
-                (3, r"##\s*3[\.\:]\s*(Manifestations|Failure Modes|Pathologies)", "3. Manifestations & Failure Modes"),
-                (4, r"##\s*4[\.\:]\s*(Prescriptive Mitigations|Counter-Architectures)", "4. Prescriptive Mitigations & Counter-Architectures"),
-                (5, r"##\s*5[\.\:]\s*(Empirical Boundaries|Contradictions)", "5. Empirical Boundaries & Contradictions"),
-                (6, r"##\s*6[\.\:]\s*(Related Primitives|Synthesis Catalog|Related Notes)", "6. Related Primitives & Synthesis Catalog")
-            ]
-            missing_stages = []
-            for num, pat, title in canonical_stages:
-                if not re.search(pat, content, re.IGNORECASE):
-                    missing_stages.append(f"Stage {num} ({title})")
-            
-            if missing_stages:
-                issues.append({
-                    "type": "CoT Structure Gap",
-                    "file": str(rel_path),
-                    "desc": f"Missing canonical CoT stage(s): {', '.join(missing_stages)}",
-                    "action": "Refactor to Generation 3 Dual-Flow CoT 6-stage epistemic arc"
-                })
+            if canonical_stages:
+                missing_stages = [
+                    f"Stage {num} ({title})"
+                    for num, pat, title in canonical_stages
+                    if not re.search(pat, content, re.IGNORECASE)
+                ]
+                if missing_stages:
+                    issues.append({
+                        "type": "CoT Structure Gap",
+                        "file": rel_str,
+                        "desc": f"Missing canonical CoT stage(s): {', '.join(missing_stages)}",
+                        "action": "Refactor note to match 6-stage Sudan News Dual-Flow CoT arc"
+                    })
 
     # 7. Orphan detection
     for p, in_count in inbound_links.items():
@@ -299,11 +344,11 @@ def lint(check_cot: bool = False):
                 "type": "Orphan Node",
                 "file": str(p.relative_to(VAULT_ROOT)),
                 "desc": "No inbound [[wikilinks]] from any note",
-                "action": "Link from wiki/index.md or related concept"
+                "action": "Link from wiki/index.md or related event/actor/location"
             })
 
     # Render Markdown Report
-    print("# Knowledge Base Diagnostic Report\n")
+    print("# Sudan News & OSINT Knowledge Base Diagnostic Report\n")
     if not issues:
         print("All checks passed! Vault graph integrity is 100% compliant.")
         return 0
@@ -316,11 +361,13 @@ def lint(check_cot: bool = False):
     print("")
     return 1
 
+
 def main():
-    parser = argparse.ArgumentParser(description="Audit Obsidian vault for broken links, orphan notes, and schema compliance.")
-    parser.add_argument("--cot", action="store_true", help="Audit wiki/concepts/ notes for Generation 3 Dual-Flow CoT 6-stage epistemic arcs")
+    parser = argparse.ArgumentParser(description="Audit Sudan News & OSINT Obsidian vault for broken links, orphan notes, and schema compliance.")
+    parser.add_argument("--cot", action="store_true", help="Audit wiki/{events,actors,locations,themes}/ notes for 6-stage Dual-Flow CoT arcs")
     args = parser.parse_args()
     return lint(check_cot=args.cot)
+
 
 if __name__ == "__main__":
     sys.exit(main())

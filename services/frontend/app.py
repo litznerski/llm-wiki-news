@@ -111,10 +111,10 @@ def render_valves_panel(valves: Dict[str, Any]) -> cl.Text:
 ---
 
 ### Epistemic Substrate
-- **Platform**: <span class="brand-knowledge-lab"><span class="brand-knowledge">knowledge</span><span class="brand-lab">lab</span></span>
-- **Knowledge Engine**: `ArcadeDB news (Graph & Multi-Model)`
-- **Reasoning Architecture**: `Dual-Flow CoT Windowing & Toulmin Roles`
-- **Presentation Host**: `Astro 7 (Liquid Glass Layout)`
+- **Platform**: `Sudan News & OSINT Intelligence Studio (llm-wiki-news)`
+- **Knowledge Engine**: `ArcadeDB news (Multi-Model 5W1H & GRaSP Graph)`
+- **Reasoning Architecture**: `Dual-Flow 5W1H CoT Windowing & NATO Admiralty Scale`
+- **Presentation Host**: `Astro 7 Digital Garden`
 
 *Click the ⚙️ Settings icon at the bottom of the screen to adjust valves or switch models.*
 """
@@ -124,32 +124,31 @@ def render_valves_panel(valves: Dict[str, Any]) -> cl.Text:
 def format_arcadedb_inspector_markdown(concept_name: str, node_data: dict) -> str:
     """Formats an ArcadeDB node inspection block in Markdown for embedding inside turn accordions."""
     pagerank = node_data.get("pagerank", 0.0152)
-    community = node_data.get("community", 2)
-    aliases = ", ".join(node_data.get("aliases", [])) or "None"
+    community = node_data.get("community", 1)
+    aliases = ", ".join(node_data.get("aliases", [])) or "See wiki/glossary.md"
     tier = node_data.get("tier", "tier_2_traversal")
-    tier_label = "Tier 1: Pre-Compiled Golden Synthesis" if tier == "tier_1_synthesis" else "Tier 2: CoT Graph Traversal"
+    tier_label = "Tier 1: Pre-Compiled Intelligence Synthesis" if tier == "tier_1_synthesis" else "Tier 2: 5W1H CoT Graph Traversal"
 
     return f"""#### ArcadeDB Graph Inspector: {concept_name}
 
-> [!IMPORTANT] Graph Topology Telemetry
+> [!IMPORTANT] OSINT Graph Topology Telemetry
 > - **Resolution Tier**: `{tier_label}`
 > - **In-Engine PageRank**: `{pagerank:.4f}`
-> - **Louvain Community**: `Cluster {community}` (*Cognitive Governance*)
-> - **Known Aliases**: `{aliases}`
+> - **Theatre / Cluster**: `Cluster {community}` (*Sudan Conflict OSINT*)
+> - **Known Aliases / P-Code**: `{aliases}`
 
-##### Toulmin Argumentation Structure
-| Toulmin Role | In-Vault Section | Modal Certainty | Signed Weight |
+##### 5W1H & GRaSP Argumentation Structure
+| 5W1H / GRaSP Role | In-Vault Section | Epistemic Basis | Signed Weight |
 | :--- | :--- | :---: | :---: |
-| **Claim** | 1. Core Thesis / Definition | High | `+1.00` |
-| **Grounds** | 2. Causal Anatomy & Mechanics | Empirical | `+0.85` |
-| **Warrant** | 3. Manifestations & Failure Modes | Theoretical | `+0.75` |
-| **Rebuttal** | 5. Empirical Boundaries | Critical | `-0.85` |
+| **Claim (Anchor)** | 1. 5W1H Anchor / Identity | NATO Admiralty (`A1`–`F6`) | `+1.00` |
+| **Warrant (Why/How)** | 2–3. Tactical Mechanics & Causal Motives | Multi-Source Corroboration | `+0.85` |
+| **Grounds (Impact)** | 4. Humanitarian, Territorial & Force Footprint | UN OCHA / ACLED / Field | `+0.80` |
+| **Rebuttal (Disputes)** | 5. Competing Narratives & Contradiction Matrix | GRaSP `ClaimDispute` | `-0.85` |
 
 ##### Primary Vault Lineage
-- `[[concepts/{concept_name}]]`
-- `[[concepts/Productive Cognitive Friction]]`
-- `[[concepts/Artifact vs. Defense Assessment]]`
-- `[[sources/the-architecture-of-compounding-intelligence]]`
+- `[[{concept_name}]]`
+- `[[overview|Sudan Conflict Living SITREP]]`
+- `[[glossary|Sudan Cross-Lingual Entity & P-Code Registry]]`
 """
 
 
@@ -317,45 +316,45 @@ def format_tier2_synthesis(concept: str, epistemic_ctx: dict) -> str:
 TOULMIN_ROLES_META = [
     {
         "role": "WARRANT",
-        "label": "🔬 Causal Anatomy",
-        "focus": "Mechanics & Sequences",
-        "description": "How the underlying psychological & algorithmic mechanics operate",
+        "label": "🔬 Tactical Mechanics & Motives",
+        "focus": "What, How & Why",
+        "description": "Chronological tactical sequence, command hierarchy, and strategic/economic motives",
     },
     {
         "role": "GROUNDS",
-        "label": "📊 Empirical Grounds",
-        "focus": "Evidence & Manifestations",
-        "description": "Observed manifestations, behavioral failure modes, and metrics",
-    },
-    {
-        "role": "SOLUTION",
-        "label": "🛠️ Prescriptive Mitigations",
-        "focus": "Solutions & Defenses",
-        "description": "Counter-architectures, pedagogical friction, and mitigations",
+        "label": "📊 Humanitarian & Force Footprint",
+        "focus": "Where & Who",
+        "description": "Casualties, displacement, IPC food security phase, territorial control, and alliances",
     },
     {
         "role": "REBUTTAL",
-        "label": "⚖️ Defeasible Boundaries",
-        "focus": "Boundary Conditions",
-        "description": "Defeasible conditions, empirical tensions, and domain limits",
+        "label": "⚖️ Competing Narratives (GRaSP)",
+        "focus": "Attribution & Disputes",
+        "description": "Conflicting SAF vs. RSF claims, casualty discrepancies, and NATO Admiralty ratings",
+    },
+    {
+        "role": "SOLUTION",
+        "label": "🛠️ Response & Mediation",
+        "focus": "Aid & Diplomacy",
+        "description": "Emergency Response Rooms (ERR) interventions, humanitarian corridors, and peace talks",
     },
     {
         "role": "BRIDGES",
-        "label": "🌐 Epistemic Bridges",
-        "focus": "Conceptual Transitions",
-        "description": "Connected knowledge pathways, prerequisite foundations, and theoretical transitions across the vault",
+        "label": "🌐 5W1H Graph Bridges",
+        "focus": "Macro-CoT Links",
+        "description": "Connected campaigns, commanders, locations (UN OCHA P-Codes), and triggered events",
     },
     {
         "role": "ALL",
-        "label": "📑 Comprehensive Synthesis",
-        "focus": "Full Architecture",
-        "description": "View all available evidence and arguments in a consolidated report",
+        "label": "📑 Full 5W1H Intelligence Dossier",
+        "focus": "Complete Brief",
+        "description": "View all 5W1H sections, Macro-CoT bridges, and competing narratives in a single report",
     },
 ]
 
 
 def get_toulmin_actions(available_roles: Optional[List[str]] = None) -> List[cl.Action]:
-    """Builds interactive action buttons for Toulmin role investigation."""
+    """Builds interactive action buttons for 5W1H / Toulmin role investigation."""
     actions = []
     for meta in TOULMIN_ROLES_META:
         role = meta["role"]
@@ -374,7 +373,7 @@ def get_toulmin_actions(available_roles: Optional[List[str]] = None) -> List[cl.
 
 
 def format_investigation_prompt_markdown(available_roles: Optional[List[str]] = None) -> str:
-    """Renders the Markdown selection table for the next-step Toulmin investigation."""
+    """Renders the Markdown selection table for the next-step 5W1H investigation."""
     rows = []
     for meta in TOULMIN_ROLES_META:
         role = meta["role"]
@@ -384,33 +383,31 @@ def format_investigation_prompt_markdown(available_roles: Optional[List[str]] = 
         rows.append(f"| **{meta['label']}** (*{meta['focus']}*) | {meta['description']} |")
 
     table = (
-        "| Focus Dimension | Description |\n"
+        "| Intelligence Dimension | Analytical Focus |\n"
         "| :--- | :--- |\n" +
         "\n".join(rows)
     )
 
     return (
         "---\n\n"
-        "### 🔍 What do you want to investigate in detail?\n"
-        "Select one or more dimensions below to drill down, or type your choice in the chat:\n\n"
+        "### 🔍 Which intelligence dimension would you like to drill into?\n"
+        "Select one or more dimensions below, or type your question in the chat:\n\n"
         f"{table}\n"
     )
 
 
 def format_definitional_anchor(concept: str, retrieval_data: dict, tier: str) -> str:
-    """Formats strictly the Definitional Anchor / Epistemic Anchor for Turn 1 in General Mode."""
+    """Formats strictly the 5W1H Intelligence Anchor for Turn 1 in General Mode."""
     epistemic_ctx = retrieval_data.get("epistemic_context", {})
     roles = epistemic_ctx.get("roles", {})
 
     anchor_content = ""
-    # 1. Tier 2 extraction from CLAIM
     if "CLAIM" in roles and roles["CLAIM"]:
         anchor_content = roles["CLAIM"][0].get("content", "").strip()
     elif roles:
         first_role = list(roles.keys())[0]
         anchor_content = roles[first_role][0].get("content", "").strip()
 
-    # 2. Tier 1 Golden Synthesis extraction
     if not anchor_content and tier == "tier_1_synthesis":
         anchor_content = retrieval_data.get("definitional_anchor", "").strip()
         if not anchor_content:
@@ -424,17 +421,15 @@ def format_definitional_anchor(concept: str, retrieval_data: dict, tier: str) ->
 
     if not anchor_content:
         anchor_content = (
-            f"In the <span class=\"brand-knowledge-lab\"><span class=\"brand-knowledge\">knowledge</span><span class=\"brand-lab\">lab</span></span> knowledge graph, "
-            f"**[[{concept}]]** serves as a foundational cognitive primitive."
+            f"In the Sudan News & OSINT Knowledge Graph (`llm-wiki-news`), "
+            f"**[[{concept}]]** is an indexed intelligence node."
         )
 
-    # Format into concise, high-signal definitional anchor
     lines = [
-        f"### 🏛️ Epistemic Anchor: [[{concept}]]\n",
-        f"> [!IMPORTANT] Core Thesis & Definitional Anchor\n> {anchor_content.replace(chr(10), chr(10) + '> ')}\n",
+        f"### 🛰️ 5W1H Intelligence Anchor: [[{concept}]]\n",
+        f"> [!IMPORTANT] Executive Intelligence Summary\n> {anchor_content.replace(chr(10), chr(10) + '> ')}\n",
     ]
 
-    # Append structured investigation selection table
     available = list(roles.keys())
     if epistemic_ctx.get("macro_cot_bridges"):
         available.append("BRIDGES")

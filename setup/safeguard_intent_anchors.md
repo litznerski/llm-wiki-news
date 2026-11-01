@@ -2,17 +2,17 @@
 title: "Safeguard Intent Anchors Catalog"
 type: "setup"
 tags: [guardrails, intent-anchors, arcadedb, fastmcp, setup]
-last_updated: 2026-10-02
-description: "Manually maintainable registry of safeguard intent anchors, fast-path response templates, and security refusal policies for ArcadeDB seeding."
+last_updated: 2026-11-01
+description: "Manually maintainable registry of safeguard intent anchors, fast-path response templates, and security refusal policies for ArcadeDB seeding in the Sudan News & OSINT Knowledge Base."
 ---
 
 # Safeguard Intent Anchors Catalog
 
-This catalog serves as the **human-maintainable single source of truth** for intent classification, adversarial guardrails, and conversational fast-paths in **[[Knowledge Lab]]**.
+This catalog serves as the **human-maintainable single source of truth** for intent classification, adversarial guardrails, and conversational fast-paths in the **Sudan News & OSINT Knowledge Base (`llm-wiki-news`)**.
 
 To update the safeguard rules in ArcadeDB:
 1. Add, modify, or delete intent blocks or utterances in this file.
-2. Run the native seeding script: `python3 scripts/seed_intent_anchors.py`.
+2. Run the native bootstrap/seeding script: `python3 scripts/bootstrap_arcadedb.py --reset` (or `python3 scripts/seed_intent_anchors.py`).
 3. ArcadeDB will synchronize the `IntentAnchor` Document Type and compute in-engine `algo.fastrp` embeddings with **zero external Ollama or API calls**.
 
 ---
@@ -27,7 +27,7 @@ To update the safeguard rules in ArcadeDB:
 | **`chitchat_greeting`**| `conversational`| `FAST_RESPOND` | Answers greetings instantly without calling the LLM. | Grounded Greeting Text |
 | **`chitchat_gratitude`**| `conversational`| `FAST_RESPOND` | Answers politeness/thanks instantly without calling the LLM. | Grounded Appreciation |
 | **`chitchat_farewell`** | `conversational`| `FAST_RESPOND` | Concludes sessions smoothly without calling the LLM. | Grounded Goodbye Text |
-| **`meta_capabilities`** | `conversational`| `FAST_RESPOND` | Explains assistant scope and vault purpose instantly. | Capabilities Overview |
+| **`meta_capabilities`** | `conversational`| `FAST_RESPOND` | Explains assistant scope and Sudan OSINT vault purpose instantly. | Capabilities Overview |
 | **`harmful_content`** | `policy_violation`| `REJECT_SECURITY`| Blocks PII mining, malware code, and harmful requests. | Safety Refusal Card |
 
 ---
@@ -92,7 +92,7 @@ To update the safeguard rules in ArcadeDB:
 - **Category**: `conversational`
 - **Action**: `FAST_RESPOND`
 - **Response Template**:
-  Hello! I am Knowledge Lab's knowledge guide. Which concept or problem in AI literacy, cognitive ergonomics, or educational technology would you like to explore today?
+  Hello! I am the Sudan News & OSINT intelligence analyst for `llm-wiki-news`. Which conflict event, frontline theatre, acting entity (e.g., [[Sudanese Armed Forces]], [[Rapid Support Forces]], [[Emergency Response Rooms]]), or humanitarian crisis would you like to investigate today?
 - **Utterances**:
   - "Hi"
   - "Hello"
@@ -113,7 +113,7 @@ To update the safeguard rules in ArcadeDB:
 - **Category**: `conversational`
 - **Action**: `FAST_RESPOND`
 - **Response Template**:
-  You are very welcome! Feel free to ask a follow-up question, explore related concepts in the graph, or examine counter-evidence.
+  You are very welcome! Feel free to ask a follow-up intelligence question, trace causal chains across events, or compare competing source claims using the NATO Admiralty Scale.
 - **Utterances**:
   - "Thank you"
   - "Thanks a lot"
@@ -131,7 +131,7 @@ To update the safeguard rules in ArcadeDB:
 - **Category**: `conversational`
 - **Action**: `FAST_RESPOND`
 - **Response Template**:
-  Goodbye! Your learning trajectory and session state have been saved. See you next time in [[Knowledge Lab]]!
+  Goodbye! Your intelligence query session has been saved. Return anytime to analyze updates in the Sudan Conflict Living SITREP (`[[overview]]`).
 - **Utterances**:
   - "Bye"
   - "Goodbye"
@@ -149,11 +149,11 @@ To update the safeguard rules in ArcadeDB:
 - **Category**: `conversational`
 - **Action**: `FAST_RESPOND`
 - **Response Template**:
-  I am the autonomous cognitive assistant for [[Knowledge Lab]]. I provide grounded knowledge on AI Literacy, Socratic pedagogy, and cognitive ergonomics backed by an ArcadeDB graph. You can ask conceptual questions, request architecture diagrams, or explore learning progressions.
+  I am the autonomous OSINT intelligence assistant for the Sudan News Knowledge Graph (`llm-wiki-news`). I provide source-grounded analysis across 5W1H conflict events (`wiki/events/`), acting entities (`wiki/actors/`), UN OCHA P-Code locations (`wiki/locations/`), structural conflict drivers (`wiki/themes/`), and competing narratives (`ClaimDispute`) backed by ArcadeDB and Neo4j.
 - **Utterances**:
   - "What can you do?"
   - "Who are you?"
-  - "What is Knowledge Lab?"
+  - "What is this system?"
   - "How do I use this system?"
   - "What topics do you know about?"
   - "What is your purpose?"

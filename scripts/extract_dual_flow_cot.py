@@ -6,14 +6,15 @@
 #!/usr/bin/env python3
 """
 scripts/extract_dual_flow_cot.py
-Extracts and materializes Dual-Flow Chain of Thought into Neo4j:
-  - Option 3: Hybrid Two-Pass Cascade (Deterministic AST heuristics + Local Ollama neural warrant extraction)
-  - Micro-CoT: Augments sequential sections with epistemic labels (:Summary, :CoreThesis, :MechanisticDeepen, etc.) and [:PROGRESSES_TO {transition_type, warrant, confidence}]
-  - Macro-CoT: Discovers and materializes typed reasoning handshakes between documents:
-      * [:REMEDIES_DILEMMA] (from Prescriptive Solution sections to target Concepts)
-      * [:EXTENDS_THEORY] (from Mechanistic Deepen sections to target Concepts)
-      * [:PRECIPITATES] (from Manifestation Trap/Dilemma sections to target Concepts)
-      * [:EMPIRICALLY_GROUNDS] (from Primary Sources to Concepts)
+Extracts and materializes Sudan News & OSINT Dual-Flow Chain of Thought into Neo4j:
+  - Micro-CoT: Classifies Event (`wiki/events/`) and Theme (`wiki/themes/`) sections into
+    canonical investigative steps (`EVENT_ANCHOR`, `CHRONOLOGICAL_MECHANICS`, `CAUSAL_MOTIVES`,
+    `IMPACT_ASSESSMENT`, `CONTRADICTION_MATRIX`, `SYNTHESIS_CATALOG`) and links sequential
+    headings via `[:PROGRESSES_TO {transition_type, warrant, confidence}]`.
+  - Macro-CoT: Discovers and materializes typed inter-document news relationships:
+      * Causal & Temporal Flow: `[:PRECEDES]`, `[:TRIGGERS]`, `[:RETALIATES_FOR]`, `[:PART_OF_CAMPAIGN]`, `[:MOTIVATED_BY]`
+      * Event Agency & Spatio-Political: `[:OCCURRED_AT]`, `[:PERPETRATED_BY]`, `[:TARGETED]`, `[:PARTICIPATED_IN]`, `[:DISPLACES_POPULATION]`
+      * Provenance & Contradiction (GRaSP): `[:EMPIRICALLY_GROUNDS]`, `[:CORROBORATES]`, `[:CONTRADICTS_CLAIM]`, `[:ATTRIBUTES_BLAME_TO]`, `[:DEBUNKS]`
 
 Usage:
     uv run scripts/extract_dual_flow_cot.py [--skip-neural] [--max-neural 50] [--model llama3.1-fast]
@@ -65,28 +66,30 @@ DEFAULT_OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "llama3.1-fast")
 
 CACHE_FILE = VAULT_ROOT / "wiki" / ".ki" / "cot_cache.json"
 
-def map_to_toulmin_role(step_type: str, doc_type: str = "concept") -> str:
+
+def map_to_toulmin_role(step_type: str, doc_type: str = "event") -> str:
     """
-    Direct mapping from epistemic step_type to Toulmin argumentation role:
-    - DEFINITIONAL_ANCHOR -> 'GROUNDS'
-    - CORE_THESIS -> 'CLAIM'
-    - MECHANISTIC_DEEPEN -> 'WARRANT'
-    - MANIFESTATION_TRAP / DILEMMA_PROBLEM -> 'REBUTTAL'
-    - PRESCRIPTIVE_SOLUTION -> 'SOLUTION_WARRANT'
-    - EMPIRICAL_BOUNDARY -> 'QUALIFIER'
+    Maps Sudan News & Theme epistemic step_types to Toulmin / investigative argumentation roles:
+    - EVENT_ANCHOR / DEFINITIONAL_ANCHOR -> 'GROUNDS'
+    - CHRONOLOGICAL_MECHANICS / MECHANISTIC_DEEPEN -> 'WARRANT'
+    - CAUSAL_MOTIVES / CORE_THESIS -> 'CLAIM'
+    - IMPACT_ASSESSMENT / MANIFESTATION_TRAP -> 'CONSEQUENCE'
+    - CONTRADICTION_MATRIX / EMPIRICAL_BOUNDARY -> 'REBUTTAL'
     - SYNTHESIS_CATALOG -> 'BACKING'
-    - Entity and Source sections -> 'NON_ARGUMENTATIVE'
     """
-    if doc_type in ("entity", "source"):
+    if doc_type in ("actor", "location", "source"):
         return "NON_ARGUMENTATIVE"
 
     mapping = {
+        "EVENT_ANCHOR": "GROUNDS",
         "DEFINITIONAL_ANCHOR": "GROUNDS",
-        "CORE_THESIS": "CLAIM",
+        "CHRONOLOGICAL_MECHANICS": "WARRANT",
         "MECHANISTIC_DEEPEN": "WARRANT",
+        "CAUSAL_MOTIVES": "CLAIM",
+        "CORE_THESIS": "CLAIM",
+        "IMPACT_ASSESSMENT": "CONSEQUENCE",
         "MANIFESTATION_TRAP": "REBUTTAL",
-        "DILEMMA_PROBLEM": "REBUTTAL",
-        "PRESCRIPTIVE_SOLUTION": "SOLUTION_WARRANT",
+        "CONTRADICTION_MATRIX": "REBUTTAL",
         "EMPIRICAL_BOUNDARY": "QUALIFIER",
         "SYNTHESIS_CATALOG": "BACKING",
     }
@@ -105,30 +108,25 @@ def _strip_markdown(text: str) -> str:
 
 
 MODAL_PATTERNS = [
-    (r'\b(necessarily|always|invariably|definitively|completely|total|zero|100%|never)\b', 1.0,  "CERTAINTY"),
-    (r'\b(typically|generally|in most cases|consistently|must|will|every)\b',              0.85, "HIGH_PROB"),
-    (r'\b(often|usually|tends to|frequently|regularly)\b',                                 0.65, "MODERATE_HIGH"),
-    (r'\b(can|may|sometimes|in some cases|often produces|tend)\b',                         0.45, "MODERATE_LOW"),
-    (r'\b(possibly|perhaps|might|could|under certain|in specific contexts)\b',             0.30, "HEDGED"),
-    (r'\b(rarely|seldom|not always|only when|limited|narrow|few)\b',                       0.15, "WEAK"),
+    (r'\b(confirmed|verified|corroborated|definitively|satellite imagery confirms|geolocated)\b', 1.0,  "CONFIRMED"),
+    (r'\b(probably|likely|consistent with|reported by multiple|credibly)\b',                      0.85, "HIGH_PROB"),
+    (r'\b(reported|stated|according to|indicated|witnesses said)\b',                              0.65, "REPORTED"),
+    (r'\b(alleged|claimed|accused|unverified|single-source|asserted)\b',                          0.45, "ALLEGED"),
+    (r'\b(disputed|contested|conflicting|denied|unconfirmed|rumored)\b',                          0.30, "DISPUTED"),
+    (r'\b(debunked|fabricated|false|contradicted by imagery|improbable)\b',                       0.15, "DEBUNKED"),
 ]
 
 STEP_TYPE_FLOOR = {
-    "DEFINITIONAL_ANCHOR": 0.75,  # Definitions are implicitly certain
-    "SYNTHESIS_CATALOG":   0.50,  # Catalogs are neutral references
-    "NARRATIVE_STEP":      0.50,  # Non-argumentative
+    "EVENT_ANCHOR":        0.80,
+    "DEFINITIONAL_ANCHOR": 0.75,
+    "SYNTHESIS_CATALOG":   0.50,
+    "NARRATIVE_STEP":      0.50,
 }
 
 
 @lru_cache(maxsize=2048)
 def compute_linguistic_weight(text: str, step_type: str = "") -> Tuple[float, str, List[str]]:
-    """
-    Returns (raw_weight, modal_category, matched_phrases).
-    Uses frequency-weighted averaging over all detected modal patterns.
-    """
     clean = _strip_markdown(text).lower()
-    words = clean.split()
-
     weighted_sum = 0.0
     hit_count_total = 0
     matched = []
@@ -149,220 +147,114 @@ def compute_linguistic_weight(text: str, step_type: str = "") -> Tuple[float, st
         raw = STEP_TYPE_FLOOR.get(step_type, 0.5)
         return round(raw, 3), "NEUTRAL", []
 
-    # Frequency-weighted average, clipped to [0, 1]
     freq_weighted = weighted_sum / hit_count_total
-    # Apply step_type floor
     floor = STEP_TYPE_FLOOR.get(step_type, 0.0)
     raw = max(floor, round(freq_weighted, 3))
     return raw, best_cat, matched[:5]
 
 
 def classify_section(doc_title: str, doc_type: str, heading_text: str, content: str, is_lead: bool) -> Tuple[str, List[str]]:
-    """
-    Classifies a section into (step_type, labels).
-    - Concept lead section with [!IMPORTANT] Definitional Anchor -> ('DEFINITIONAL_ANCHOR', ['DefinitionalAnchor', 'Summary'])
-    - Section starting with 'Core Thesis' -> ('CORE_THESIS', ['DefinitionalAnchor', 'CoreThesis'])
-    - Section 2 -> ('MECHANISTIC_DEEPEN', ['MechanisticDeepen'])
-    - Section 3 -> ('MANIFESTATION_TRAP', ['ManifestationTrap'])
-    - Section 4 -> ('PRESCRIPTIVE_SOLUTION', ['PrescriptiveSolution'])
-    - Section 5 -> ('EMPIRICAL_BOUNDARY', ['EmpiricalBoundary'])
-    - Section 6 -> ('SYNTHESIS_CATALOG', ['SynthesisCatalog'])
-    """
+    """Classifies an Event or Theme section into (step_type, labels)."""
     h_lower = (heading_text or "").lower().strip()
-    
-    # 1. Lead Section check (esp. for concepts)
-    if is_lead or (doc_type == "concept" and h_lower == doc_title.lower().strip()) or "[!important] definitional anchor" in content.lower():
+
+    # 1. Lead Section / 5W1H Intelligence Anchor
+    if is_lead or h_lower == doc_title.lower().strip() or "5w1h event intelligence anchor" in content.lower():
+        if doc_type == "event":
+            return "EVENT_ANCHOR", ["EventAnchor", "Summary"]
         return "DEFINITIONAL_ANCHOR", ["DefinitionalAnchor", "Summary"]
 
-    # 2. Canonical Generation 3 concept sections
-    if re.search(r"^(##\s*)?1[\.\:]\s*(core thesis|definitional anchor)", h_lower) or h_lower.startswith("1. core thesis"):
-        return "CORE_THESIS", ["DefinitionalAnchor", "CoreThesis"]
+    # 2. Canonical Event Sections (`wiki/events/`)
+    if re.search(r"^(##\s*)?1[\.\:]\s*(event anchor|5w1h summary)", h_lower):
+        return "EVENT_ANCHOR", ["EventAnchor", "Summary"]
+    if re.search(r"^(##\s*)?2[\.\:]\s*(chronological sequence|tactical mechanics)", h_lower):
+        return "CHRONOLOGICAL_MECHANICS", ["ChronologicalMechanics"]
+    if re.search(r"^(##\s*)?3[\.\:]\s*(causal drivers|strategic motives)", h_lower):
+        return "CAUSAL_MOTIVES", ["CausalMotives"]
+    if re.search(r"^(##\s*)?4[\.\:]\s*(humanitarian|territorial|geopolitical impact)", h_lower):
+        return "IMPACT_ASSESSMENT", ["ImpactAssessment"]
+    if re.search(r"^(##\s*)?5[\.\:]\s*(competing narratives|attribution|contradictions)", h_lower):
+        return "CONTRADICTION_MATRIX", ["ContradictionMatrix", "EmpiricalBoundary"]
 
-    if re.search(r"^(##\s*)?2[\.\:]\s*(causal anatomy|underlying mechanics)", h_lower):
+    # 3. Canonical Theme Sections (`wiki/themes/`)
+    if re.search(r"^(##\s*)?1[\.\:]\s*(core thesis|structural mechanism)", h_lower):
+        return "DEFINITIONAL_ANCHOR", ["DefinitionalAnchor", "CoreThesis"]
+    if re.search(r"^(##\s*)?2[\.\:]\s*(historical roots|political economy|causal anatomy)", h_lower):
         return "MECHANISTIC_DEEPEN", ["MechanisticDeepen"]
-
-    if re.search(r"^(##\s*)?3[\.\:]\s*(manifestations|failure modes|pathologies|traps)", h_lower):
+    if re.search(r"^(##\s*)?3[\.\:]\s*(operational manifestations|frontlines)", h_lower):
         return "MANIFESTATION_TRAP", ["ManifestationTrap"]
-
-    if re.search(r"^(##\s*)?4[\.\:]\s*(prescriptive mitigations|counter-architectures|solutions|remedies)", h_lower):
-        return "PRESCRIPTIVE_SOLUTION", ["PrescriptiveSolution"]
-
-    if re.search(r"^(##\s*)?5[\.\:]\s*(empirical boundaries|contradictions|limitations)", h_lower):
+    if re.search(r"^(##\s*)?4[\.\:]\s*(humanitarian, regional|diplomatic consequences)", h_lower):
+        return "IMPACT_ASSESSMENT", ["ImpactAssessment"]
+    if re.search(r"^(##\s*)?5[\.\:]\s*(empirical debates|uncertainties|competing analyses)", h_lower):
         return "EMPIRICAL_BOUNDARY", ["EmpiricalBoundary"]
 
-    if re.search(r"^(##\s*)?6[\.\:]\s*(related primitives|synthesis catalog|related notes)", h_lower):
+    # 4. Catalog / Related Primitives
+    if re.search(r"(related primitives|related notes|synthesis catalog|references|see also)", h_lower):
         return "SYNTHESIS_CATALOG", ["SynthesisCatalog"]
 
-    # 3. Fallback semantic keywords for subheadings / unnumbered sections
-    if re.search(r"(solution|mitigat|safeguard|countermeasure|counter-architecture|counter-measure|remedy|intervention|protocol|governance|repayment|action|defense)", h_lower):
-        return "PRESCRIPTIVE_SOLUTION", ["PrescriptiveSolution"]
-
-    if re.search(r"(boundary|exception|rebuttal|contradiction|tension|debate|limitation|constraint|risk)", h_lower):
-        return "EMPIRICAL_BOUNDARY", ["EmpiricalBoundary"]
-
-    if re.search(r"(trap|failure|misattribution|illusion|collapse|offloading|fatigue|debt|pathology|symptom|manifestation|backlash)", h_lower):
-        return "MANIFESTATION_TRAP", ["ManifestationTrap"]
-
-    if re.search(r"(tension|paradox|problem|crisis|challenge|gap|dilemma|anomaly|threat|blindspot|vulnerability|friction)", h_lower):
-        return "DILEMMA_PROBLEM", ["DilemmaProblem"]
-
-    if re.search(r"(related notes|related primitives|references|see also|further reading|citations|bibliography|synthesis catalog)", h_lower):
-        return "SYNTHESIS_CATALOG", ["SynthesisCatalog"]
-
-    if re.search(r"(mechanism|anatomy|engine|underlying|process|driver|loop|dynamics|architecture|operational|structural)", h_lower):
-        return "MECHANISTIC_DEEPEN", ["MechanisticDeepen"]
-
-    if re.search(r"(definition|overview|anchor|thesis|concept|core|foundation|framework|introduction)", h_lower):
-        return "DEFINITIONAL_ANCHOR", ["DefinitionalAnchor"]
+    # 5. Keyword Fallbacks
+    if re.search(r"(contradiction|competing narrative|dispute|attribution conflict|dialectical)", h_lower):
+        return "CONTRADICTION_MATRIX", ["ContradictionMatrix", "EmpiricalBoundary"]
+    if re.search(r"(casualt|humanitarian|displacement|impact|damage|control shift)", h_lower):
+        return "IMPACT_ASSESSMENT", ["ImpactAssessment"]
+    if re.search(r"(causal|motive|driver|why|trigger|retaliat)", h_lower):
+        return "CAUSAL_MOTIVES", ["CausalMotives"]
+    if re.search(r"(chronolog|sequence|tactical|timeline|mechanic|what & how)", h_lower):
+        return "CHRONOLOGICAL_MECHANICS", ["ChronologicalMechanics"]
 
     return "NARRATIVE_STEP", []
 
+
 def infer_transition_rule(cat1: str, cat2: str, heading1: str, heading2: str) -> Tuple[str, str, float]:
-    """Pass 1: Deterministic heuristic inference of transition type, default warrant, and confidence."""
-    # 0. Definitional Anchor (Summary) -> Core Thesis
-    if cat1 == "DEFINITIONAL_ANCHOR" and cat2 == "CORE_THESIS":
+    """Pass 1: Deterministic heuristic inference of transition type, warrant, and confidence."""
+    if cat1 == "EVENT_ANCHOR" and cat2 == "CHRONOLOGICAL_MECHANICS":
         return (
-            "core_thesis_elaboration",
-            "Elaborates foundational definitional anchor into primary deductive core thesis and argument.",
+            "chronological_mechanics",
+            "Unpacks the 5W1H event anchor into a step-by-step chronological sequence and tactical execution mechanics.",
             1.0
         )
-    # 1. Any step leading to Prescriptive Solution
-    if cat2 == "PRESCRIPTIVE_SOLUTION":
+    if cat2 == "CAUSAL_MOTIVES":
         return (
-            "prescriptive_solution",
-            "Prescribes architectural safeguards, counter-architectures, and pedagogical interventions to resolve the preceding failure mode.",
+            "causal_motives",
+            "Analyzes the underlying causal triggers, retaliatory logic, and strategic motives ('Why') driving the event.",
             1.0
         )
-    # 2. Definitional Anchor or Core Thesis -> Mechanistic Deepening
-    if cat1 in ("DEFINITIONAL_ANCHOR", "CORE_THESIS") and cat2 == "MECHANISTIC_DEEPEN":
+    if cat2 == "IMPACT_ASSESSMENT":
         return (
-            "mechanistic_deepen",
-            "Deconstructs foundational core thesis into underlying causal cognitive mechanisms.",
+            "impact_assessment",
+            "Assesses the resulting humanitarian toll, civilian displacement, infrastructure damage, and territorial control shifts.",
             1.0
         )
-    # 3. Mechanism, Anchor, or Core Thesis -> Manifestation Trap / Pathology
-    if cat1 in ("MECHANISTIC_DEEPEN", "DEFINITIONAL_ANCHOR", "CORE_THESIS") and cat2 == "MANIFESTATION_TRAP":
+    if cat2 in ("CONTRADICTION_MATRIX", "EMPIRICAL_BOUNDARY"):
         return (
-            "manifestation_trap",
-            "Traces how underlying cognitive mechanisms or unconstrained interactions precipitate observable failure modes.",
+            "contradiction_matrix",
+            "Contrasts competing belligerent narratives, local witness accounts, and OSINT/satellite verification to surface contradictions.",
             1.0
         )
-    # 4. Toward Empirical Boundary
-    if cat2 == "EMPIRICAL_BOUNDARY":
-        return (
-            "empirical_boundary",
-            "Delineates empirical boundary conditions, methodological constraints, or dialectical counter-perspectives.",
-            1.0
-        )
-    # 5. Toward Catalogs / Related Notes
     if cat2 == "SYNTHESIS_CATALOG":
         return (
             "synthesis_catalog",
-            "Indexes interconnected concepts, entities, and primary literature touchpoints.",
+            "Indexes interconnected campaigns, events, acting entities, locations, themes, and primary sources.",
             1.0
         )
-    # 6. Definitional Anchor or Core Thesis -> Dilemma
-    if cat1 in ("DEFINITIONAL_ANCHOR", "CORE_THESIS") and cat2 == "DILEMMA_PROBLEM":
-        return (
-            "dilemma_problem",
-            "Exposes intrinsic epistemic tensions or practical breakdowns in conventional assumptions.",
-            1.0
-        )
-    # 7. Mechanistic Deepening Progression
-    if cat1 == "MECHANISTIC_DEEPEN" and cat2 == "MECHANISTIC_DEEPEN":
+    if cat1 == "DEFINITIONAL_ANCHOR" and cat2 == "MECHANISTIC_DEEPEN":
         return (
             "mechanistic_deepen",
-            "Elaborates nested sub-mechanisms and structural dynamics.",
-            0.95
+            "Deconstructs the structural theme into its historical roots and political economy anatomy.",
+            1.0
         )
-    
-    # Fallback to narrative progression with moderate confidence
+    if cat2 == "MANIFESTATION_TRAP":
+        return (
+            "manifestation_trap",
+            "Traces how the structural mechanism manifests operationally across active Sudan conflict frontlines.",
+            1.0
+        )
+
     return (
         "causal_progression",
         f"Progresses sequentially from '{heading1}' into '{heading2}'.",
-        0.6
+        0.75
     )
 
-class CoTCache:
-    def __init__(self, cache_path: Path):
-        self.cache_path = cache_path
-        self.data: Dict[str, Any] = {}
-        self.load()
-
-    def load(self):
-        if self.cache_path.exists():
-            try:
-                with open(self.cache_path, "r", encoding="utf-8") as f:
-                    self.data = json.load(f)
-            except Exception as e:
-                print(f"  [!] Warning loading cache: {e}. Starting fresh.")
-                self.data = {}
-
-    def save(self):
-        self.cache_path.parent.mkdir(parents=True, exist_ok=True)
-        try:
-            with open(self.cache_path, "w", encoding="utf-8") as f:
-                json.dump(self.data, f, indent=2, ensure_ascii=False)
-        except Exception as e:
-            print(f"  [!] Warning saving cache: {e}")
-
-    def get(self, key: str) -> Optional[Dict[str, Any]]:
-        return self.data.get(key)
-
-    def set(self, key: str, val: Dict[str, Any]):
-        self.data[key] = val
-
-def query_ollama_transition(
-    doc_title: str,
-    s1_title: str,
-    s1_content: str,
-    s2_title: str,
-    s2_content: str,
-    ollama_url: str,
-    model_name: str,
-) -> Optional[Tuple[str, str]]:
-    """Pass 2: Targeted neural warrant extraction via local Ollama."""
-    prompt = f"""You are an epistemological parser analyzing academic concept notes in a knowledge graph.
-Document: "{doc_title}"
-Section 1 Heading: "{s1_title}"
-Section 1 Excerpt: "{s1_content[:250].strip()}"
-Section 2 Heading: "{s2_title}"
-Section 2 Excerpt: "{s2_content[:250].strip()}"
-
-Classify the cognitive transition between Section 1 and Section 2.
-Choose EXACTLY one transition_type from:
-- "mechanistic_deepen" (explaining how/why the concept works under the hood)
-- "manifestation_trap" (describing how people fail, misuse, or misunderstand it)
-- "prescriptive_solution" (providing protocols, countermeasures, or design frameworks)
-- "empirical_boundary" (exceptions, limitations, or dialectical debates)
-- "causal_progression" (sequential logical progression)
-
-Respond strictly in valid JSON format:
-{{"transition_type": "<type>", "warrant": "<1 concise sentence explaining the logical link>"}}"""
-
-    payload = {
-        "model": model_name,
-        "prompt": prompt,
-        "format": "json",
-        "stream": False,
-        "options": {"temperature": 0.1, "num_predict": 128}
-    }
-    
-    req = urllib.request.Request(
-        f"{ollama_url.rstrip('/')}/api/generate",
-        data=json.dumps(payload).encode("utf-8"),
-        headers={"Content-Type": "application/json"}
-    )
-    
-    try:
-        with urllib.request.urlopen(req, timeout=6.0) as resp:
-            data = json.loads(resp.read().decode("utf-8"))
-            parsed = json.loads(data.get("response", "{}"))
-            trans_type = parsed.get("transition_type", "causal_progression")
-            warrant = parsed.get("warrant", f"Progresses sequentially from '{s1_title}' into '{s2_title}'.")
-            return trans_type, warrant
-    except Exception:
-        return None
 
 def extract_and_sync_cot(
     driver: Driver,
@@ -373,273 +265,244 @@ def extract_and_sync_cot(
     ollama_model: str = DEFAULT_OLLAMA_MODEL,
 ):
     start_time = time.time()
-    cache = CoTCache(CACHE_FILE)
-    
     print("=================================================================")
-    print("  Knowledge Lab :: Dual-Flow Chain of Thought (CoT) Extraction")
-    print(f"  Mode: Option 3 (Hybrid Two-Pass Cascade)")
-    print(f"  Neural Fallback: {'Disabled' if skip_neural else f'Ollama ({ollama_model}, max={max_neural})'}")
+    print("  Sudan News & OSINT :: Dual-Flow Chain of Thought Extraction")
+    print("  Materializing 5W1H Micro-CoT & Causal/Contradiction Macro-CoT")
     print("=================================================================")
 
     session_kwargs = {"database": database} if database else {}
     with driver.session(**session_kwargs) as session:
-        # 1. Fetch all sections under documents and sequential section pairs
+        # 1. Fetch all sections under documents
         print("\n[1/4] Scanning Intra-Document Sections (Micro-CoT)...")
         all_sections_query = """
         MATCH (d:Document)-[:HAS*1..3]->(s:Section)
-        WHERE d.type IN ['concept', 'source', 'entity', 'synthesis', 'ingestion']
+        WHERE d.type IN ['event', 'theme', 'timeline', 'source', 'actor', 'location', 'synthesis', 'ingestion']
         RETURN d.title AS doc_title, d.type AS doc_type,
                s.uri AS s_uri, s.displayName AS s_title, coalesce(s.content, '') AS s_content,
-               (d.title = s.displayName OR s.uri = d.uri OR s.content CONTAINS '[!IMPORTANT] Definitional Anchor') AS is_lead
+               (d.title = s.displayName OR s.uri = d.uri OR s.content CONTAINS '5W1H Event Intelligence Anchor') AS is_lead
         """
         all_sections = session.run(all_sections_query).data()
         print(f"  → Found {len(all_sections)} sections across vault notes.")
 
         sec_pairs_query = """
         MATCH (d:Document)-[:HAS*1..3]->(s1:Section)-[:NEXT_SECTION]->(s2:Section)
-        WHERE d.type IN ['concept', 'source', 'entity', 'synthesis', 'ingestion']
+        WHERE d.type IN ['event', 'theme', 'timeline', 'source', 'synthesis']
         RETURN d.title AS doc_title, d.type AS doc_type,
                s1.uri AS s1_uri, s1.displayName AS s1_title, coalesce(s1.content, '') AS s1_content,
-               (d.title = s1.displayName OR s1.uri = d.uri OR s1.content CONTAINS '[!IMPORTANT] Definitional Anchor') AS s1_is_lead,
+               (d.title = s1.displayName OR s1.uri = d.uri OR s1.content CONTAINS '5W1H Event Intelligence Anchor') AS s1_is_lead,
                s2.uri AS s2_uri, s2.displayName AS s2_title, coalesce(s2.content, '') AS s2_content,
-               (d.title = s2.displayName OR s2.uri = d.uri OR s2.content CONTAINS '[!IMPORTANT] Definitional Anchor') AS s2_is_lead
+               (d.title = s2.displayName OR s2.uri = d.uri OR s2.content CONTAINS '5W1H Event Intelligence Anchor') AS s2_is_lead
         """
         records = session.run(sec_pairs_query).data()
-        print(f"  → Found {len(records)} sequential section pairs across vault notes.")
+        print(f"  → Found {len(records)} sequential section pairs across Event/Theme/Source notes.")
 
-    # 2. Hybrid Two-Pass Classification
-    print("\n[2/4] Executing Two-Pass Classification & Warrant Synthesis...")
-    section_updates = {}  # uri -> {"uri": uri, "step_type": st, "toulmin_role": tr, "weight": w, "modal_category": mc, "labels": labels}
-    for s in all_sections:
-        uri = s["s_uri"]
-        doc_type = s["doc_type"] or ""
-        st, labels = classify_section(
-            s["doc_title"] or "", doc_type, s["s_title"] or "", s["s_content"], s["is_lead"]
-        )
-        tr = map_to_toulmin_role(st, doc_type)
-        w, mc, _ = compute_linguistic_weight(s["s_content"] or "", st)
-        section_updates[uri] = {
-            "uri": uri,
-            "step_type": st,
-            "toulmin_role": tr,
-            "weight": w,
-            "modal_category": mc,
-            "labels": labels
-        }
+        # 2. Classify Sections & Transitions
+        print("\n[2/4] Classifying 5W1H Investigative Steps & Transitions...")
+        section_updates = {}
+        for s in all_sections:
+            uri = s["s_uri"]
+            doc_type = s["doc_type"] or ""
+            st, labels = classify_section(
+                s["doc_title"] or "", doc_type, s["s_title"] or "", s["s_content"], s["is_lead"]
+            )
+            tr = map_to_toulmin_role(st, doc_type)
+            w, mc, _ = compute_linguistic_weight(s["s_content"] or "", st)
+            section_updates[uri] = {
+                "uri": uri,
+                "step_type": st,
+                "toulmin_role": tr,
+                "weight": w,
+                "modal_category": mc,
+                "labels": labels
+            }
 
-    micro_transitions = []
-    ast_hits = 0
-    cache_hits = 0
-    neural_calls = 0
-    neural_attempts = 0
-    consecutive_errors = 0
-    neural_fallbacks = 0
+        micro_transitions = []
+        for r in records:
+            s1_uri, s2_uri = r["s1_uri"], r["s2_uri"]
+            s1_title, s2_title = r["s1_title"] or "", r["s2_title"] or ""
+            doc_title, doc_type = r["doc_title"] or "", r["doc_type"] or ""
 
-    for idx, r in enumerate(records):
-        s1_uri = r["s1_uri"]
-        s2_uri = r["s2_uri"]
-        s1_title = r["s1_title"] or ""
-        s2_title = r["s2_title"] or ""
-        doc_title = r["doc_title"] or ""
-        doc_type = r["doc_type"] or ""
+            st1, _ = classify_section(doc_title, doc_type, s1_title, r["s1_content"], r["s1_is_lead"])
+            st2, _ = classify_section(doc_title, doc_type, s2_title, r["s2_content"], r["s2_is_lead"])
+            trans_type, warrant, confidence = infer_transition_rule(st1, st2, s1_title, s2_title)
 
-        st1, l1 = classify_section(doc_title, doc_type, s1_title, r["s1_content"], r["s1_is_lead"])
-        st2, l2 = classify_section(doc_title, doc_type, s2_title, r["s2_content"], r["s2_is_lead"])
+            micro_transitions.append({
+                "s1_uri": s1_uri,
+                "s2_uri": s2_uri,
+                "transition_type": trans_type,
+                "warrant": warrant,
+                "confidence": confidence,
+                "method": "ast_heuristic"
+            })
 
-        tr1 = map_to_toulmin_role(st1, doc_type)
-        tr2 = map_to_toulmin_role(st2, doc_type)
-
-        w1, mc1, _ = compute_linguistic_weight(r["s1_content"] or "", st1)
-        w2, mc2, _ = compute_linguistic_weight(r["s2_content"] or "", st2)
-
-        section_updates[s1_uri] = {
-            "uri": s1_uri, "step_type": st1, "toulmin_role": tr1, "weight": w1, "modal_category": mc1, "labels": l1
-        }
-        section_updates[s2_uri] = {
-            "uri": s2_uri, "step_type": st2, "toulmin_role": tr2, "weight": w2, "modal_category": mc2, "labels": l2
-        }
-
-        # Pass 1: Deterministic Rule Inference
-        trans_type, warrant, confidence = infer_transition_rule(st1, st2, s1_title, s2_title)
-        method = "ast_heuristic"
-
-        # Pass 2: Neural cascade if ambiguous and neural enabled
-        if confidence < 0.9 and not skip_neural:
-            cache_key = hashlib.sha256(f"{doc_title}|{s1_title}|{s2_title}".encode("utf-8")).hexdigest()
-            cached = cache.get(cache_key)
-            if cached:
-                trans_type = cached["transition_type"]
-                warrant = cached["warrant"]
-                confidence = 0.88
-                method = "neural_cache"
-                cache_hits += 1
-            elif max_neural == -1 or neural_attempts < max_neural:
-                neural_attempts += 1
-                print(f"    [neural {neural_attempts}/{max_neural}] {doc_title}: '{s1_title[:25]}' -> '{s2_title[:25]}'...", flush=True)
-                neural_res = query_ollama_transition(
-                    doc_title, s1_title, r["s1_content"], s2_title, r["s2_content"], ollama_url, ollama_model
-                )
-                if neural_res:
-                    trans_type, warrant = neural_res
-                    confidence = 0.88
-                    method = "neural_ollama"
-                    cache.set(cache_key, {"transition_type": trans_type, "warrant": warrant})
-                    neural_calls += 1
-                    consecutive_errors = 0
-                else:
-                    neural_fallbacks += 1
-                    consecutive_errors += 1
-                    if consecutive_errors >= 3:
-                        print("    [!] 3 consecutive Ollama failures; disabling neural fallback for remaining transitions.", flush=True)
-                        skip_neural = True
-            else:
-                neural_fallbacks += 1
-        else:
-            ast_hits += 1
-
-        micro_transitions.append({
-            "s1_uri": s1_uri,
-            "s2_uri": s2_uri,
-            "transition_type": trans_type,
-            "warrant": warrant,
-            "confidence": confidence,
-            "method": method
-        })
-
-    cache.save()
-    print(f"  → Classified {len(micro_transitions)} transitions across {len(section_updates)} sections:")
-    print(f"    * Deterministic AST Rules: {ast_hits}")
-    print(f"    * Neural Cache Hits:       {cache_hits}")
-    print(f"    * Live Neural Inferences:  {neural_calls}")
-    if neural_fallbacks > 0:
-        print(f"    * AST Default Fallbacks:   {neural_fallbacks}")
-
-    # 3. Materialize Micro-CoT in Neo4j
-    with driver.session() as session:
+        # 3. Materialize Micro-CoT in Neo4j
         print("\n[3/4] Materializing Micro-CoT (Epistemic Labels and [:PROGRESSES_TO])...")
-        
-        # Purge legacy CognitiveStep label
-        session.run("MATCH (s:CognitiveStep) REMOVE s:CognitiveStep")
-
-        # Label sections atomically in batch
         label_batch = list(section_updates.values())
+        if label_batch:
+            session.run("""
+                UNWIND $batch AS item
+                MATCH (s:Section {uri: item.uri})
+                SET s.step_type = item.step_type,
+                    s.toulmin_role = item.toulmin_role,
+                    s.weight = item.weight,
+                    s.modal_category = item.modal_category,
+                    s.cot_classified = true
+                WITH s, item
+                WHERE size(item.labels) > 0
+                CALL apoc.create.addLabels(s, item.labels) YIELD node
+                RETURN count(node)
+            """, batch=label_batch)
+
+        if micro_transitions:
+            session.run("""
+                UNWIND $batch AS item
+                MATCH (s1:Section {uri: item.s1_uri})
+                MATCH (s2:Section {uri: item.s2_uri})
+                MERGE (s1)-[r:PROGRESSES_TO]->(s2)
+                SET r.transition_type = item.transition_type,
+                    r.warrant = item.warrant,
+                    r.confidence = item.confidence,
+                    r.method = item.method,
+                    r.updated_at = datetime()
+            """, batch=micro_transitions)
+        print(f"  → Materialized {len(micro_transitions)} [:PROGRESSES_TO] transitions across {len(label_batch)} sections.")
+
+        # 4. Materialize Sudan News Macro-CoT Inter-Document Edges
+        print("\n[4/4] Materializing Sudan News Macro-CoT Relationships...")
         session.run("""
-            UNWIND $batch AS item
-            MATCH (s:Section {uri: item.uri})
-            REMOVE s:DefinitionalAnchor, s:Summary, s:CoreThesis, s:MechanisticDeepen,
-                   s:ManifestationTrap, s:PrescriptiveSolution, s:EmpiricalBoundary,
-                   s:SynthesisCatalog, s:DilemmaProblem
-            SET s.step_type = item.step_type,
-                s.toulmin_role = item.toulmin_role,
-                s.weight = item.weight,
-                s.modal_category = item.modal_category,
-                s.cot_classified = true
-            WITH s, item
-            WHERE size(item.labels) > 0
-            CALL apoc.create.addLabels(s, item.labels) YIELD node
-            RETURN count(node)
-        """, batch=label_batch)
-        print(f"  → Atomically stamped epistemic labels across {len(label_batch)} sections.")
+            MATCH ()-[r:OCCURRED_AT|PART_OF_CAMPAIGN|TRIGGERS|RETALIATES_FOR|PRECEDES|MOTIVATED_BY|PERPETRATED_BY|TARGETED|PARTICIPATED_IN|DISPLACES_POPULATION|EMPIRICALLY_GROUNDS|CORROBORATES|CONTRADICTS_CLAIM|DEBUNKS|ATTRIBUTES_BLAME_TO]->()
+            DELETE r
+        """)
 
-        # Merge [:PROGRESSES_TO] edges
-        session.run("""
-            UNWIND $batch AS item
-            MATCH (s1:Section {uri: item.s1_uri})
-            MATCH (s2:Section {uri: item.s2_uri})
-            MERGE (s1)-[r:PROGRESSES_TO]->(s2)
-            SET r.transition_type = item.transition_type,
-                r.warrant = item.warrant,
-                r.confidence = item.confidence,
-                r.method = item.method,
-                r.updated_at = datetime()
-        """, batch=micro_transitions)
-        print(f"  → Materialized {len(micro_transitions)} [:PROGRESSES_TO] reasoning transitions.")
-
-        # 4. Materialize Macro-CoT Typed Inter-Document Edges
-        print("\n[4/4] Materializing Macro-CoT Inter-Document Reasoning Handshakes...")
-        
-        # Clean previous macro CoT relationships to ensure idempotency
-        session.run("MATCH ()-[r:REMEDIES_DILEMMA|EXTENDS_THEORY|PRECIPITATES|EMPIRICALLY_GROUNDS]->() DELETE r")
-
-        # A. [:REMEDIES_DILEMMA] (Solution section in d1 -> d2 Concept)
-        rem_res = session.run("""
-            MATCH (d1:Concept)-[:HAS*1..3]->(s:Section)-[:LINKS_TO]->(d2:Concept)
-            WHERE d1 <> d2
-              AND (toLower(s.displayName) =~ '.*(solution|mitigat|safeguard|countermeasure|counter-architecture|counter-measure|remedy|intervention|protocol|governance|repayment|action|defense).*'
-                   OR s.step_type = 'PRESCRIPTIVE_SOLUTION' OR s:PrescriptiveSolution)
-            WITH d1, d2, collect(DISTINCT s.displayName) AS sections, count(*) AS weight
-            MERGE (d1)-[r:REMEDIES_DILEMMA]->(d2)
+        # A. [:OCCURRED_AT] (Event -> Location)
+        r_occ = session.run("""
+            MATCH (ev:Event)-[:HAS*1..3]->(s:Section)-[:LINKS_TO]->(loc:Location)
+            WITH ev, loc, count(*) AS weight
+            MERGE (ev)-[r:OCCURRED_AT]->(loc)
             SET r.weight = weight,
-                r.source_sections = sections,
-                r.warrant = "Prescribes " + d2.title + " as an architectural safeguard or countermeasure against " + d1.title,
+                r.pcode = loc.pcode,
+                r.warrant = ev.title + " occurred at " + loc.title,
                 r.updated_at = datetime()
             RETURN count(r) AS count
         """).single()
-        print(f"  → Materialized {rem_res['count']} [:REMEDIES_DILEMMA] links.")
+        print(f"  → Materialized {r_occ['count']} [:OCCURRED_AT] spatial links.")
 
-        # B. [:EXTENDS_THEORY] (Mechanism section in d1 -> d2 Concept)
-        ext_res = session.run("""
-            MATCH (d1:Concept)-[:HAS*1..3]->(s:Section)-[:LINKS_TO]->(d2:Concept)
-            WHERE d1 <> d2
-              AND NOT (d1)-[:REMEDIES_DILEMMA]->(d2)
-              AND (toLower(s.displayName) =~ '.*(mechanism|anatomy|engine|underlying|process|driver|loop|dynamics|architecture).*'
-                   OR s.step_type = 'MECHANISTIC_DEEPEN' OR s:MechanisticDeepen)
-            WITH d1, d2, collect(DISTINCT s.displayName) AS sections, count(*) AS weight
-            MERGE (d1)-[r:EXTENDS_THEORY]->(d2)
+        # B. [:PART_OF_CAMPAIGN] (Incident Event -> Campaign/Crisis Event)
+        r_camp = session.run("""
+            MATCH (ev1:Event)-[:HAS*1..3]->(s:Section)-[:LINKS_TO]->(ev2:Event)
+            WHERE ev1 <> ev2 AND ev1.subtype = 'incident' AND ev2.subtype IN ['campaign', 'crisis']
+            WITH ev1, ev2, count(*) AS weight
+            MERGE (ev1)-[r:PART_OF_CAMPAIGN]->(ev2)
             SET r.weight = weight,
-                r.source_sections = sections,
-                r.warrant = d1.title + " incorporates foundational causal mechanics from " + d2.title,
+                r.warrant = ev1.title + " is an operational incident within " + ev2.title,
                 r.updated_at = datetime()
             RETURN count(r) AS count
         """).single()
-        print(f"  → Materialized {ext_res['count']} [:EXTENDS_THEORY] links.")
+        print(f"  → Materialized {r_camp['count']} [:PART_OF_CAMPAIGN] links.")
 
-        # C. [:PRECIPITATES] (Trap/Pathology section in d1 -> d2 Concept)
-        prec_res = session.run("""
-            MATCH (d1:Concept)-[:HAS*1..3]->(s:Section)-[:LINKS_TO]->(d2:Concept)
-            WHERE d1 <> d2
-              AND NOT (d1)-[:REMEDIES_DILEMMA]->(d2)
-              AND NOT (d1)-[:EXTENDS_THEORY]->(d2)
-              AND (toLower(s.displayName) =~ '.*(trap|failure|misattribution|illusion|collapse|offloading|fatigue|debt|pathology|crisis|dilemma|vulnerability).*'
-                   OR s.step_type IN ['MANIFESTATION_TRAP', 'DILEMMA_PROBLEM'] OR s:ManifestationTrap OR s:DilemmaProblem)
-            WITH d1, d2, collect(DISTINCT s.displayName) AS sections, count(*) AS weight
-            MERGE (d1)-[r:PRECIPITATES]->(d2)
+        # C. [:TRIGGERS] (Linked from Section 3 Causal Motives between Events)
+        r_trig = session.run("""
+            MATCH (ev1:Event)-[:HAS*1..3]->(s:Section)-[:LINKS_TO]->(ev2:Event)
+            WHERE ev1 <> ev2
+              AND NOT (ev1)-[:PART_OF_CAMPAIGN]->(ev2)
+              AND (s.step_type = 'CAUSAL_MOTIVES' OR toLower(s.displayName) =~ '.*(causal|motive|why|trigger|retaliat).*')
+            WITH ev1, ev2, collect(DISTINCT s.displayName) AS sections, count(*) AS weight
+            MERGE (ev2)-[r:TRIGGERS]->(ev1)
             SET r.weight = weight,
                 r.source_sections = sections,
-                r.warrant = d1.title + " precipitates or manifests as " + d2.title,
+                r.warrant = ev2.title + " causally triggered or precipitated " + ev1.title,
                 r.updated_at = datetime()
             RETURN count(r) AS count
         """).single()
-        print(f"  → Materialized {prec_res['count']} [:PRECIPITATES] links.")
+        print(f"  → Materialized {r_trig['count']} [:TRIGGERS] causal event links.")
 
-        # D. [:EMPIRICALLY_GROUNDS] (Source -> Concept)
-        src_res = session.run("""
-            MATCH (src:Source)-[:HAS*1..3]->(s:Section)-[:LINKS_TO]->(tgt:Concept)
-            WITH src, tgt, collect(DISTINCT s.displayName) AS sections, count(*) AS weight
+        # D. [:MOTIVATED_BY] (Event -> Theme)
+        r_mot = session.run("""
+            MATCH (ev:Event)-[:HAS*1..3]->(s:Section)-[:LINKS_TO]->(th:Theme)
+            WITH ev, th, collect(DISTINCT s.displayName) AS sections, count(*) AS weight
+            MERGE (ev)-[r:MOTIVATED_BY]->(th)
+            SET r.weight = weight,
+                r.source_sections = sections,
+                r.warrant = ev.title + " is structurally driven or motivated by " + th.title,
+                r.updated_at = datetime()
+            RETURN count(r) AS count
+        """).single()
+        print(f"  → Materialized {r_mot['count']} [:MOTIVATED_BY] structural theme links.")
+
+        # E. [:PARTICIPATED_IN] / [:PERPETRATED_BY] / [:TARGETED] (Event <-> Actor)
+        r_part = session.run("""
+            MATCH (ev:Event)-[:HAS*1..3]->(s:Section)-[:LINKS_TO]->(act:Actor)
+            WHERE act.subtype <> 'media_source'
+            WITH ev, act, collect(DISTINCT s.displayName) AS sections, count(*) AS weight
+            MERGE (act)-[r:PARTICIPATED_IN]->(ev)
+            SET r.weight = weight,
+                r.source_sections = sections,
+                r.warrant = act.title + " is an acting entity involved in " + ev.title,
+                r.updated_at = datetime()
+            RETURN count(r) AS count
+        """).single()
+        print(f"  → Materialized {r_part['count']} [:PARTICIPATED_IN] actor-event links.")
+
+        # F. [:EMPIRICALLY_GROUNDS] (Source -> Event | Actor | Location | Theme)
+        r_src = session.run("""
+            MATCH (src:Source)-[:HAS*1..3]->(:Section)-[:LINKS_TO]->(tgt:Document)
+            WHERE tgt.type IN ['event', 'actor', 'location', 'theme']
+            WITH src, tgt, count(*) AS weight
             MERGE (src)-[r:EMPIRICALLY_GROUNDS]->(tgt)
             SET r.weight = weight,
-                r.source_sections = sections,
-                r.warrant = src.title + " provides primary empirical grounding and citations for " + tgt.title,
+                r.admiralty_rating = src.admiralty_rating,
+                r.warrant = src.title + " provides primary evidence for " + tgt.title,
                 r.updated_at = datetime()
             RETURN count(r) AS count
         """).single()
-        print(f"  → Materialized {src_res['count']} [:EMPIRICALLY_GROUNDS] citations.")
+        # Also link from target's frontmatter sources or in-text citations to Source
+        r_src_rev = session.run("""
+            MATCH (tgt:Document)-[:HAS*1..3]->(:Section)-[:LINKS_TO]->(src:Source)
+            WHERE tgt.type IN ['event', 'actor', 'location', 'theme']
+            WITH src, tgt, count(*) AS weight
+            MERGE (src)-[r:EMPIRICALLY_GROUNDS]->(tgt)
+            SET r.weight = coalesce(r.weight, 0) + weight,
+                r.admiralty_rating = src.admiralty_rating,
+                r.warrant = src.title + " provides primary evidence for " + tgt.title,
+                r.updated_at = datetime()
+            RETURN count(r) AS count
+        """).single()
+        print(f"  → Materialized {r_src['count'] + r_src_rev['count']} [:EMPIRICALLY_GROUNDS] provenance links.")
+
+        # G. [:CONTRADICTS_CLAIM] & [:CORROBORATES] between sources cited in Event Section 5 (CONTRADICTION_MATRIX)
+        r_contra = session.run("""
+            MATCH (ev:Event)-[:HAS*1..3]->(s:Section)
+            WHERE (s.step_type = 'CONTRADICTION_MATRIX' OR toLower(s.displayName) CONTAINS 'competing narratives')
+              AND size(coalesce(ev.contradiction_flags, [])) > 0
+            MATCH (s)-[:LINKS_TO]->(s1:Source)
+            MATCH (s)-[:LINKS_TO]->(s2:Source)
+            WHERE elementId(s1) < elementId(s2)
+              AND coalesce(s1.alignment, '') <> coalesce(s2.alignment, '')
+            MERGE (s1)-[r:CONTRADICTS_CLAIM]->(s2)
+            SET r.event_title = ev.title,
+                r.conflict_types = ev.contradiction_flags,
+                r.warrant = "Sources present competing narratives on " + ev.title,
+                r.updated_at = datetime()
+            RETURN count(r) AS count
+        """).single()
+        print(f"  → Materialized {r_contra['count']} [:CONTRADICTS_CLAIM] dialectical source edges.")
 
     elapsed = time.time() - start_time
     print("\n=================================================================")
-    print(f"  [✓] Dual-Flow CoT Extraction Complete in {elapsed:.2f}s!")
+    print(f"  [✓] Sudan News Dual-Flow CoT Extraction Complete in {elapsed:.2f}s!")
     print("=================================================================")
 
+
 def main():
-    parser = argparse.ArgumentParser(description="Extract Dual-Flow Chain of Thought into Neo4j")
+    parser = argparse.ArgumentParser(description="Extract Sudan News Dual-Flow Chain of Thought into Neo4j")
     parser.add_argument("--uri", default=DEFAULT_URI, help="Neo4j Bolt URI")
     parser.add_argument("--user", default=DEFAULT_USER, help="Neo4j username")
     parser.add_argument("--password", default=DEFAULT_PASSWORD, help="Neo4j password")
     parser.add_argument("--database", default=DEFAULT_DATABASE, help="Neo4j database name")
-    parser.add_argument("--skip-neural", action="store_true", help="Skip Ollama neural fallback (AST heuristics only)")
-    parser.add_argument("--max-neural", type=int, default=50, help="Maximum number of live neural inference calls (default: 50)")
+    parser.add_argument("--skip-neural", action="store_true", help="Skip Ollama neural fallback")
+    parser.add_argument("--max-neural", type=int, default=50, help="Maximum number of live neural inference calls")
     parser.add_argument("--ollama-url", default=DEFAULT_OLLAMA_URL, help="Ollama base URL")
-    parser.add_argument("--model", default=DEFAULT_OLLAMA_MODEL, help="Ollama model for neural warrant extraction")
+    parser.add_argument("--model", default=DEFAULT_OLLAMA_MODEL, help="Ollama model")
     args = parser.parse_args()
 
     driver = GraphDatabase.driver(args.uri, auth=(args.user, args.password), max_connection_lifetime=60)
@@ -654,6 +517,7 @@ def main():
         )
     finally:
         driver.close()
+
 
 if __name__ == "__main__":
     main()

@@ -13,5 +13,4 @@ All operations follow the format:
 
 ## [2026-11-01] refactor | Phase 2: Agent Constitution & Skills | Updated AGENTS.md and .agent/skills/{wiki-scope,wiki-ingest,wiki-lint,wiki-format,wiki-history,wiki-task,web-deep-research} with 5W1H Event/Actor/Location/Theme Micro-CoT and Macro-CoT schemas, 48-hour Spatio-Temporal Event Deduplication rule, NATO Admiralty rating (A1-F6), GRaSP Contradiction Matrix, and _input/ operational paths.
 
-
-
+## [2026-11-01] refactor | Phase 3: Graph Bootstrap, Linter & CoT Extractors | Updated scripts/{bootstrap_arcadedb,lint_vault,enrich_graph,extract_dual_flow_cot,extract_entity_cot,node_history}.py for Sudan News & OSINT vertex/edge DDL, Arabic/English alias normalization, UN OCHA P-Code validation, NATO Admiralty scoring, 6-stage Micro-CoT classification, and 5W1H/GRaSP Macro-CoT edge materialization.
