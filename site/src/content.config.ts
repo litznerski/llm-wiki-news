@@ -47,6 +47,13 @@ const wiki = defineCollection({
     status: z.enum(['draft', 'approved']).optional(),
     compiled: z.boolean().optional(),
     compiled_at: z.any().optional(),
+    speaker: z.string().optional(),
+    speaker_role: z.string().optional(),
+    role_title: z.string().optional(),
+    affiliated_organization: z.string().nullable().optional(),
+    source_outlet: z.string().optional(),
+    citation_date: z.any().optional(),
+    speech_act: z.string().optional(),
   }).passthrough(),
 });
 

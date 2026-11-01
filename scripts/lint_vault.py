@@ -21,13 +21,14 @@ TYPE_SPECIFIC_REQUIRED_FIELDS = {
     "location": ["subtype", "pcode"],
     "theme": ["subtype"],
     "timeline": ["subtype"],
+    "citation": ["subtype", "speaker", "source_note", "citation_date", "admiralty_rating"],
     "source": ["subtype", "status", "admiralty_rating", "published_date"],
 }
 VALID_SOURCE_STATUSES = {"draft", "approved"}
 EXEMPT_FILES = {"index.md", "overview.md", "log.md", "glossary.md"}
 DISALLOWED_WIKILINK_PREFIXES = (
-    "wiki/events/", "wiki/actors/", "wiki/locations/", "wiki/themes/", "wiki/timelines/",
-    "events/", "actors/", "locations/", "themes/", "timelines/",
+    "wiki/events/", "wiki/actors/", "wiki/locations/", "wiki/themes/", "wiki/timelines/", "wiki/citations/",
+    "events/", "actors/", "locations/", "themes/", "timelines/", "citations/",
     "wiki/concepts/", "wiki/entities/", "concepts/", "entities/"
 )
 
@@ -337,6 +338,13 @@ def lint(check_cot: bool = False):
                     (4, r"##\s*4[\.\:]\s*Humanitarian", "4. Humanitarian, Regional & Diplomatic Consequences"),
                     (5, r"##\s*5[\.\:]\s*Empirical Debates", "5. Empirical Debates, Uncertainties & Competing Analyses"),
                     (6, r"##\s*(6[\.\:]\s*)?(Related Primitives|Related Notes)", "Related Primitives"),
+                ]
+            elif "citations/" in rel_str:
+                canonical_stages = [
+                    (1, r"##\s*1[\.\:]\s*Speaker Provenance", "1. Speaker Provenance, Institutional Role & Context"),
+                    (2, r"##\s*2[\.\:]\s*Verbatim", "2. Verbatim Bilingual Citation & Forensic Text"),
+                    (3, r"##\s*3[\.\:]\s*Substantive Claims", "3. Substantive Claims, Event Grounding & Contradiction Impact"),
+                    (4, r"##\s*(4[\.\:]\s*)?(Related Primitives|Related Notes)", "Related Primitives"),
                 ]
 
             if canonical_stages:

@@ -1,6 +1,6 @@
 ---
 name: wiki-scope
-description: Scans a news or OSINT source document before ingestion, performs 48-hour spatio-temporal event deduplication against existing vault catalogs, filters by intelligence significance, and generates a Scoped Ingestion Manifest persisted into the draft source note.
+description: Scans a news or OSINT source document before ingestion, performs 48-hour spatio-temporal event deduplication against existing vault catalogs, extracts the source_outlet, quoted person actors, and standalone citations, filters by intelligence significance, and generates a Scoped Ingestion Manifest persisted into the draft source note.
 ---
 
 # Wiki Scope Skill (`wiki-scope`)
@@ -8,7 +8,7 @@ description: Scans a news or OSINT source document before ingestion, performs 48
 ## Objective
 Act as the mandatory epistemic reconnaissance, deduplication, and planning phase prior to compiling any primary news article, social media post, video transcript, or OSINT report from `raw/` into the `wiki/` knowledge graph.
 
-Instead of imposing static extraction limits or creating duplicate event nodes across multiple media reports, `wiki-scope` cross-references the incoming source against `wiki/index.md` and `wiki/glossary.md`, executes **48-Hour Spatio-Temporal Event Deduplication**, separates candidate primitives into **Events**, **Actors**, **Locations**, **Themes/Timelines**, and **Nodes to Refactor**, and persists the **Scoped Ingestion Manifest** directly into the Phase 1 draft source note (`wiki/sources/<source-slug>.md`).
+Instead of imposing static extraction limits or creating duplicate event nodes across multiple media reports, `wiki-scope` cross-references the incoming source against `wiki/index.md` and `wiki/glossary.md`, executes **48-Hour Spatio-Temporal Event Deduplication**, separates candidate primitives into **Events**, **Actors** (including acting forces, quoted **Person Actors** with institutional roles, and the publishing **Source Outlet**), **Locations**, **Themes/Timelines**, **Standalone Citations (`wiki/citations/`)**, and **Nodes to Refactor**, and persists the **Scoped Ingestion Manifest** directly into the Phase 1 draft source note (`wiki/sources/<source-slug>.md`).
 
 ---
 
@@ -17,11 +17,15 @@ Instead of imposing static extraction limits or creating duplicate event nodes a
 ### 1. Document & Vault Cross-Referencing
 1. Read the target document in `raw/` (or `_input/research/`) using `view_file`.
 2. Read `wiki/index.md` and `wiki/glossary.md` to map existing vault topography, Arabic/English aliases, kunyas, and UN OCHA P-Codes (`SD01`–`SD18`).
-3. Extract candidate primitives into five distinct pools:
+3. Extract candidate primitives into six distinct pools:
    - **Candidate Events (`wiki/events/`)**: Discrete conflict incidents (`incident`), multi-day military operations (`campaign`), diplomatic talks/agreements (`diplomatic`), or humanitarian emergencies (`crisis`).
-   - **Candidate Actors (`wiki/actors/`)**: State forces (`state_force`), paramilitaries/rebel groups/militias (`armed_group`), political coalitions/foreign states (`political_body`), civil society/ERRs/NGOs (`civil_society`), key commanders/leaders (`person`), and media/OSINT outlets (`media_source`).
+   - **Candidate Actors (`wiki/actors/`)**:
+     - *Armed, State, Political & Civil Society Entities*: State forces (`state_force`), paramilitaries/rebel groups/militias (`armed_group`), political coalitions/international bodies (`political_body`), and civil society/ERRs/NGOs (`civil_society`).
+     - *Source Outlet (`subtype: "media_source"`)*: The originating media outlet or news agency (`source_outlet`, e.g., `[[UN News]]`, `[[Radio Dabanga]]`, `[[Sudan Tribune]]`) MUST always be scoped as an `Actor` (`subtype: "media_source"`). If it does not exist in `wiki/actors/`, add it to `actors_to_create`; if it already exists, add it to `nodes_to_refactor`.
+     - *Quoted Persons (`subtype: "person"`)*: Every named official, military commander, spokesperson, or key eyewitness delivering a direct citation or testimony in Section 3 (`## 3. Bilingual Direct Citations & Forensic Evidence`) MUST be scoped as an `Actor` (`subtype: "person"`) with `role_title` (e.g., `"UN High Commissioner for Human Rights"`, `"Commander, UNISFA Pakistani Battalion"`) and `affiliated_organization` (e.g., `"[[OHCHR]]"`, `"[[UNISFA]]"`).
    - **Candidate Locations (`wiki/locations/`)**: Sudan States (`state_adm1`), Localities (`locality_adm2`), Cities/Towns (`city_town`), Neighborhoods/Sites (`neighborhood_site`), IDP Camps (`idp_camp`), Infrastructure (`infrastructure`), and Border Crossings (`border_crossing`).
    - **Candidate Themes & Timelines (`wiki/themes/`, `wiki/timelines/`)**: Enduring structural drivers ("Why?"), war economy supply chains, military doctrines, or monthly chronological ledgers.
+   - **Candidate Standalone Citations (`wiki/citations/`, `type: "citation"`)**: Every key direct statement, official condemnation, military communiqué, or eyewitness testimony extracted in Section 3 (`## 3. Bilingual Direct Citations & Forensic Evidence`) is scoped into `citations_to_create` as a standalone note `[[YYYY-MM-DD <Speaker Name> <Concise Statement Topic>]]` (`subtype: official_statement | eyewitness_testimony | military_communique | forensic_finding | diplomatic_resolution`), linking the speaker (`Actor: person`), their `affiliated_organization`, the `source_note`, the `source_outlet`, and the referenced events/locations/themes.
    - **Existing Nodes to Refactor**: Notes already present in `wiki/` where the new source introduces corroborating evidence, updated casualty/displacement counts, shifts in territorial control, or **competing/contradictory narratives**.
 
 ### 2. 48-Hour Spatio-Temporal Event Deduplication Rule
@@ -32,17 +36,13 @@ $$\lvert t_{\text{valid}}(\text{candidate}) - t_{\text{valid}}(\text{existing}) 
 
 ### 3. News & OSINT Significance Filtering
 Filter candidate nodes using three qualitative criteria (must score $\ge 0.70$ on composite significance):
-- **5W1H Evidentiary Specificity**: Does the candidate event, actor, or location possess concrete spatio-temporal anchoring, identifiable actors, or verifiable impact? (Reject vague background mentions or generic nouns).
-- **Network & Causal Interconnectivity**: Can this node connect to $\ge 2$ existing nodes (e.g., linking an incident to its `[[Location]]`, `[[Acting Entities]]`, and parent `[[Campaign]]` or `[[Theme]]`)?
-- **Sudan Domain Relevance**: Does the item directly advance intelligence tracking across:
-  - Kinetic frontlines, territorial control, and military operations in Sudan.
-  - Humanitarian crisis indicators, famine (IPC phases), displacement (IDPs), and civilian protection (ERRs).
-  - Political economy (gold, weapons supply chains), regional diplomacy, and foreign sponsorship.
-  - OSINT verification, disinformation debunking, and narrative contradiction analysis.
+- **5W1H Evidentiary Specificity**: Does the candidate event, actor, location, or citation possess concrete spatio-temporal anchoring, identifiable actors/speakers, or verifiable impact?
+- **Network & Causal Interconnectivity**: Can this node connect to $\ge 2$ existing or planned nodes (e.g., linking a `Citation` to its `[[Speaker]]`, `[[Originating Source]]`, and `[[Target Event]]`)?
+- **Sudan Domain Relevance**: Does the item directly advance intelligence tracking across kinetic frontlines, humanitarian crisis indicators, political economy, or OSINT verification?
 
 ### 4. Generate & Persist the Scoped Ingestion Manifest
 Persist the candidate node lists in two places inside the Phase 1 draft source note (`wiki/sources/<source-slug>.md`):
-1. **YAML Frontmatter Arrays**: `events_to_create`, `actors_to_create`, `locations_to_create`, `themes_to_create`, `nodes_to_refactor`.
+1. **YAML Frontmatter Arrays**: `events_to_create`, `actors_to_create`, `locations_to_create`, `themes_to_create`, `citations_to_create`, `nodes_to_refactor`.
 2. **Markdown Body (`## 4. Scoped Ingestion Plan (Pending Approval)`)**:
 
 ```markdown
@@ -54,8 +54,10 @@ Persist the candidate node lists in two places inside the Phase 1 draft source n
 ### 4.1. Candidate New Events (E)
 - [[YYYY-MM-DD Event Title]] (`subtype: incident | campaign | crisis | diplomatic`): 1-line 5W1H summary & ACLED category.
 
-### 4.2. Candidate New Actors (A)
-- [[Actor Name]] (`subtype: state_force | armed_group | ...`): Role, affiliation, and ACLED actor type.
+### 4.2. Candidate New Actors — Forces, Organizations, Source Outlet & Quoted Persons (A)
+- [[Outlet Name]] (`subtype: media_source`, `alignment: ...`): Originating `source_outlet`.
+- [[Organization or Force Name]] (`subtype: state_force | armed_group | political_body | civil_society`): Role and ACLED actor type.
+- [[Person Name]] (`subtype: person`, `role_title: "..."`, `affiliated_organization: "[[Organization]]"`): Quoted official, commander, spokesperson, or eyewitness.
 
 ### 4.3. Candidate New Locations (L)
 - [[Location Name]] (`pcode: SD...`, `subtype: city_town | ...`): Admin hierarchy and current control status.
@@ -63,7 +65,10 @@ Persist the candidate node lists in two places inside the Phase 1 draft source n
 ### 4.4. Candidate New Themes / Timelines (T)
 - [[Theme or Timeline Title]]: Structural driver ("Why?") or chronological scope.
 
-### 4.5. Existing Nodes to Refactor (K)
+### 4.5. Candidate New Citations (C)
+- [[YYYY-MM-DD Speaker Name Statement Topic]] (`subtype: official_statement | eyewitness_testimony | ...`, `speaker: "[[Person Name]]"`): Direct verbatim statement or forensic testimony from Section 3.
+
+### 4.6. Existing Nodes to Refactor (K)
 - [[Existing Note]]: Specific update (e.g., merge corroborating source, update casualty range, or add `ATTRIBUTION_CONFLICT` to Section 5 Contradiction Matrix).
 ```
 

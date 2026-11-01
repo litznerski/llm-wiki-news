@@ -31,6 +31,7 @@ export const wikiPublishConfig: WikiPublishConfig = {
     'locations',
     'themes',
     'timelines',
+    'citations',
     'syntheses',
     'sources',
   ],
@@ -122,7 +123,7 @@ export function getWikiCategory(data: Record<string, any> = {}): string {
   }
 
   if (data.type === 'event' || data.type === 'timeline') return 'Military Operations & Battles';
-  if (data.type === 'actor') return 'Actors & Alliances';
+  if (data.type === 'actor' || data.type === 'citation') return 'Actors & Alliances';
   if (data.type === 'location') return 'Locations & Territorial Control';
   if (data.type === 'theme' || data.type === 'synthesis' || data.type === 'source') return 'War Economy & Humanitarian Crisis';
 

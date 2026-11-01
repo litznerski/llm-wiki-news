@@ -17,6 +17,9 @@ This catalog maintains a single-line summary of all compiled nodes within the va
 ## Timelines (`wiki/timelines/`)
 *No chronological ledgers or campaign timelines compiled yet.*
 
+## Citations (`wiki/citations/`)
+*No standalone verbatim citations or forensic testimonies compiled yet.*
+
 ## Sources (`wiki/sources/`)
 *No primary news, OSINT, or satellite sources distilled yet.*
 

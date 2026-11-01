@@ -117,6 +117,10 @@ DDL_COMMANDS = [
     ("CREATE PROPERTY Actor.acronym IF NOT EXISTS STRING", "Property Actor.acronym"),
     ("CREATE PROPERTY Actor.subtype IF NOT EXISTS STRING", "Property Actor.subtype"),
     ("CREATE PROPERTY Actor.acled_actor_type IF NOT EXISTS STRING", "Property Actor.acled_actor_type"),
+    ("CREATE PROPERTY Actor.role_title IF NOT EXISTS STRING", "Property Actor.role_title"),
+    ("CREATE PROPERTY Actor.affiliated_organization IF NOT EXISTS STRING", "Property Actor.affiliated_organization"),
+    ("CREATE PROPERTY Actor.editorial_alignment IF NOT EXISTS STRING", "Property Actor.editorial_alignment"),
+    ("CREATE PROPERTY Actor.baseline_admiralty_reliability IF NOT EXISTS STRING", "Property Actor.baseline_admiralty_reliability"),
     ("CREATE PROPERTY Actor.leader IF NOT EXISTS STRING", "Property Actor.leader"),
     ("CREATE PROPERTY Actor.aliases IF NOT EXISTS LIST OF STRING", "Property Actor.aliases"),
     ("CREATE PROPERTY Actor.summary_note IF NOT EXISTS STRING", "Property Actor.summary_note"),
@@ -151,12 +155,31 @@ DDL_COMMANDS = [
     ("CREATE PROPERTY Timeline.last_updated IF NOT EXISTS STRING", "Property Timeline.last_updated"),
     ("CREATE INDEX IF NOT EXISTS ON Timeline (title) UNIQUE", "Index Timeline.title UNIQUE"),
 
+    ("CREATE VERTEX TYPE Citation IF NOT EXISTS", "Create vertex Citation"),
+    ("CREATE PROPERTY Citation.title IF NOT EXISTS STRING", "Property Citation.title"),
+    ("CREATE PROPERTY Citation.subtype IF NOT EXISTS STRING", "Property Citation.subtype"),
+    ("CREATE PROPERTY Citation.speaker IF NOT EXISTS STRING", "Property Citation.speaker"),
+    ("CREATE PROPERTY Citation.speaker_role IF NOT EXISTS STRING", "Property Citation.speaker_role"),
+    ("CREATE PROPERTY Citation.affiliated_organization IF NOT EXISTS STRING", "Property Citation.affiliated_organization"),
+    ("CREATE PROPERTY Citation.source_note IF NOT EXISTS STRING", "Property Citation.source_note"),
+    ("CREATE PROPERTY Citation.source_outlet IF NOT EXISTS STRING", "Property Citation.source_outlet"),
+    ("CREATE PROPERTY Citation.citation_date IF NOT EXISTS STRING", "Property Citation.citation_date"),
+    ("CREATE PROPERTY Citation.original_language IF NOT EXISTS STRING", "Property Citation.original_language"),
+    ("CREATE PROPERTY Citation.speech_act IF NOT EXISTS STRING", "Property Citation.speech_act"),
+    ("CREATE PROPERTY Citation.admiralty_rating IF NOT EXISTS STRING", "Property Citation.admiralty_rating"),
+    ("CREATE PROPERTY Citation.reliability_score IF NOT EXISTS DOUBLE", "Property Citation.reliability_score"),
+    ("CREATE PROPERTY Citation.last_updated IF NOT EXISTS STRING", "Property Citation.last_updated"),
+    ("CREATE INDEX IF NOT EXISTS ON Citation (title) UNIQUE", "Index Citation.title UNIQUE"),
+    ("CREATE INDEX IF NOT EXISTS ON Citation (citation_date) NOTUNIQUE", "Index Citation.citation_date"),
+    ("CREATE INDEX IF NOT EXISTS ON Citation (speech_act) NOTUNIQUE", "Index Citation.speech_act"),
+
     ("CREATE VERTEX TYPE Source IF NOT EXISTS", "Create vertex Source"),
     ("CREATE PROPERTY Source.title IF NOT EXISTS STRING", "Property Source.title"),
     ("CREATE PROPERTY Source.slug IF NOT EXISTS STRING", "Property Source.slug"),
     ("CREATE PROPERTY Source.subtype IF NOT EXISTS STRING", "Property Source.subtype"),
     ("CREATE PROPERTY Source.status IF NOT EXISTS STRING", "Property Source.status"),
     ("CREATE PROPERTY Source.compiled IF NOT EXISTS BOOLEAN", "Property Source.compiled"),
+    ("CREATE PROPERTY Source.source_outlet IF NOT EXISTS STRING", "Property Source.source_outlet"),
     ("CREATE PROPERTY Source.language IF NOT EXISTS STRING", "Property Source.language"),
     ("CREATE PROPERTY Source.alignment IF NOT EXISTS STRING", "Property Source.alignment"),
     ("CREATE PROPERTY Source.admiralty_rating IF NOT EXISTS STRING", "Property Source.admiralty_rating"),
@@ -219,7 +242,7 @@ DDL_COMMANDS = [
     ("CREATE PROPERTY SynthesisDelta.resolved IF NOT EXISTS BOOLEAN", "Property SynthesisDelta.resolved"),
     ("CREATE INDEX IF NOT EXISTS ON SynthesisDelta (synthesis_slug) NOTUNIQUE", "Index SynthesisDelta.synthesis_slug"),
 
-    # 3. Edge Types (Micro-CoT, Causal/Temporal, Agency, Spatio-Political, Provenance & Contradiction)
+    # 3. Edge Types (Micro-CoT, Causal/Temporal, Agency, Spatio-Political, Provenance, Citation & Contradiction)
     ("CREATE EDGE TYPE PROGRESSES_TO IF NOT EXISTS", "Create edge PROGRESSES_TO"),
     ("CREATE EDGE TYPE HAS_SECTION IF NOT EXISTS", "Create edge HAS_SECTION"),
     ("CREATE EDGE TYPE TAGGED_WITH IF NOT EXISTS", "Create edge TAGGED_WITH"),
@@ -238,6 +261,8 @@ DDL_COMMANDS = [
     ("CREATE EDGE TYPE ALLIED_WITH IF NOT EXISTS", "Create edge ALLIED_WITH"),
     ("CREATE EDGE TYPE SPONSORED_BY IF NOT EXISTS", "Create edge SPONSORED_BY"),
     ("CREATE EDGE TYPE DEFECTED_TO IF NOT EXISTS", "Create edge DEFECTED_TO"),
+    ("CREATE EDGE TYPE AFFILIATED_WITH IF NOT EXISTS", "Create edge AFFILIATED_WITH"),
+    ("CREATE EDGE TYPE STATED IF NOT EXISTS", "Create edge STATED"),
 
     ("CREATE EDGE TYPE OCCURRED_AT IF NOT EXISTS", "Create edge OCCURRED_AT"),
     ("CREATE EDGE TYPE LOCATED_IN IF NOT EXISTS", "Create edge LOCATED_IN"),
@@ -245,6 +270,8 @@ DDL_COMMANDS = [
     ("CREATE EDGE TYPE DISPLACES_POPULATION IF NOT EXISTS", "Create edge DISPLACES_POPULATION"),
 
     ("CREATE EDGE TYPE EMPIRICALLY_GROUNDS IF NOT EXISTS", "Create edge EMPIRICALLY_GROUNDS"),
+    ("CREATE EDGE TYPE CONTAINS_CITATION IF NOT EXISTS", "Create edge CONTAINS_CITATION"),
+    ("CREATE EDGE TYPE TESTIFIES_TO IF NOT EXISTS", "Create edge TESTIFIES_TO"),
     ("CREATE EDGE TYPE CORROBORATES IF NOT EXISTS", "Create edge CORROBORATES"),
     ("CREATE EDGE TYPE CONTRADICTS_CLAIM IF NOT EXISTS", "Create edge CONTRADICTS_CLAIM"),
     ("CREATE EDGE TYPE ATTRIBUTES_BLAME_TO IF NOT EXISTS", "Create edge ATTRIBUTES_BLAME_TO"),
@@ -260,6 +287,7 @@ DDL_COMMANDS = [
     ("CREATE INDEX IF NOT EXISTS ON Actor (title) FULL_TEXT", "Full-text index on Actor.title"),
     ("CREATE INDEX IF NOT EXISTS ON Location (title) FULL_TEXT", "Full-text index on Location.title"),
     ("CREATE INDEX IF NOT EXISTS ON Theme (title) FULL_TEXT", "Full-text index on Theme.title"),
+    ("CREATE INDEX IF NOT EXISTS ON Citation (title) FULL_TEXT", "Full-text index on Citation.title"),
 ]
 
 

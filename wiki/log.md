@@ -22,3 +22,9 @@ All operations follow the format:
 ## [2026-11-01] task | Split ingestion skill | Authored Two-Phase Ingestion Skill Architecture Proposal in _input/drafts/Two-Phase Ingestion Skill Architecture Proposal.md; updated task status to done, archived task file, and moved card to Done on infrastructure board.
 
 ## [2026-11-01] refactor | Two-Phase Ingestion Pipeline | Updated AGENTS.md, .agent/skills/{wiki-ingest,wiki-scope}/SKILL.md, scripts/{lint_vault,bootstrap_arcadedb,ingest_to_arcadedb}.py, and site/src/{config/wiki.config.ts,content.config.ts} to implement Phase 1 draft source distillation (status: draft, compiled: false) and Phase 2 approved entity compilation & ArcadeDB/ki synchronization (status: approved).
+
+## [2026-11-01] ingest-draft | 2026-10-23-un-news-sudan-drone-strikes-306-killed | Created draft source note in wiki/sources/2026-10-23-un-news-sudan-drone-strikes-306-killed.md (status: draft, admiralty_rating: A2) with scoped manifest (3 events, 4 actors, 3 locations, 1 theme, 0 refactors); awaiting approval.
+
+## [2026-11-01] task | Extention for ingestion | Authored Direct Citations Person Actors and Source Outlet Schema Extension Plan in _input/drafts/; updated task status to done, archived task file, and moved card to Done on infrastructure board.
+
+## [2026-11-01] refactor | Citation, Person Actor & Source Outlet Schema Extension | Created wiki/citations/; updated AGENTS.md, .agent/skills/{wiki-scope,wiki-ingest}/SKILL.md, scripts/{bootstrap_arcadedb,ingest_to_arcadedb,lint_vault}.py, site/src/{config/wiki.config.ts,content.config.ts}, and refactored wiki/sources/2026-10-23-un-news-sudan-drone-strikes-306-killed.md with UN News (media_source), 5 quoted person actors, and 5 standalone citations.

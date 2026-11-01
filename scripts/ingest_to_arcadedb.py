@@ -256,6 +256,9 @@ def map_to_toulmin_role(step_type: str, doc_type: str = "event") -> str:
         "MECHANISTIC_DEEPEN": "WARRANT",
         "MANIFESTATION_TRAP": "REBUTTAL",
         "EMPIRICAL_BOUNDARY": "QUALIFIER",
+        "CITATION_ANCHOR": "GROUNDS",
+        "VERBATIM_EVIDENCE": "WARRANT",
+        "FORENSIC_GROUNDING": "CLAIM",
         "SYNTHESIS_CATALOG": "BACKING",
     }
     return mapping.get(step_type, "GROUNDS")
@@ -271,6 +274,8 @@ def classify_section(doc_title: str, doc_type: str, heading_text: str, content: 
             return "ACTOR_ANCHOR", ["ActorAnchor", "Summary"]
         if doc_type == "location":
             return "LOCATION_ANCHOR", ["LocationAnchor", "Summary"]
+        if doc_type == "citation":
+            return "CITATION_ANCHOR", ["CitationAnchor", "Summary"]
         return "DEFINITIONAL_ANCHOR", ["DefinitionalAnchor", "Summary"]
 
     if re.search(r"related primitives|related notes|synthesis catalog", h_lower):
@@ -324,6 +329,14 @@ def classify_section(doc_title: str, doc_type: str, heading_text: str, content: 
         if re.search(r"5[\.\:]|empirical debate|uncertaint|competing", h_lower):
             return "EMPIRICAL_BOUNDARY", ["EmpiricalBoundary"]
 
+    elif doc_type == "citation":
+        if re.search(r"1[\.\:]|speaker provenance|institutional role", h_lower):
+            return "CITATION_ANCHOR", ["CitationAnchor"]
+        if re.search(r"2[\.\:]|verbatim|bilingual citation|forensic text", h_lower):
+            return "VERBATIM_EVIDENCE", ["VerbatimEvidence"]
+        if re.search(r"3[\.\:]|substantive claim|event grounding|forensic grounding", h_lower):
+            return "FORENSIC_GROUNDING", ["ForensicGrounding"]
+
     return "NARRATIVE_STEP", []
 
 
@@ -336,8 +349,12 @@ def infer_transition_rule(cat1: str, cat2: str) -> Tuple[str, str, float]:
         return ("impact_consequence", "Evaluates humanitarian, territorial, and geopolitical consequences.", 1.0)
     if cat2 == "CONTRADICTION_MATRIX":
         return ("narrative_dispute_audit", "Contrasts competing belligerent, monitor, and OSINT claims in a GRaSP matrix.", 1.0)
+    if cat1 == "CITATION_ANCHOR" and cat2 == "VERBATIM_EVIDENCE":
+        return ("verbatim_quote_grounding", "Grounds speaker identity and institutional capacity in verbatim bilingual evidence.", 1.0)
+    if cat1 == "VERBATIM_EVIDENCE" and cat2 == "FORENSIC_GROUNDING":
+        return ("forensic_claim_projection", "Projects verbatim testimony onto specific conflict events, actors, and IHL claims.", 1.0)
     if cat2 == "SYNTHESIS_CATALOG":
-        return ("synthesis_catalog", "Cross-references related events, actors, locations, themes, and sources.", 1.0)
+        return ("synthesis_catalog", "Cross-references related events, actors, locations, themes, citations, and sources.", 1.0)
     return ("narrative_progression", "Progresses conflict intelligence analysis across sections.", 0.90)
 
 
@@ -400,12 +417,22 @@ def parse_frontmatter(content: str) -> Tuple[Dict[str, Any], str]:
     return meta, body
 
 
+def clean_wikilink_str(val: Any) -> str:
+    """Strip [[...]] and optional alias/prefix from a frontmatter string."""
+    if not val:
+        return ""
+    s = re.sub(r'\[\[(.*?)\]\]', r'\1', str(val)).strip()
+    s = re.split(r'\\?\|', s)[0].split("#")[0].strip()
+    s = re.sub(r'^(wiki/)?(events|actors|locations|themes|timelines|citations|sources|syntheses)/', '', s).replace('.md', '').strip()
+    return s
+
+
 def extract_wikilinks(text: str) -> List[str]:
     """Extract target note titles from [[Target|Alias]] or [[Target]]."""
     links = []
     for match in re.finditer(r'\[\[(.*?)\]\]', text):
         raw = re.split(r'\\?\|', match.group(1))[0].split("#")[0].strip()
-        raw = re.sub(r'^(wiki/)?(events|actors|locations|themes|timelines|sources|syntheses)/', '', raw).strip()
+        raw = re.sub(r'^(wiki/)?(events|actors|locations|themes|timelines|citations|sources|syntheses)/', '', raw).strip()
         if raw and raw not in links:
             links.append(raw)
     return links
@@ -464,6 +491,7 @@ FOLDER_TO_DOCTYPE = {
     "locations": "location",
     "themes": "theme",
     "timelines": "timeline",
+    "citations": "citation",
     "sources": "source",
     "syntheses": "synthesis",
 }
@@ -474,16 +502,39 @@ DOCTYPE_TO_CLASS = {
     "location": "Location",
     "theme": "Theme",
     "timeline": "Timeline",
+    "citation": "Citation",
     "source": "Source",
     "synthesis": "Synthesis",
 }
 
 
 def ensure_section_schema(client: ArcadeDBClient):
-    """Ensure Section and Diagram properties exist alongside bootstrap_arcadedb.py DDL."""
+    """Ensure Section, Citation, and Diagram properties exist alongside bootstrap_arcadedb.py DDL."""
     cmds = [
         "CREATE VERTEX TYPE Diagram IF NOT EXISTS",
         "CREATE VERTEX TYPE Synthesis IF NOT EXISTS",
+        "CREATE VERTEX TYPE Citation IF NOT EXISTS",
+        "CREATE PROPERTY Citation.title IF NOT EXISTS STRING",
+        "CREATE PROPERTY Citation.subtype IF NOT EXISTS STRING",
+        "CREATE PROPERTY Citation.speaker IF NOT EXISTS STRING",
+        "CREATE PROPERTY Citation.speaker_role IF NOT EXISTS STRING",
+        "CREATE PROPERTY Citation.affiliated_organization IF NOT EXISTS STRING",
+        "CREATE PROPERTY Citation.source_note IF NOT EXISTS STRING",
+        "CREATE PROPERTY Citation.source_outlet IF NOT EXISTS STRING",
+        "CREATE PROPERTY Citation.citation_date IF NOT EXISTS STRING",
+        "CREATE PROPERTY Citation.original_language IF NOT EXISTS STRING",
+        "CREATE PROPERTY Citation.speech_act IF NOT EXISTS STRING",
+        "CREATE PROPERTY Citation.admiralty_rating IF NOT EXISTS STRING",
+        "CREATE PROPERTY Citation.reliability_score IF NOT EXISTS DOUBLE",
+        "CREATE PROPERTY Citation.last_updated IF NOT EXISTS STRING",
+        "CREATE INDEX IF NOT EXISTS ON Citation (title) UNIQUE",
+        "CREATE PROPERTY Actor.role_title IF NOT EXISTS STRING",
+        "CREATE PROPERTY Actor.affiliated_organization IF NOT EXISTS STRING",
+        "CREATE PROPERTY Actor.editorial_alignment IF NOT EXISTS STRING",
+        "CREATE PROPERTY Actor.baseline_admiralty_reliability IF NOT EXISTS STRING",
+        "CREATE PROPERTY Source.status IF NOT EXISTS STRING",
+        "CREATE PROPERTY Source.compiled IF NOT EXISTS BOOLEAN",
+        "CREATE PROPERTY Source.source_outlet IF NOT EXISTS STRING",
         "CREATE PROPERTY Section.uri IF NOT EXISTS STRING",
         "CREATE PROPERTY Section.title IF NOT EXISTS STRING",
         "CREATE PROPERTY Section.display_name IF NOT EXISTS STRING",
@@ -494,10 +545,13 @@ def ensure_section_schema(client: ArcadeDBClient):
         "CREATE PROPERTY Section.weight IF NOT EXISTS FLOAT",
         "CREATE PROPERTY Section.modal_category IF NOT EXISTS STRING",
         "CREATE INDEX IF NOT EXISTS ON Section (uri) UNIQUE",
-        "CREATE PROPERTY Source.status IF NOT EXISTS STRING",
-        "CREATE PROPERTY Source.compiled IF NOT EXISTS BOOLEAN",
         "CREATE EDGE TYPE NEXT_SECTION IF NOT EXISTS",
         "CREATE EDGE TYPE HAS_DIAGRAM IF NOT EXISTS",
+        "CREATE EDGE TYPE AFFILIATED_WITH IF NOT EXISTS",
+        "CREATE EDGE TYPE STATED IF NOT EXISTS",
+        "CREATE EDGE TYPE CONTAINS_CITATION IF NOT EXISTS",
+        "CREATE EDGE TYPE TESTIFIES_TO IF NOT EXISTS",
+        "CREATE EDGE TYPE PUBLISHED_BY IF NOT EXISTS",
     ]
     for cmd in cmds:
         try:
@@ -515,11 +569,12 @@ def run_direct_ingestion(client: ArcadeDBClient, purge: bool = False, skip_olap:
     ensure_section_schema(client)
 
     if purge:
-        print("  [*] Purging Section, Diagram, Event, Theme, Timeline, Source, Synthesis vertices & edges (preserving seeded Actor/Location/AliasLookup/IntentAnchor)...")
+        print("  [*] Purging Section, Diagram, Event, Theme, Timeline, Citation, Source, Synthesis vertices & edges (preserving seeded Actor/Location/AliasLookup/IntentAnchor)...")
         for et in [
             "PROGRESSES_TO", "NEXT_SECTION", "HAS_SECTION", "HAS_DIAGRAM", "TAGGED_WITH", "LINKS_TO", "CITES",
             "OCCURRED_AT", "LOCATED_IN", "PERPETRATED_BY", "TARGETED", "PARTICIPATED_IN", "COMMANDED_BY",
-            "ALLIED_WITH", "SPONSORED_BY", "PRECEDES", "TRIGGERS", "RETALIATES_FOR", "PART_OF_CAMPAIGN",
+            "ALLIED_WITH", "SPONSORED_BY", "AFFILIATED_WITH", "STATED", "CONTAINS_CITATION", "TESTIFIES_TO",
+            "PUBLISHED_BY", "PRECEDES", "TRIGGERS", "RETALIATES_FOR", "PART_OF_CAMPAIGN",
             "MOTIVATED_BY", "CONTROLS_TERRITORY", "DISPLACES_POPULATION", "EMPIRICALLY_GROUNDS",
             "CORROBORATES", "CONTRADICTS_CLAIM", "ATTRIBUTES_BLAME_TO", "DEBUNKS"
         ]:
@@ -527,7 +582,7 @@ def run_direct_ingestion(client: ArcadeDBClient, purge: bool = False, skip_olap:
                 client.execute_command(f"DELETE FROM `{et}`", language="sql")
             except Exception:
                 pass
-        for vt in ["Section", "Diagram", "Event", "Theme", "Timeline", "Source", "Synthesis"]:
+        for vt in ["Section", "Diagram", "Event", "Theme", "Timeline", "Citation", "Source", "Synthesis"]:
             try:
                 client.execute_command(f"DELETE FROM `{vt}`", language="sql")
             except Exception:
@@ -597,6 +652,21 @@ def run_direct_ingestion(client: ArcadeDBClient, purge: bool = False, skip_olap:
             "subtype": str(fm.get("subtype", "")),
             "status": str(fm.get("status", "approved")),
             "compiled": bool(fm.get("compiled", True)),
+            "source_outlet": clean_wikilink_str(fm.get("source_outlet", "")),
+            "role_title": str(fm.get("role_title", "") or fm.get("speaker_role", "")),
+            "affiliated_organization": clean_wikilink_str(fm.get("affiliated_organization", "")),
+            "editorial_alignment": str(fm.get("editorial_alignment", "") or fm.get("alignment", "")),
+            "baseline_admiralty_reliability": str(fm.get("baseline_admiralty_reliability", "")),
+            "speaker": clean_wikilink_str(fm.get("speaker", "")),
+            "speaker_role": str(fm.get("speaker_role", "")),
+            "source_note": clean_wikilink_str(fm.get("source_note", "")),
+            "citation_date": str(fm.get("citation_date", "")),
+            "original_language": str(fm.get("original_language", "en")),
+            "speech_act": str(fm.get("speech_act", "official_statement")),
+            "events_referenced": [clean_wikilink_str(x) for x in (fm.get("events_referenced", []) if isinstance(fm.get("events_referenced"), list) else []) if clean_wikilink_str(x)],
+            "actors_referenced": [clean_wikilink_str(x) for x in (fm.get("actors_referenced", []) if isinstance(fm.get("actors_referenced"), list) else []) if clean_wikilink_str(x)],
+            "locations_referenced": [clean_wikilink_str(x) for x in (fm.get("locations_referenced", []) if isinstance(fm.get("locations_referenced"), list) else []) if clean_wikilink_str(x)],
+            "themes_referenced": [clean_wikilink_str(x) for x in (fm.get("themes_referenced", []) if isinstance(fm.get("themes_referenced"), list) else []) if clean_wikilink_str(x)],
             "reliability_score": float(fm.get("reliability_score", 0.85)),
             "admiralty_rating": str(fm.get("admiralty_rating", "B2")),
             "pcode": str(fm.get("pcode", "")),
@@ -715,11 +785,16 @@ def run_direct_ingestion(client: ArcadeDBClient, purge: bool = False, skip_olap:
                 )
             elif vclass == "Actor":
                 client.execute_command(
-                    "UPDATE Actor SET subtype = :subtype, reliability_score = :rel, "
+                    "UPDATE Actor SET subtype = :subtype, role_title = :rtitle, "
+                    "affiliated_organization = :afforg, editorial_alignment = :edalign, "
+                    "baseline_admiralty_reliability = :baseadm, reliability_score = :rel, "
                     "last_updated = :lu UPSERT WHERE title = :title",
                     language="sql",
                     params={
                         "title": title, "subtype": meta["subtype"],
+                        "rtitle": meta["role_title"], "afforg": meta["affiliated_organization"],
+                        "edalign": meta["editorial_alignment"],
+                        "baseadm": meta["baseline_admiralty_reliability"],
                         "rel": meta["reliability_score"], "lu": meta["last_updated"]
                     }
                 )
@@ -749,19 +824,36 @@ def run_direct_ingestion(client: ArcadeDBClient, purge: bool = False, skip_olap:
                     language="sql",
                     params={"title": title, "subtype": meta["subtype"], "lu": meta["last_updated"]}
                 )
+            elif vclass == "Citation":
+                client.execute_command(
+                    "UPDATE Citation SET subtype = :subtype, speaker = :speaker, "
+                    "speaker_role = :srole, affiliated_organization = :afforg, "
+                    "source_note = :snote, source_outlet = :soutlet, citation_date = :cdate, "
+                    "original_language = :olang, speech_act = :sact, admiralty_rating = :adm, "
+                    "reliability_score = :rel, last_updated = :lu UPSERT WHERE title = :title",
+                    language="sql",
+                    params={
+                        "title": title, "subtype": meta["subtype"], "speaker": meta["speaker"],
+                        "srole": meta["speaker_role"], "afforg": meta["affiliated_organization"],
+                        "snote": meta["source_note"], "soutlet": meta["source_outlet"],
+                        "cdate": meta["citation_date"], "olang": meta["original_language"],
+                        "sact": meta["speech_act"], "adm": meta["admiralty_rating"],
+                        "rel": meta["reliability_score"], "lu": meta["last_updated"]
+                    }
+                )
             elif vclass == "Source":
                 client.execute_command(
                     "UPDATE Source SET title = :title, subtype = :subtype, status = :status, "
-                    "compiled = :compiled, language = :lang, alignment = :align, "
-                    "admiralty_rating = :adm, reliability_score = :rel, published_date = :pub "
-                    "UPSERT WHERE slug = :slug",
+                    "compiled = :compiled, source_outlet = :soutlet, language = :lang, "
+                    "alignment = :align, admiralty_rating = :adm, reliability_score = :rel, "
+                    "published_date = :pub UPSERT WHERE slug = :slug",
                     language="sql",
                     params={
                         "slug": meta["slug"], "title": title, "subtype": meta["subtype"],
                         "status": meta["status"], "compiled": meta["compiled"],
-                        "lang": meta["language"], "align": meta["alignment"],
-                        "adm": meta["admiralty_rating"], "rel": meta["reliability_score"],
-                        "pub": meta["published_date"]
+                        "soutlet": meta["source_outlet"], "lang": meta["language"],
+                        "align": meta["alignment"], "adm": meta["admiralty_rating"],
+                        "rel": meta["reliability_score"], "pub": meta["published_date"]
                     }
                 )
             elif vclass == "Synthesis":
@@ -809,7 +901,7 @@ def run_direct_ingestion(client: ArcadeDBClient, purge: bool = False, skip_olap:
     # 4. Cache RIDs for Edge Generation
     print("\n[4/5] Building in-memory RID resolution maps...")
     node_rid_map: Dict[str, str] = {}
-    for vcls in ["Event", "Actor", "Location", "Theme", "Timeline", "Source", "Synthesis"]:
+    for vcls in ["Event", "Actor", "Location", "Theme", "Timeline", "Citation", "Source", "Synthesis"]:
         try:
             rows = client.query(f"SELECT @rid, title, slug FROM {vcls}", language="sql")
             for r in rows:
@@ -824,11 +916,13 @@ def run_direct_ingestion(client: ArcadeDBClient, purge: bool = False, skip_olap:
     section_map = {row["uri"]: row["@rid"] for row in sec_rids if "uri" in row}
 
     def resolve_target_rid(key: str) -> Optional[str]:
+        if not key:
+            return None
         canon = aliases_dict.get(key, key)
         return node_rid_map.get(canon) or node_rid_map.get(key)
 
     # 5. Connect Graph Relationships
-    print("\n[5/5] Connecting HAS_SECTION, PROGRESSES_TO, LINKS_TO, and EMPIRICALLY_GROUNDS edges...")
+    print("\n[5/5] Connecting HAS_SECTION, PROGRESSES_TO, LINKS_TO, PUBLISHED_BY, AFFILIATED_WITH, STATED, CONTAINS_CITATION, TESTIFIES_TO, and EMPIRICALLY_GROUNDS edges...")
     edge_batch: List[str] = []
 
     for sec in sections_records:
@@ -865,9 +959,64 @@ def run_direct_ingestion(client: ArcadeDBClient, purge: bool = False, skip_olap:
         doc_rid = resolve_target_rid(title)
         if not doc_rid:
             continue
+
+        # 1. Source -> PUBLISHED_BY -> Actor (media_source)
+        if meta["type"] == "source" and meta.get("source_outlet"):
+            outlet_rid = resolve_target_rid(meta["source_outlet"])
+            if outlet_rid and outlet_rid != doc_rid:
+                edge_batch.append(json.dumps({
+                    "@type": "edge", "@class": "PUBLISHED_BY",
+                    "@from": doc_rid, "@to": outlet_rid,
+                    "warrant": f"Published by {meta['source_outlet']}"
+                }))
+
+        # 2. Actor (person) -> AFFILIATED_WITH -> Actor (organization)
+        if meta["type"] == "actor" and meta.get("affiliated_organization"):
+            org_rid = resolve_target_rid(meta["affiliated_organization"])
+            if org_rid and org_rid != doc_rid:
+                edge_batch.append(json.dumps({
+                    "@type": "edge", "@class": "AFFILIATED_WITH",
+                    "@from": doc_rid, "@to": org_rid,
+                    "role_title": meta.get("role_title", ""),
+                    "warrant": f"{title} serves as {meta.get('role_title', 'member')} at {meta['affiliated_organization']}"
+                }))
+
+        # 3. Citation edges: Speaker -> STATED -> Citation, Source -> CONTAINS_CITATION -> Citation, Citation -> TESTIFIES_TO -> Event/Actor/Location/Theme
+        if meta["type"] == "citation":
+            if meta.get("speaker"):
+                spk_rid = resolve_target_rid(meta["speaker"])
+                if spk_rid and spk_rid != doc_rid:
+                    edge_batch.append(json.dumps({
+                        "@type": "edge", "@class": "STATED",
+                        "@from": spk_rid, "@to": doc_rid,
+                        "speaker_role": meta.get("speaker_role", ""),
+                        "citation_date": meta.get("citation_date", "")
+                    }))
+            if meta.get("source_note"):
+                s_rid = resolve_target_rid(meta["source_note"])
+                if s_rid and s_rid != doc_rid:
+                    edge_batch.append(json.dumps({
+                        "@type": "edge", "@class": "CONTAINS_CITATION",
+                        "@from": s_rid, "@to": doc_rid
+                    }))
+            ref_targets = (
+                meta.get("events_referenced", []) +
+                meta.get("actors_referenced", []) +
+                meta.get("locations_referenced", []) +
+                meta.get("themes_referenced", [])
+            )
+            for ref_name in ref_targets:
+                ref_rid = resolve_target_rid(ref_name)
+                if ref_rid and ref_rid != doc_rid:
+                    edge_batch.append(json.dumps({
+                        "@type": "edge", "@class": "TESTIFIES_TO",
+                        "@from": doc_rid, "@to": ref_rid,
+                        "speech_act": meta.get("speech_act", "official_statement")
+                    }))
+
+        # 4. Source -> EMPIRICALLY_GROUNDS -> Domain Node
         for s_ref in meta.get("sources", []):
-            s_clean = re.sub(r'\[\[(.*?)\]\]', r'\1', str(s_ref)).split('|')[0].strip()
-            s_clean = re.sub(r'^(wiki/)?sources/', '', s_clean).replace('.md', '')
+            s_clean = clean_wikilink_str(s_ref)
             src_rid = resolve_target_rid(s_clean)
             if src_rid and src_rid != doc_rid:
                 edge_batch.append(json.dumps({
