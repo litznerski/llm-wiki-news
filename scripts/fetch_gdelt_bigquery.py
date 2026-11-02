@@ -2,16 +2,20 @@
 """
 scripts/fetch_gdelt_bigquery.py
 Harvests high-relevance Sudan conflict and war economy news from GDELT 2.0 Global Knowledge Graph
-via Google BigQuery (gdelt-bq.gdeltv2.gkg_partitioned) and exports structured feeds to news/.
+via Google BigQuery (gdelt-bq.gdeltv2.gkg_partitioned), verifies live URLs in parallel,
+and exports structured feeds to news/.
 """
 
 import os
 import sys
 import json
 import argparse
+import urllib.request
+import urllib.error
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
 VAULT_ROOT = Path(__file__).resolve().parent.parent
 
@@ -35,13 +39,27 @@ if _env_file.exists():
     except Exception:
         pass
 
+BROWSER_HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/129.0.0.0 Safari/537.36"
+    ),
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Accept-Language": "en-US,en;q=0.9,ar;q=0.8",
+}
+
 
 def build_gdelt_query(days_ago: int = 3, explicit_date: Optional[str] = None, limit: int = 150) -> str:
-    """Constructs the partition-optimized BigQuery SQL for GDELT 2.0 GKG."""
+    """
+    Constructs the partition-optimized, deduplicated BigQuery SQL for GDELT 2.0 GKG
+    across both English (gkg_partitioned) and Translingual/Arabic (gkg_translingual_partitioned),
+    including ALL Arabic articles from Radio Dabanga (dabangasudan.org / dabanga.org).
+    """
     if explicit_date:
-        partition_filter = f"g._PARTITIONDATE = '{explicit_date}'"
+        partition_filter = f"_PARTITIONDATE = '{explicit_date}'"
     else:
-        partition_filter = f"g._PARTITIONDATE = DATE_SUB(CURRENT_DATE(), INTERVAL {days_ago} DAY)"
+        partition_filter = f"_PARTITIONDATE = DATE_SUB(CURRENT_DATE(), INTERVAL {days_ago} DAY)"
 
     query = f"""
 WITH verified_publishers AS (
@@ -51,22 +69,63 @@ WITH verified_publishers AS (
     STRUCT('apnews.com', 'Tier 1 Wire'),
     STRUCT('afp.com', 'Tier 1 Wire'),
     STRUCT('bbc.com', 'Tier 1 International'),
+    STRUCT('bbc.co.uk', 'Tier 1 International'),
     STRUCT('aljazeera.com', 'Tier 1 International'),
     STRUCT('theguardian.com', 'Tier 1 International'),
     STRUCT('dw.com', 'Tier 1 International'),
     STRUCT('france24.com', 'Tier 1 International'),
     -- 2. Respected Sudan-Focused & Regional Media
     STRUCT('dabangasudan.org', 'Regional / Local Field'),
+    STRUCT('dabanga.org', 'Regional / Local Field'),
     STRUCT('sudantribune.com', 'Regional / Local Field'),
-    STRUCT('ayinp.net', 'Regional / Local Field'),
+    STRUCT('3ayin.com', 'Regional / Local Field'),
     STRUCT('sudanspost.com', 'Regional / Local Field')
   ])
+),
+
+-- Filter strictly on the target date partition against gkg_partitioned
+filtered_articles AS (
+  SELECT
+    g.DATE,
+    g.SourceCollectionIdentifier,
+    g.SourceCommonName,
+    g.DocumentIdentifier,
+    g.V2Locations,
+    g.V2Themes,
+    g.V2Persons,
+    g.V2Tone,
+    g.TranslationInfo,
+    vp.tier,
+    -- Detect Arabic articles via GDELT TranslationInfo ('srclc:ara') or Dabanga '/ar/' URL structure
+    (
+      IFNULL(g.TranslationInfo, '') LIKE '%srclc:ara%'
+      OR REGEXP_CONTAINS(LOWER(g.DocumentIdentifier), r'(/ar/|%[d89][0-9a-f])')
+    ) AS is_arabic,
+    (
+      g.SourceCommonName IN ('dabangasudan.org', 'dabanga.org')
+      AND (
+        IFNULL(g.TranslationInfo, '') LIKE '%srclc:ara%'
+        OR REGEXP_CONTAINS(LOWER(g.DocumentIdentifier), r'(/ar/|%[d89][0-9a-f])')
+      )
+      AND NOT REGEXP_CONTAINS(LOWER(g.DocumentIdentifier), r'/en/')
+    ) AS is_dabanga_arabic
+  FROM
+    `gdelt-bq.gdeltv2.gkg_partitioned` g
+  JOIN
+    verified_publishers vp
+  ON
+    g.SourceCommonName = vp.domain
+  WHERE
+    {partition_filter}
+    AND g.SourceCollectionIdentifier = 1
+    AND REGEXP_CONTAINS(g.DocumentIdentifier, r'^https?://')
 )
 
 SELECT
   PARSE_TIMESTAMP('%Y%m%d%H%M%S', CAST(g.DATE AS STRING)) AS published_at,
-  vp.tier,
+  g.tier,
   g.SourceCommonName AS publisher,
+  IF(g.is_arabic, 'ar', 'en') AS language,
   g.DocumentIdentifier AS article_url,
 
   -- Extracts and displays ONLY Sudan-specific locations (strips Washington, Cairo, Geneva, etc.)
@@ -76,7 +135,7 @@ SELECT
     WHERE REGEXP_CONTAINS(loc, r'^[1-5]#[^#]+#SU#')
   ) AS sudan_locations,
 
-  -- Dynamic Classification: War Economy, Economy & Livelihoods, or Security / Conflict
+  -- Dynamic Classification: War Economy, Economy & Livelihoods, Security / Conflict, or General (for unfiltered Dabanga AR)
   CASE
     WHEN (
       g.V2Themes LIKE '%ECON%' OR g.V2Themes LIKE '%POVERTY%' OR g.V2Themes LIKE '%AGRICULTURE%'
@@ -92,6 +151,11 @@ SELECT
       OR REGEXP_CONTAINS(LOWER(CONCAT(IFNULL(g.DocumentIdentifier, ''), ' ', IFNULL(g.V2Themes, ''))),
         r'(econom|inflat|currenc|pound|sdg|exchange[-_]?rate|bank|food[-_]?price|cash|remittanc|livelihood|gold|trade|salary|salaries)')
     ) THEN 'Economy & Livelihoods'
+    WHEN (
+      g.V2Themes LIKE '%ARMEDCONFLICT%' OR g.V2Themes LIKE '%WAR%' OR g.V2Themes LIKE '%MILITARY%' OR g.V2Themes LIKE '%AIRSTRIKE%'
+      OR g.V2Themes LIKE '%DRONE%' OR g.V2Themes LIKE '%DISPLACEMENT%' OR g.V2Themes LIKE '%HUMAN_RIGHTS_ABUSES%'
+    ) THEN 'Security / Conflict'
+    WHEN g.is_dabanga_arabic THEN 'Sudan General / Arabic Feed'
     ELSE 'Security / Conflict'
   END AS topic_focus,
 
@@ -100,49 +164,142 @@ SELECT
   g.V2Themes AS themes
 
 FROM
-  `gdelt-bq.gdeltv2.gkg_partitioned` g
-JOIN
-  verified_publishers vp
-ON
-  g.SourceCommonName = vp.domain
+  filtered_articles g
 WHERE
-  -- 1. Date Partition: Scans strictly targeted 24-hour shard
-  {partition_filter}
+  -- PATH A: Include ALL Arabic news from Dabanga in the selected time frame unconditionally
+  g.is_dabanga_arabic = TRUE
 
-  -- 2. Strict Sudan Geographic Requirement (FIPS 'SU')
-  AND REGEXP_CONTAINS(g.V2Locations, r'(^|;)[1-5]#[^#]+#SU#')
+  -- PATH B: Standard strict Sudan location + Conflict/Economic filter for all other sources
+  OR (
+    -- 1. Strict Sudan Geographic Requirement (FIPS 'SU')
+    REGEXP_CONTAINS(g.V2Locations, r'(^|;)[1-5]#[^#]+#SU#')
 
-  -- 3. Geographic & Entity Exclusions (South Sudan 'OD' and Iraqi PM Al-Sudani)
-  AND g.V2Locations NOT LIKE '%#OD#%'
-  AND NOT REGEXP_CONTAINS(LOWER(g.DocumentIdentifier), r'south[-_]?sudan')
-  AND NOT REGEXP_CONTAINS(LOWER(CONCAT(IFNULL(g.DocumentIdentifier, ''), ' ', IFNULL(g.V2Persons, ''))), r'al[-_ ]?sudani')
+    -- 2. Geographic & Entity Exclusions (South Sudan 'OD' and Iraqi PM Al-Sudani)
+    AND g.V2Locations NOT LIKE '%#OD#%'
+    AND NOT REGEXP_CONTAINS(LOWER(g.DocumentIdentifier), r'south[-_]?sudan')
+    AND NOT REGEXP_CONTAINS(LOWER(CONCAT(IFNULL(g.DocumentIdentifier, ''), ' ', IFNULL(g.V2Persons, ''))), r'al[-_ ]?sudani')
 
-  -- 4. Thematic Filter: Conflict OR Economic Crisis
-  AND (
-    g.V2Themes LIKE '%ARMEDCONFLICT%'
-    OR g.V2Themes LIKE '%WAR%'
-    OR g.V2Themes LIKE '%MILITARY%'
-    OR g.V2Themes LIKE '%AIRSTRIKE%'
-    OR g.V2Themes LIKE '%DRONE%'
-    OR g.V2Themes LIKE '%DISPLACEMENT%'
-    OR g.V2Themes LIKE '%HUMAN_RIGHTS_ABUSES%'
-    OR g.V2Themes LIKE '%ECON_%'
-    OR g.V2Themes LIKE '%ECONOMY%'
-    OR g.V2Themes LIKE '%POVERTY%'
-    OR g.V2Themes LIKE '%AGRICULTURE%'
-    OR g.V2Themes LIKE '%UNGP_FORECAST_FAMINE%'
-    OR g.V2Themes LIKE '%WB_470_MACROECONOMIC_VULNERABILITY%'
-    OR g.V2Themes LIKE '%WB_530_FINANCIAL_SECTOR_DEVELOPMENT%'
-    OR REGEXP_CONTAINS(
-      LOWER(CONCAT(IFNULL(g.DocumentIdentifier, ''), ' ', IFNULL(g.V2Themes, ''))),
-      r'(rsf|rapid[-_]?support|saf|burhan|hemedti|dagalo|clash|bombardment|drone|shelling|airstrike|ceasefire|paramilitary|darfur|kordofan|gezira|el[-_]?fasher|econom|inflat|currenc|exchange[-_]?rate|sudanese[-_]?pound|sdg|bank|banking|cash[-_]?crisis|remittanc|food[-_]?price|famine|livelihood|gold[-_]?mining|gold[-_]?smuggling|wages|salary|salaries)'
+    -- 3. Thematic Filter: Conflict OR Economic Crisis
+    AND (
+      g.V2Themes LIKE '%ARMEDCONFLICT%'
+      OR g.V2Themes LIKE '%WAR%'
+      OR g.V2Themes LIKE '%MILITARY%'
+      OR g.V2Themes LIKE '%AIRSTRIKE%'
+      OR g.V2Themes LIKE '%DRONE%'
+      OR g.V2Themes LIKE '%DISPLACEMENT%'
+      OR g.V2Themes LIKE '%HUMAN_RIGHTS_ABUSES%'
+      OR g.V2Themes LIKE '%ECON_%'
+      OR g.V2Themes LIKE '%ECONOMY%'
+      OR g.V2Themes LIKE '%POVERTY%'
+      OR g.V2Themes LIKE '%AGRICULTURE%'
+      OR g.V2Themes LIKE '%UNGP_FORECAST_FAMINE%'
+      OR g.V2Themes LIKE '%WB_470_MACROECONOMIC_VULNERABILITY%'
+      OR g.V2Themes LIKE '%WB_530_FINANCIAL_SECTOR_DEVELOPMENT%'
+      OR REGEXP_CONTAINS(
+        LOWER(CONCAT(IFNULL(g.DocumentIdentifier, ''), ' ', IFNULL(g.V2Themes, ''))),
+        r'(rsf|rapid[-_]?support|saf|burhan|hemedti|dagalo|clash|bombardment|drone|shelling|airstrike|ceasefire|paramilitary|darfur|kordofan|gezira|el[-_]?fasher|econom|inflat|currenc|exchange[-_]?rate|sudanese[-_]?pound|sdg|bank|banking|cash[-_]?crisis|remittanc|food[-_]?price|famine|livelihood|gold[-_]?mining|gold[-_]?smuggling|wages|salary|salaries)'
+      )
     )
   )
+-- Deduplicate identical URLs within the partition
+QUALIFY ROW_NUMBER() OVER (PARTITION BY g.DocumentIdentifier ORDER BY g.DATE DESC) = 1
 ORDER BY
   published_at DESC
 LIMIT {limit};
 """
     return query
+
+
+def _check_single_url(url: str, timeout: float = 8.0, strict_http: bool = False) -> Tuple[bool, str, int, str]:
+    """
+    Checks a single URL via HEAD, falling back to ranged GET if rejected.
+    Returns: (is_valid, resolved_url, http_status, status_label)
+    """
+    for method in ("HEAD", "GET"):
+        headers = dict(BROWSER_HEADERS)
+        if method == "GET":
+            headers["Range"] = "bytes=0-1024"
+
+        req = urllib.request.Request(url, headers=headers, method=method)
+        try:
+            with urllib.request.urlopen(req, timeout=timeout) as resp:
+                status = resp.getcode() or 200
+                final_url = resp.geturl() or url
+                return True, final_url, status, "verified_ok"
+        except urllib.error.HTTPError as e:
+            # If HEAD returns 405/403/404/400, retry with GET before declaring dead
+            if method == "HEAD" and e.code in (400, 403, 404, 405, 501):
+                continue
+
+            # Definite dead links
+            if e.code in (404, 410):
+                return False, url, e.code, "dead_404"
+
+            # WAF / Bot protection (Cloudflare/DataDome on Reuters, Sudan Tribune, etc.)
+            if e.code in (401, 403, 429):
+                if strict_http:
+                    return False, url, e.code, "blocked_waf"
+                return True, url, e.code, "waf_protected"
+
+            return False, url, e.code, f"http_error_{e.code}"
+        except Exception:
+            if method == "HEAD":
+                continue
+            return False, url, 0, "connection_failed"
+
+    return False, url, 0, "unreachable"
+
+
+def verify_and_resolve_urls(
+    articles: List[Dict[str, Any]],
+    max_workers: int = 16,
+    timeout: float = 8.0,
+    strict_http: bool = False,
+) -> Tuple[List[Dict[str, Any]], Dict[str, int]]:
+    """
+    Validates article URLs in parallel, drops 404s, and updates redirected URLs.
+    """
+    if not articles:
+        return [], {}
+
+    print(f"[*] Verifying {len(articles)} URLs in parallel (workers={max_workers}, timeout={timeout}s)...")
+    valid_articles: List[Dict[str, Any]] = []
+    stats: Dict[str, int] = {
+        "verified_ok": 0,
+        "waf_protected": 0,
+        "dead_404": 0,
+        "other_dropped": 0,
+    }
+
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        future_to_article = {
+            executor.submit(_check_single_url, a["article_url"], timeout, strict_http): a
+            for a in articles
+            if a.get("article_url")
+        }
+
+        for future in as_completed(future_to_article):
+            article = future_to_article[future]
+            orig_url = article["article_url"]
+            is_valid, final_url, code, label = future.result()
+
+            if is_valid:
+                article["article_url"] = final_url
+                if final_url != orig_url:
+                    article["original_gdelt_url"] = orig_url
+                article["http_status"] = code
+                article["url_validation"] = label
+                valid_articles.append(article)
+                stats[label] = stats.get(label, 0) + 1
+            else:
+                if label == "dead_404":
+                    stats["dead_404"] += 1
+                else:
+                    stats["other_dropped"] += 1
+
+    # Restore chronological sort order after async completion
+    valid_articles.sort(key=lambda x: x.get("published_at", ""), reverse=True)
+    return valid_articles, stats
 
 
 def generate_mock_data(days_ago: int = 3, explicit_date: Optional[str] = None) -> List[Dict[str, Any]]:
@@ -192,8 +349,8 @@ def generate_mock_data(days_ago: int = 3, explicit_date: Optional[str] = None) -
         {
             "published_at": f"{date_str}T06:20:00Z",
             "tier": "Regional / Local Field",
-            "publisher": "ayinp.net",
-            "article_url": "https://ayinp.net/en/darfur-gold-smuggling-networks-fund-paramilitary-campaigns/",
+            "publisher": "3ayin.com",
+            "article_url": "https://3ayin.com/en/darfur-gold-smuggling-networks-fund-paramilitary-campaigns/",
             "sudan_locations": "Nyala; South Darfur; Jebel Amer",
             "topic_focus": "War Economy / Intersect",
             "tone_score": -5.10,
@@ -220,7 +377,7 @@ def execute_bigquery_query(sql: str, project_id: Optional[str] = None) -> List[D
 
     client = bigquery.Client(project=project)
     print(f"[*] Executing query against GDELT v2 GKG (Project: {client.project or 'default'})...")
-    
+
     query_job = client.query(sql)
     results = query_job.result()
 
@@ -236,12 +393,14 @@ def execute_bigquery_query(sql: str, project_id: Optional[str] = None) -> List[D
             "published_at": pub_str,
             "tier": row.get("tier"),
             "publisher": row.get("publisher"),
+            "language": row.get("language") or "en",
             "article_url": row.get("article_url"),
             "sudan_locations": row.get("sudan_locations") or "",
             "topic_focus": row.get("topic_focus"),
             "tone_score": row.get("tone_score"),
             "themes": row.get("themes") or "",
         })
+
     return rows
 
 
@@ -254,6 +413,9 @@ def main():
     parser.add_argument("--output-dir", default=str(VAULT_ROOT / "news"), help="Directory to save JSON output (default: news/).")
     parser.add_argument("--output-file", help="Explicit filename/path for JSON output.")
     parser.add_argument("--mock", action="store_true", help="Run with synthetic GDELT data (for offline testing).")
+    parser.add_argument("--skip-verify", action="store_true", help="Skip parallel HTTP 404/redirect verification.")
+    parser.add_argument("--strict-http", action="store_true", help="Drop 403/429 WAF-protected links as well as 404s.")
+    parser.add_argument("--workers", type=int, default=16, help="Number of parallel threads for URL verification.")
     parser.add_argument("--print-sql", action="store_true", help="Print the generated SQL query and exit.")
     args = parser.parse_args()
 
@@ -272,20 +434,37 @@ def main():
     print("  Knowledge Lab :: GDELT 2.0 BigQuery News Harvester")
     print(f"  Target Partition : {partition_label}")
     print(f"  Query Limit      : {args.limit} articles")
-    print(f"  Execution Mode   : {'MOCK / DRY-RUN' if args.mock else 'LIVE BIGQUERY'}")
+    print(f"  Execution Mode   : {'MOCK / DRY-RUN (Synthetic URLs)' if args.mock else 'LIVE BIGQUERY'}")
     print("=" * 70)
 
     if args.mock:
         articles = generate_mock_data(days_ago=args.days_ago, explicit_date=args.date)
-        print(f"  [✓] Loaded {len(articles)} synthetic articles for testing.")
+        print(f"  [!] Loaded {len(articles)} synthetic mock articles (URLs are fake placeholders).")
+        validation_stats = {"mock_mode_unverified": len(articles)}
     else:
         try:
             articles = execute_bigquery_query(sql, project_id=args.project)
-            print(f"  [✓] BigQuery returned {len(articles)} matching articles.")
+            print(f"  [✓] BigQuery returned {len(articles)} candidate articles.")
         except Exception as e:
             print(f"  [!] BigQuery execution failed: {e}", file=sys.stderr)
             print("      Tip: Run with --mock to test the pipeline with synthetic data.", file=sys.stderr)
             sys.exit(1)
+
+        if not args.skip_verify and articles:
+            articles, validation_stats = verify_and_resolve_urls(
+                articles,
+                max_workers=args.workers,
+                strict_http=args.strict_http,
+            )
+            print(
+                f"  [✓] URL Verification complete: {len(articles)} kept "
+                f"(OK: {validation_stats.get('verified_ok', 0)}, "
+                f"WAF-Protected: {validation_stats.get('waf_protected', 0)}, "
+                f"Dropped 404s: {validation_stats.get('dead_404', 0)}, "
+                f"Dropped Other: {validation_stats.get('other_dropped', 0)})"
+            )
+        else:
+            validation_stats = {"verification_skipped": len(articles)}
 
     # Compute telemetry
     tier_counts = {}
@@ -301,6 +480,7 @@ def main():
         "partition_date": args.date or f"DATE_SUB(CURRENT_DATE(), INTERVAL {args.days_ago} DAY)",
         "query_metadata": {
             "total_articles": len(articles),
+            "url_validation_breakdown": validation_stats,
             "tier_breakdown": tier_counts,
             "topic_focus_breakdown": topic_counts,
         },
@@ -323,7 +503,7 @@ def main():
         json.dump(payload, f, indent=2, ensure_ascii=False)
 
     print("")
-    print(f"  [✓] Exported {len(articles)} articles to: {out_file}")
+    print(f"  [✓] Exported {len(articles)} verified articles to: {out_file}")
     print(f"      - Tier breakdown: {tier_counts}")
     print(f"      - Topic breakdown: {topic_counts}")
     print("=================================================================")

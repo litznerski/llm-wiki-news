@@ -1,0 +1,13 @@
+{
+  "retrieved_at": "2026-11-02T06:07:04.232268+00:00",
+  "partition_date": "2026-11-02",
+  "query_metadata": {
+    "total_articles": 0,
+    "url_validation_breakdown": {
+      "verification_skipped": 0
+    },
+    "tier_breakdown": {},
+    "topic_focus_breakdown": {}
+  },
+  "articles": []
+}

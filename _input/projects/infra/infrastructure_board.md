@@ -1,7 +1,7 @@
 ---
 title: "Infrastructure & Architecture Kanban Board"
 type: "kanban"
-last_updated: 2026-11-01
+last_updated: 2026-11-02
 ---
 
 # Infrastructure & Architecture Kanban Board
@@ -16,6 +16,7 @@ last_updated: 2026-11-01
 
 ## ✅ Done
 
+- [x] [[_input/tasks/archived/Dabanga News Arabic.md|Radio Dabanga Arabic News Extraction Pipeline: Date-Filtered Harvesting & Trafilatura Ingestion]] (2026-11-02)
 - [x] [[_input/tasks/archived/GDELT BigQuery.md|GDELT BigQuery Pipeline: News Identification & Trafilatura Extraction]] (2026-11-01)
 - [x] [[_input/tasks/archived/Neo4J obsolete.md|Decommission Neo4j: Remove Usage, Configuration, and References across Repository]] (2026-11-01)
 - [x] [[_input/tasks/archived/Contradiction missing.md|Contradiction Missing: Ingestion Analysis & Graph Edge Implementation Plan]] (2026-11-01)
