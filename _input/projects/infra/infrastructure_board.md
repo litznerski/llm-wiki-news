@@ -16,6 +16,7 @@ last_updated: 2026-11-02
 
 ## ✅ Done
 
+- [x] [[_input/tasks/archived/Staging mechanism for harvested articles.md|Staging Mechanism for Harvested Articles: Identification & Ingestion Tracking]] (2026-11-02)
 - [x] [[_input/tasks/archived/Dabanga News Arabic.md|Radio Dabanga Arabic News Extraction Pipeline: Date-Filtered Harvesting & Trafilatura Ingestion]] (2026-11-02)
 - [x] [[_input/tasks/archived/GDELT BigQuery.md|GDELT BigQuery Pipeline: News Identification & Trafilatura Extraction]] (2026-11-01)
 - [x] [[_input/tasks/archived/Neo4J obsolete.md|Decommission Neo4j: Remove Usage, Configuration, and References across Repository]] (2026-11-01)

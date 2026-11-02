@@ -9,16 +9,22 @@ This catalog maintains a single-line summary of all compiled nodes within the va
 - [[2026-10-18 Dibab Double-Tap Drone Strike]] — Repeat "double-tap" drone strike on a transportation truck in [[Rapid Support Forces]]-controlled Dibab, [[West Kordofan]] (`SD18`), killing at least 139 people (`A2`).
 - [[2026-10-19 Abyei Amiet Market and Todach Drone Strike]] — Drone attack on Amiet Market and Todach in demilitarized [[Abyei]] (`SD18001`) killing >80 civilians, injuring >27 evacuated by [[UNISFA]], and burning market shops (`A2`).
 - [[2026-10-21 Geneva Consultative Meeting on Peace Initiatives in Sudan]] — Swiss-convened multilateral consultative conference in [[Geneva]] coordinating peace tracks and warning of civilian drone casualties (`A1`).
-- [[2026-10-27 Nyala Tanqonj Market Drone Strike]] — Massive aerial/drone bombardment hitting Tanqonj livestock and consumer market in [[Nyala]], South Darfur, killing at least 102 civilians (`B2`).
+- [[2026-10-27 Nyala Tanqonj Market Drone Strike]] — Mass-casualty double-tap aerial drone bombardment hitting Tanqonj / Dumaya market in [[Nyala]], South Darfur, killing 36 to 188 civilians (best estimate 102) (`A2`).
 - [[2026-10-28 Global Civil Society Briefing Opposing Lana Nusseibeh Candidacy for UN Secretary-General]] — International briefing convened by Sudanese diaspora and human rights groups opposing UAE diplomat Lana Nusseibeh's UN candidacy (`A2`).
 - [[2026-10-31 Haiya Oil Pumping and Power Station Drone Strike]] — Precision drone strike on Crude Oil Pumping Station 4 and municipal power transmission line in [[Haiya]], Red Sea State, severing electricity and disrupting export transit (`B2`).
+- [[2026-10-31 Belila Kurmuk Drone Strike]] — SAF combat drone strike on Belila commercial market in [[Kurmuk]], Blue Nile State, killing 5 civilians and injuring 4 (`B2`).
+- [[2026-10-31 RSF Dissolution of Native Administration Document]] — Presidential Decree No. (19) issued by Hemedti revoking the 2024 Civil Administrations Document and dissolving regional civilian councils under Tasees (`B2`).
 - [[2026-10 El Obeid Siege and Drone Warfare Escalation]] — Siege encirclement, weaponized drone strikes, and systemic arbitrary detention in [[El Obeid]], North Kordofan, documented by the UN Fact-Finding Mission (`A1`).
+- [[2026-11-01 Abu Hamad and Al Dabbah Power Stations Drone Strikes]] — Coordinated RSF drone strikes hitting power substations in Abu Hamad and Al Dabbah, plunging northern towns into blackouts and killing Al-Baraa commander Muhammad al-Nao (`B2`).
+- [[2026-11-01 El Malha Commercial Vehicle Drone Strike]] — Aerial drone strike incinerating a civilian commercial transport vehicle near Al-Hara in [[El Malha]], North Darfur, killing 2 named civilians (`B2`).
+- [[2026-11-01 Sudan UNSC and AU Complaint Against Ethiopia]] — Formal diplomatic complaints filed by Sudan with the UNSC and AU-PSC accusing Ethiopia of facilitating RSF drone strikes on 14 power stations via Assosa base (`B2`).
 - [[2025-10 El Fasher Siege and RSF Takeover Atrocities]] — Systematic encirclement and takeover of [[El Fasher]] by the [[Rapid Support Forces]] marked by summary executions and hallmarks of genocide against Fur and Zaghawa populations (`A1`).
 
 ## Actors (`wiki/actors/`)
 - [[UN News]] — Official United Nations news outlet (`subtype: media_source`) publishing verified UN human rights and peacekeeping reports.
 - [[Sudanese Armed Forces]] — Official state military of Sudan (`subtype: state_force`), engaged in conflict with RSF and conducting aerial and artillery operations.
 - [[Rapid Support Forces]] — Paramilitary force (`subtype: armed_group`) led by Mohamed Hamdan Dagalo, operating across Darfur, Kordofan, and Central Sudan.
+- [[Mohamed Hamdan Dagalo]] — Commander of the Rapid Support Forces and President of the Presidential Council of Tasees (`subtype: person`).
 - [[OHCHR]] — Office of the United Nations High Commissioner for Human Rights (`subtype: political_body`), primary UN human rights monitoring agency.
 - [[UNISFA]] — United Nations Interim Security Force for Abyei (`subtype: state_force`), mandated peacekeeping mission in demilitarized [[Abyei]].
 - [[Volker Türk]] — UN High Commissioner for Human Rights (`subtype: person`) who condemned drone warfare and called for an end to external arms transfers.
@@ -33,15 +39,36 @@ This catalog maintains a single-line summary of all compiled nodes within the va
 - [[Independent International Fact-Finding Mission for the Sudan]] — UN HRC-mandated body (`subtype: political_body`) investigating war crimes, crimes against humanity, and genocide.
 - [[UN Human Rights Council]] — Intergovernmental UN body in Geneva (`subtype: political_body`) authorizing the FFM Sudan mandate.
 - [[Ministry of Foreign Affairs (Sudan)]] — Diplomatic ministry of the Republic of the Sudan (`subtype: political_body`) operating from Port Sudan.
+- [[Ministry of Foreign Affairs (Egypt)]] — Sovereign foreign ministry of Egypt (`subtype: political_body`) advocating for state institutions and arms embargo enforcement.
+- [[Embassy of France in Sudan]] — Diplomatic mission of France (`subtype: political_body`) condemning drone attacks across Sudan.
 - [[United Arab Emirates]] — Gulf sovereign federation (`subtype: political_body`) providing military logistics, financial backing, and drones to the RSF.
 - [[Government of Ethiopia]] — Federal authority of Ethiopia (`subtype: political_body`), bordering Sudan and implicated in cross-border drone transit allegations.
 - [[Federal Department of Foreign Affairs (Switzerland)]] — Swiss foreign ministry (`subtype: political_body`) hosting good offices and peace consultations in Geneva.
 - [[Radio Dabanga]] — Independent Sudanese news and satellite radio outlet (`subtype: media_source`) based in Amsterdam providing grassroots field reporting.
+- [[BBC News]] — International public broadcaster (`subtype: media_source`) providing verified multi-perspective field investigations.
 - [[The Guardian]] — British daily newspaper (`subtype: media_source`) publishing investigative journalism on UAE proxy networks and UN diplomacy.
 - [[Arab News]] — English-language regional daily (`subtype: media_source`) published in Saudi Arabia reporting on regional diplomacy and UN communiqués.
 - [[Agence France-Presse]] — Global news agency (`subtype: media_source`) providing verified wire dispatches on breaking conflict developments.
 - [[Human Rights Watch]] — International human rights watchdog (`subtype: civil_society`) investigating atrocities and advocating for arms embargo enforcement.
 - [[SIHA Network]] — Regional coalition of women's rights organizations (`subtype: civil_society`) documenting conflict-related sexual violence in Sudan.
+- [[Emergency Lawyers]] — Sudanese human rights legal network (`subtype: civil_society`) documenting war crimes, market strikes, and IHL violations.
+- [[Médecins Sans Frontières]] — International medical humanitarian organization (`subtype: civil_society`) supporting Nyala Teaching Hospital trauma units.
+- [[Darfur Victims Support Organization]] — Grassroots human rights monitor (`subtype: civil_society`) tracking civilian casualties in northern Darfur.
+- [[UN OCHA]] — UN Office for the Coordination of Humanitarian Affairs (`subtype: civil_society` / international) coordinating emergency relief and tracking infrastructure damage.
+- [[International Organization for Migration]] — UN migration agency (`subtype: civil_society` / international) operating the Displacement Tracking Matrix (DTM).
+- [[Sudanese Communist Party]] — Historic leftist political party (`subtype: political_body`) articulating an anti-war popular mobilization doctrine.
+- [[National Umma Party]] — Major mass political party (`subtype: political_body`) declaring agricultural emergency in River Nile State.
+- [[Sudanese Teachers Committee]] — Independent professional syndicate (`subtype: civil_society`) organizing general strikes over unpaid public salaries.
+- [[Tasees]] — De facto RSF-backed civilian and administrative governance framework (`subtype: political_body`) in Darfur and Kordofan.
+- [[Sudan Liberation Movement (al-Nur)]] — Historic Darfuri armed movement (`subtype: armed_group`) holding bastions in Jebel Marra.
+- [[Del Koninckx]] — MSF Project Coordinator in Nyala (`subtype: person`) supervising hospital reception of market bombing casualties.
+- [[Hamdan Suleiman]] — Civilian resident of Doumaya, Nyala (`subtype: person`) providing eyewitness testimony on mass burial of son and 70+ victims.
+- [[Fathi Fadul]] — Official Spokesperson for the Sudanese Communist Party (`subtype: person`) warning of drone escalation and proxy dynamics.
+- [[Muhammad al-Nao]] — Local commander of Al-Baraa Ibn Malik Brigade in Al Dabbah (`subtype: person`), killed in RSF drone strike.
+- [[Ahmed Omar]] — Director-General of Khartoum Oncology Hospital (`subtype: person`) appealing for radiotherapy equipment and power grid restoration.
+- [[Lamia Mutawakil]] — Broadcast journalist and cancer survivor activist (`subtype: person`) campaigning for oncology treatment essentials.
+- [[Abdulahe]] — Field reporter and regional correspondent for Radio Dabanga (`subtype: person`).
+- [[Kamal]] — Senior journalist and field correspondent at Radio Dabanga (`subtype: person`) reporting on infrastructure attacks and UN communiqués.
 - [[Mohamed Chande Othman]] — Former Chief Justice of Tanzania and Chair of FFM Sudan (`subtype: person`) leading international fact-finding.
 - [[Mona Rishmawi]] — Palestinian jurist and member of FFM Sudan (`subtype: person`) specializing in detention facility forensics and genocidal intent.
 - [[Joy Ngozi Ezeilo]] — Nigerian professor of law and member of FFM Sudan (`subtype: person`) leading documentation of sexual violence and infrastructure destruction.
@@ -57,7 +84,6 @@ This catalog maintains a single-line summary of all compiled nodes within the va
 - [[Kenneth Roth]] — Former Executive Director of Human Rights Watch (`subtype: person`) opposing UAE candidacy for UN Secretary-General.
 - [[Bruno Stagno Ugarte]] — Chief Advocacy Officer at Human Rights Watch (`subtype: person`) campaigning for UN leadership integrity.
 - [[Kate Ferguson]] — Co-Executive Director of Protection Approaches (`subtype: person`) advising on identity-based violence and atrocity prevention.
-- [[Kamal]] — Senior journalist and field correspondent at Radio Dabanga (`subtype: person`) reporting on infrastructure attacks and UN communiqués.
 - [[International Criminal Court]] — Permanent international tribunal in The Hague (`subtype: political_body`) investigating war crimes and genocide across Darfur.
 - [[Joint Darfur Force]] — Military coalition of Darfur armed movements (`subtype: armed_group`) aligned with SAF in defense of El Fasher.
 - [[Transitional Sovereignty Council]] — De facto executive governing body of Sudan (`subtype: political_body`) based in Port Sudan.
@@ -68,22 +94,33 @@ This catalog maintains a single-line summary of all compiled nodes within the va
 - [[Sudan People's Liberation Movement-North (al-Hilu)]] — Armed political movement (`subtype: armed_group`) commanding territory in the Nuba Mountains and southern Blue Nile State.
 
 ## Locations (`wiki/locations/`)
+- [[Northern State]] — Northwestern Nile basin state (`SD05`, `state_adm1`) anchoring SAF rear strategic depth, cross-border Egypt transit, and agricultural schemes.
+- [[River Nile State]] — Industrial, railway, and gold-mining heartland (`SD04`, `state_adm1`) facing severe fuel shortages and load shedding.
+- [[Abu Hamad]] — Riverine junction and gold extraction center in River Nile State (`SD04006`, `city_town`) where drone strikes caused total power blackout.
+- [[Al Dabbah]] — Strategic Nile bend hub in Northern State (`SD05004`, `city_town`), site of power station strikes and killing of Al-Baraa commander.
+- [[El Malha]] — Desert oasis and trade transit locality in North Darfur (`SD02008`, `locality_adm2`) facing drought, crop failure, and vehicle drone strikes.
+- [[Netiga]] — Agricultural and livestock locality in South Darfur (`SD03004`, `locality_adm2`) suffering grain price hyperinflation and cattle market collapse.
+- [[Karnoi]] — Northwestern North Darfur border locality (`SD02007`, `locality_adm2`) where 850 civilians were displaced toward Chad.
+- [[Um Baru]] — Arid mountainous locality in North Darfur (`SD02006`, `locality_adm2`) experiencing displacement of 1,150 civilians across four villages.
+- [[Khartoum Oncology Hospital]] — Principal national cancer referral center in central Khartoum (`SD01001`, `infrastructure`) operating without radiotherapy equipment.
 - [[West Kordofan]] — Strategic southwestern state (`SD18`, `state_adm1`) containing Dibab (`139+` killed) and IDP shelters in Ghubeish and El Nuhud.
-- [[Blue Nile State]] — Southeastern border state (`SD17`, `state_adm1`) containing the Abu Shendi gold-mining site (`31+` killed) and Um Darfa hospital.
+- [[Blue Nile State]] — Southeastern border state (`SD17`, `state_adm1`) containing the Abu Shendi gold-mining site and Belila market strike.
 - [[Abyei]] — Disputed demilitarized administrative area (`SD18001`, `locality_adm2`) containing Amiet Market (`80+` killed) and Todach hospital.
 - [[El Obeid]] — Capital of North Kordofan (`SD02001`, `city_town`), strategic transport hub besieged by RSF and subjected to drone warfare.
 - [[North Kordofan]] — Central state (`SD02`, `state_adm1`) anchoring transit between Khartoum, Darfur, and White Nile.
 - [[Um Badr]] — Locality and market center in western North Kordofan (`SD02005`, `locality_adm2`), site of RSF summary executions.
-- [[Kurmuk]] — Strategic border town in Blue Nile State (`SD17002`, `city_town`) along the Ethiopian frontier.
+- [[Kurmuk]] — Strategic border locality in Blue Nile State (`SD17002`, `locality_adm2`) along the Ethiopian frontier.
 - [[Haiya]] — Critical railway and pipeline junction in Red Sea State (`SD07002`, `city_town`) containing Crude Oil Pumping Station 4.
 - [[Red Sea State]] — Strategic eastern coastal state (`SD07`, `state_adm1`) housing Port Sudan and national oil export infrastructure.
 - [[Port Sudan]] — De facto wartime administrative capital and primary maritime port (`SD10001`, `city_town`) in Red Sea State.
-- [[Assosa]] — Regional capital of Benishangul-Gumuz, Ethiopia (`locality_adm2`), border transit and alleged forward staging zone.
+- [[Assosa]] — Regional capital of Benishangul-Gumuz, Ethiopia (`locality_adm2`), border transit and alleged forward staging zone for RSF drones.
 - [[El Fasher]] — Capital of North Darfur (`SD01001`, `city_town`), site of protracted siege, mass killings, and hallmarks of genocide.
 - [[North Darfur]] — Northernmost state of Darfur (`SD01`, `state_adm1`), principal theatre of historical and ongoing conflict.
 - [[Zamzam IDP Camp]] — Massive displacement camp south of El Fasher (`SD02001-ZAM`, `idp_camp`) under catastrophic IPC Phase 5 Famine conditions.
-- [[Nyala]] — Capital of South Darfur (`SD03001`, `city_town`), commercial center where 102+ civilians were killed in Tanqonj market strike.
+- [[Nyala]] — Capital of South Darfur (`SD03001`, `city_town`), commercial center where Tanqonj market double-tap drone strike killed 102+ civilians.
 - [[South Darfur]] — Most populous Darfur state (`SD03`, `state_adm1`), fully controlled by the RSF.
+- [[Khartoum]] — Sovereign national capital of Sudan at the Nile confluence (`SD01001`, `city_town`), tripartite urban metropolis contested by SAF and RSF.
+- [[Jebel Marra]] — Volcanic mountain range in Darfur (`SD04003`, `neighborhood_site`), autonomous bastion controlled by SLA-AW serving as an IDP refuge.
 - [[Khartoum State]] — Capital state and central conurbation of Khartoum, Omdurman, and Bahri (`SD01`, `state_adm1`).
 - [[Atbara]] — Historic railway capital and industrial hub (`SD04002`, `city_town`) in River Nile State.
 - [[Geneva]] — Diplomatic capital of Switzerland (`city_town`), host city for UN human rights bodies and Sudan peace consultations.
@@ -99,16 +136,34 @@ This catalog maintains a single-line summary of all compiled nodes within the va
 - [[UAE Foreign Backing and Logistics Network for the Rapid Support Forces]] — Investigation into Emirati air cargo corridors, gold-for-weapons trade, and military support to the RSF.
 - [[Multilateral Capture and Accountability Politics in Sudan]] — Critical analysis of geopolitical lobbying, humanitarian branding, and appointments within the United Nations.
 - [[Arbitrary Detention and Custodial Torture in the Sudan War]] — Structural mechanism analyzing emergency Security Cells, detention overcrowding in El Obeid Central Prison, and custodial torture.
+- [[War Economy and Commercial Blockades in Sudan]] — Structural analysis of commercial transport blockades, hyperinflation in basic grains, and livestock market collapse across Darfur and northern riverine states.
+- [[Systemic Healthcare Collapse and Hospital Militarization in Sudan]] — Investigation of the destruction of tertiary specialized facilities, oncology deficits, and hospital targeting.
+- [[Sudan Conflict Governance Transformation]] — Structural analysis of the dissolution of traditional Native Administration, parallel state formation, and administrative centralization under Tasees secretariats.
+
 
 ## Timelines (`wiki/timelines/`)
-- [[2026-09 Sudan Conflict Chronicle]] — Bitemporal monthly chronicle (`2026-09-01` to `2026-09-30`, `monthly_chronicle`, `A1`) tracking North Kordofan counteroffensives, airstrikes, and summary executions.
+- [[2026-11 Sudan Conflict Chronicle]] — Bitemporal monthly chronicle (`2026-11-01` to `2026-11-30`, `monthly_chronicle`, `B2`) tracking drone grid attacks, UNSC complaints against Ethiopia, and famine alerts.
 - [[2026-10 Sudan Conflict Chronicle]] — Bitemporal monthly chronicle (`2026-10-01` to `2026-10-31`, `monthly_chronicle`, `A1`) tracking 510+ drone deaths, market strikes, and UN determinations.
+- [[2026-09 Sudan Conflict Chronicle]] — Bitemporal monthly chronicle (`2026-09-01` to `2026-09-30`, `monthly_chronicle`, `A1`) tracking North Kordofan counteroffensives, airstrikes, and summary executions.
 - [[Sudan Drone Warfare and Double-Tap Strike Timeline]] — Thematic escalation timeline (`2026-10-01` to `2026-10-31`, `thematic_timeline`, `A1`) chronicling UAV proliferation, double-tap tactics, and infrastructure attacks.
 - [[Sudan Accountability and International Justice Timeline]] — Thematic timeline (`2023-10-11` to `2026-10-28`, `thematic_timeline`, `A1`) tracking FFM mandates, reports, and international legal milestones.
 - [[2025-10 Sudan Conflict Chronicle]] — Monthly chronicle (`2025-10-01` to `2025-10-31`, `monthly_chronicle`, `A1`) tracking the culmination of the siege and takeover of El Fasher.
 - [[El Fasher Siege and Genocide Investigation Timeline]] — Campaign timeline (`2024-04-01` to `2026-02-19`, `campaign_timeline`, `A1`) tracking the systematic destruction of El Fasher.
 
 ## Citations (`wiki/citations/`)
+- [[2026-10-28 Del Koninckx MSF Statement on Nyala Market Drone Casualties]] — MSF Project Coordinator statement verifying 36 bodies received at Nyala Teaching Hospital and condemning market strikes (`A1`).
+- [[2026-10-28 Emergency Lawyers Condemnation of Nyala Market Drone Strike]] — Legal communique by Emergency Lawyers verifying 102 civilian deaths and 113 injuries from the Nyala Tanqonj market strike (`A2`).
+- [[2026-10-28 Hamdan Suleiman Eyewitness Account of Nyala Market Bombing]] — Eyewitness testimony by resident Hamdan Suleiman confirming the death of his son and mass burial of 70+ victims (`B2`).
+- [[2026-10-28 French Embassy Condemnation of Drone Attacks across Sudan]] — Diplomatic statement condemning air strikes across six regions and affirming no military solution (`A1`).
+- [[2026-10-31 Mohamed Hamdan Dagalo Decree Dissolving RSF Civil Administrations]] — Formal presidential decree revoking the 2024 Civil Administrations Document across five states (`B2`).
+- [[2026-11-01 SPLM-N Statement on Belila Kurmuk Civilian Drone Casualties]] — Official communique verifying 5 civilian deaths and 4 wounded in Belila market drone strike (`B2`).
+- [[2026-11-01 Egyptian MFA Condemnation of Drone Warfare Escalation]] — Formal diplomatic communique demanding an end to cross-border arms smuggling to the RSF (`A1`).
+- [[2026-11-01 Fathi Fadul Communist Party Warning on Drone Warfare]] — Spokesperson interview citing 400+ civilian drone deaths and analyzing external proxy networks (`B2`).
+- [[2026-11-01 Sudan MFA Formal UNSC Complaint Against Ethiopia]] — Sovereign legal complaint accusing Ethiopia of violating UN Charter Article 2(4) via Assosa drone base (`B2`).
+- [[2026-11-01 Ahmed Omar Appeal for Khartoum Oncology Radiotherapy]] — Hospital Director-General appeal for radiotherapy equipment and power restoration at Mustashfa al-Dharra (`B2`).
+- [[2026-11-01 El Malha Emergency Response Room Famine Warning]] — ERR Coordination Council alert warning of total agricultural failure, drought, and open-air displacement (`B2`).
+- [[2026-11-01 National Umma Party Famine Emergency Declaration River Nile]] — Executive party declaration demanding an agricultural state of emergency due to diesel shortages and 18-hour power cuts (`B2`).
+- [[2026-11-01 Sudanese Teachers Committee Strike Communique]] — Higher Strike Committee declaration extending general strike over unpaid salaries and fiscal abandonment (`B2`).
 - [[2026-10-23 Volker Türk Condemnation of Sudan Drone Escalation and Arms Influx]] — Verbatim statement by Volker Türk warning of drone mortality and urging arms halt (`A2`).
 - [[2026-10-23 Seif Magango Statement on Evisceration of Civilian Infrastructure in Sudan]] — Statement by Seif Magango on scores of civilians/IDPs killed and vital services eviscerated (`A2`).
 - [[2026-10-23 Muhammad Farooq First-Responder Account of Amiet Market Fire]] — First-responder account by Lt. Col. Farooq confirming conflagration at Amiet Market (`A2`).
@@ -136,9 +191,25 @@ This catalog maintains a single-line summary of all compiled nodes within the va
 - [[2026-11-01 Radio Dabanga Arabic Rendition of UNSG Drone Condemnation and FFM Warning]] — Vernacular Arabic journalistic synthesis connecting UNSG condemnation to FFM findings (`B2`).
 
 ## Sources (`wiki/sources/`)
+- [[sources/2026-10-28-bbc-arabic-nyala-market-strike-conflicting-casualty-tolls]] — BBC Arabic investigative dispatch on Nyala market double-tap strike, 70-person mass grave, and SAF denial (`A2`, `compiled: true`).
+- [[sources/2026-10-28-dabanga-nyala-market-strike-msf-tasees-death-toll]] — Radio Dabanga report on MSF hospital intake (36 dead, 150+ injured) and Tasees 188 death toll (`B2`, `compiled: true`).
+- [[sources/2026-11-01-dabanga-abu-hamad-al-dabbah-power-station-drone-attack]] — Radio Dabanga report on drone strikes hitting Abu Hamad and Al Dabbah power stations and killing Muhammad al-Nao (`B2`, `compiled: true`).
+- [[sources/2026-10-31-dabanga-belila-kurmuk-drone-strike]] — Radio Dabanga report on Belila Kurmuk commercial market drone strike killing 5 civilians (`B2`, `compiled: true`).
+- [[sources/2026-11-01-dabanga-el-malha-commercial-vehicle-drone-strike]] — Radio Dabanga report on drone attack incinerating a commercial vehicle in El Malha, killing 2 civilians (`B2`, `compiled: true`).
+- [[sources/2026-10-28-dabanga-un-france-condemn-escalating-drone-attacks]] — Radio Dabanga report on French Embassy and UN OCHA condemnations of drone warfare (`B2`, `compiled: true`).
+- [[sources/2026-11-01-dabanga-egypt-condemns-drone-escalation-sudan]] — Radio Dabanga report on Egyptian MFA statement demanding halt to cross-border arms supplies to RSF (`B2`, `compiled: true`).
+- [[sources/2026-11-01-dabanga-communist-party-drone-war-warning]] — Radio Dabanga interview with SCP spokesperson Fathi Fadul on 400+ drone deaths and proxy dynamics (`B2`, `compiled: true`).
+- [[sources/2026-11-01-dabanga-hemedti-decree-dissolves-civil-administrations]] — Radio Dabanga report on Hemedti Presidential Decree No. (19) dissolving regional civil administrations under Tasees (`B2`, `compiled: true`).
+- [[sources/2026-11-02-dabanga-sudan-unsc-complaint-ethiopia-drone-base]] — Radio Dabanga report on Sudan lodging formal complaints with UNSC and AU against Ethiopia over Assosa drone base (`B2`, `compiled: true`).
+- [[sources/2026-11-01-dabanga-khartoum-oncology-hospital-radiotherapy-appeal]] — Radio Dabanga coverage of Khartoum Oncology Hospital appeals for radiotherapy machines and electricity (`B2`, `compiled: true`).
+- [[sources/2026-11-01-dabanga-el-malha-drought-agricultural-failure]] — Radio Dabanga report on El Malha Emergency Response Room warning of total agricultural failure and famine (`B2`, `compiled: true`).
+- [[sources/2026-11-01-dabanga-umma-party-river-nile-famine-emergency]] — Radio Dabanga report on National Umma Party warning of famine and agricultural collapse in River Nile State (`B2`, `compiled: true`).
+- [[sources/2026-11-01-dabanga-netiga-flour-oil-price-inflation]] — Radio Dabanga field market telemetry on grain hyperinflation and livestock crash in Netiga (`B2`, `compiled: true`).
+- [[sources/2026-11-01-dabanga-teachers-committee-strike-khartoum]] — Radio Dabanga report on Sudanese Teachers Committee extending general strike in Khartoum State (`B2`, `compiled: true`).
+- [[sources/2026-11-01-dabanga-karnoi-um-baru-displacement-wave]] — Radio Dabanga report citing IOM DTM telemetry on 2,000 newly displaced from Karnoi and Um Baru toward Chad (`B2`, `compiled: true`).
 - [[sources/2026-10-23-un-news-sudan-drone-strikes-306-killed]] — UN News report on 306+ civilian drone deaths across Sudan in three weeks (`A2`, `compiled: true`).
 - [[sources/2026-10-31-unsg-spokesperson-escalating-drone-attacks-sudan]] — UN Spokesperson communiqué declaring drone strikes IHL violations (`A1`, `compiled: true`).
-- [[sources/2026-10-28-un-hrc-crp1-el-obeid-civilian-devastation]] — UN HRC Fact-Finding Mission 19-page report (A/HRC/65/CRP.1) on civilian devastation, drone warfare, and detention in El Obeid (`A1`, `compiled: true`).
+- [[sources/2026-10-28-un-hrc-crp1-el-obeid-civilian-devastation]] — UN HRC Fact-Finding Mission report (A/HRC/65/CRP.1) on civilian devastation, drone warfare, and detention in El Obeid (`A1`, `compiled: true`).
 - [[sources/2026-10-28-ohchr-ffm-el-obeid-drone-warfare-repression]] — OHCHR press release on FFM findings of drone warfare and repression in El Obeid (`A1`, `compiled: true`).
 - [[sources/2026-10-28-ohchr-independent-international-fact-finding-mission-sudan-portal]] — Official OHCHR repository detailing FFM mandate and UNGA reports (`A1`, `compiled: true`).
 - [[sources/2026-10-31-dabanga-haiya-oil-electricity-drone-attack]] — Radio Dabanga report on drone strikes against Haiya oil and power stations (`B2`, `compiled: true`).
@@ -152,6 +223,22 @@ This catalog maintains a single-line summary of all compiled nodes within the va
 *No dialectical intelligence syntheses archived yet.*
 
 ## Ingestions (`wiki/ingestions/`)
+- [[ingestions/2026-11-02/2026-10-28-bbc-arabic-nyala-market-strike-conflicting-casualty-tolls]] — Compilation audit dossier for BBC Arabic Nyala market strike report.
+- [[ingestions/2026-11-02/2026-10-28-dabanga-nyala-market-strike-msf-tasees-death-toll]] — Compilation audit dossier for Radio Dabanga Nyala market MSF/Tasees report.
+- [[ingestions/2026-11-02/2026-11-01-dabanga-abu-hamad-al-dabbah-power-station-drone-attack]] — Compilation audit dossier for Abu Hamad and Al Dabbah power station drone attacks.
+- [[ingestions/2026-11-02/2026-10-31-dabanga-belila-kurmuk-drone-strike]] — Compilation audit dossier for Belila Kurmuk market drone strike.
+- [[ingestions/2026-11-02/2026-11-01-dabanga-el-malha-commercial-vehicle-drone-strike]] — Compilation audit dossier for El Malha commercial transport drone strike.
+- [[ingestions/2026-11-02/2026-10-28-dabanga-un-france-condemn-escalating-drone-attacks]] — Compilation audit dossier for French Embassy and UN OCHA drone condemnations.
+- [[ingestions/2026-11-02/2026-11-01-dabanga-egypt-condemns-drone-escalation-sudan]] — Compilation audit dossier for Egyptian MFA statement on cross-border arms interdiction.
+- [[ingestions/2026-11-02/2026-11-01-dabanga-communist-party-drone-war-warning]] — Compilation audit dossier for Sudanese Communist Party drone war warning.
+- [[ingestions/2026-11-02/2026-11-01-dabanga-hemedti-decree-dissolves-civil-administrations]] — Compilation audit dossier for Hemedti Decree No. (19) dissolving civil administrations.
+- [[ingestions/2026-11-02/2026-11-02-dabanga-sudan-unsc-complaint-ethiopia-drone-base]] — Compilation audit dossier for Sudan UNSC/AU complaint against Ethiopia.
+- [[ingestions/2026-11-02/2026-11-01-dabanga-khartoum-oncology-hospital-radiotherapy-appeal]] — Compilation audit dossier for Khartoum Oncology Hospital Pink October appeal.
+- [[ingestions/2026-11-02/2026-11-01-dabanga-el-malha-drought-agricultural-failure]] — Compilation audit dossier for El Malha ERR famine warning.
+- [[ingestions/2026-11-02/2026-11-01-dabanga-umma-party-river-nile-famine-emergency]] — Compilation audit dossier for National Umma Party River Nile famine declaration.
+- [[ingestions/2026-11-02/2026-11-01-dabanga-netiga-flour-oil-price-inflation]] — Compilation audit dossier for Netiga market hyperinflation telemetry.
+- [[ingestions/2026-11-02/2026-11-01-dabanga-teachers-committee-strike-khartoum]] — Compilation audit dossier for Sudanese Teachers Committee strike extension.
+- [[ingestions/2026-11-02/2026-11-01-dabanga-karnoi-um-baru-displacement-wave]] — Compilation audit dossier for IOM displacement telemetry in Karnoi and Um Baru.
 - [[ingestions/2026-11-01/2026-10-28-un-hrc-crp1-el-obeid-civilian-devastation]] — Compilation audit dossier for UN HRC FFM CRP.1 El Obeid report.
 - [[ingestions/2026-11-01/2026-10-23-un-news-sudan-drone-strikes-306-killed]] — Compilation audit dossier for `2026-10-23-un-news-sudan-drone-strikes-306-killed`.
 - [[ingestions/2026-11-01/2026-10-31-unsg-spokesperson-escalating-drone-attacks-sudan]] — Compilation audit dossier for `2026-10-31-unsg-spokesperson-escalating-drone-attacks-sudan`.

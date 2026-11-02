@@ -21,6 +21,8 @@ events_chronicled:
   - "[[2026-10-27 Nyala Tanqonj Market Drone Strike]]"
   - "[[2026-10-28 Global Civil Society Briefing Opposing Lana Nusseibeh Candidacy for UN Secretary-General]]"
   - "[[2026-10-31 Haiya Oil Pumping and Power Station Drone Strike]]"
+  - "[[2026-10-31 Belila Kurmuk Drone Strike]]"
+  - "[[2026-10-31 RSF Dissolution of Native Administration Document]]"
   - "[[2026-10 El Obeid Siege and Drone Warfare Escalation]]"
 citations_chronicled:
   - "[[2026-10-21 Alexandre Fasel Statement on Drone War Killing Mostly Civilians in Sudan]]"
@@ -33,6 +35,10 @@ citations_chronicled:
   - "[[2026-10-28 Mohamed Chande Othman Address to the UN General Assembly Third Committee on Sudan]]"
   - "[[2026-10-28 Kenneth Roth Statement on UAE Arming of RSF and Lana Nusseibeh Candidacy]]"
   - "[[2026-10-28 Hala al-Karib Statement on Denial of El Fasher Genocidal Acts and UAE Role]]"
+  - "[[2026-10-28 Del Koninckx MSF Statement on Nyala Market Drone Casualties]]"
+  - "[[2026-10-28 Emergency Lawyers Condemnation of Nyala Market Drone Strike]]"
+  - "[[2026-10-28 Hamdan Suleiman Eyewitness Account of Nyala Market Bombing]]"
+  - "[[2026-10-28 French Embassy Condemnation of Drone Attacks across Sudan]]"
   - "[[2026-10-28 UN FFM Finding on RSF Drone Warfare and Indiscriminate Attacks in El Obeid]]"
   - "[[2026-10-28 UN FFM Finding on SAF Detention Practices and Torture in El Obeid]]"
   - "[[2026-10-28 UN FFM Recommendation for Specialized Independent Court for Sudan]]"
@@ -40,6 +46,7 @@ citations_chronicled:
   - "[[2026-10-31 Stéphane Dujarric Arab News Statement Condemning Nyala Market Drone Strike]]"
   - "[[2026-10-31 António Guterres Appeal for Immediate Cessation of Hostilities and Good-Faith Mediation in Sudan]]"
   - "[[2026-10-31 Muawiya Osman Accusation of Ethiopian Base and UAE Proxy Drone Strikes on Sudan Infrastructure]]"
+  - "[[2026-10-31 Mohamed Hamdan Dagalo Decree Dissolving RSF Civil Administrations]]"
   - "[[2026-11-01 Radio Dabanga Arabic Rendition of UNSG Drone Condemnation and FFM Warning]]"
 actors_involved:
   - "[[Sudanese Armed Forces]]"

@@ -17,12 +17,18 @@ Operate a **two-phase, human-reviewed ingestion pipeline** for primary evidence 
 | Invocation Command | Target Argument | Executed Phase |
 | :--- | :--- | :--- |
 | `/ingest raw/<category>/<file>` | File in `raw/` or `_input/research/` | **Phase 1**: Creates `wiki/sources/<source-slug>.md` with `status: "draft"`, `compiled: false`, and **halts** for review. |
+| `/ingest --next` or `python3 scripts/staging_queue.py next` | Staging Queue | **Queue Dispatcher**: Inspects `raw/articles/` via `scripts/staging_queue.py` and runs Phase 1 on the next staged article. |
 | `/ingest wiki/sources/<source-slug>.md` | Existing note in `wiki/sources/` | **Phase 2**: Verifies `status: "approved"` and `compiled: false`, compiles `wiki/` entities (including `wiki/citations/`, `person` actors, and `media_source` outlet), updates ledgers, and syncs ArcadeDB & `ki`. |
 | `/ingest --approved` | Batch flag | **Phase 2 (Batch)**: Scans `wiki/sources/*.md` for all notes with `status: "approved"` and `compiled: false`, and executes Phase 2 for each. |
 
 ---
 
 ## Phase 1: Source Distillation & Scoping (`status: "draft"`)
+
+### Step 1.0: Discovery of Staged Evidence
+- Query pending articles via `python3 scripts/staging_queue.py status` or `python3 scripts/staging_queue.py list --staged`.
+- Consult the interactive staging dashboard at `_input/projects/infra/staging_dashboard.md` (synchronized via `python3 scripts/staging_queue.py sync`).
+- To automatically fetch the next target: `python3 scripts/staging_queue.py next --ingest-cmd`.
 
 ### Step 1.1: Path & Immutability Verification
 - Confirm the target file exists in `raw/` (or `_input/research/`).

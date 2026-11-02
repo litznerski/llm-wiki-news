@@ -125,7 +125,37 @@ python3 scripts/harvest_daily_news.py --days-ago 2
 
 ---
 
-### 5. Knowledge Graph Linter (`scripts/lint_vault.py`)
+### 5. Ingestion Staging & Telemetry Queue (`scripts/staging_queue.py`)
+
+Zero-mutation queue manager that cross-references harvested raw evidence in `raw/articles/` against compiled source notes in `wiki/sources/` to classify articles into `STAGED`, `DRAFT`, `APPROVED`, or `COMPILED`.
+
+#### Key Capabilities
+- **Strict Immutability Compliance**: Dynamically computes ingestion state without modifying or moving files in `raw/articles/`.
+- **Queue Dispatcher**: Automatically queries pending articles and provides `/ingest <path>` recommendations.
+- **Obsidian Staging Dashboard**: Synchronizes `_input/projects/infra/staging_dashboard.md` with live telemetry.
+
+#### Usage Examples
+
+```bash
+# View summary telemetry of staged vs. ingested articles
+python3 scripts/staging_queue.py status
+
+# List all staged (unprocessed) articles
+python3 scripts/staging_queue.py list --staged
+
+# Get the next priority staged article to ingest
+python3 scripts/staging_queue.py next
+
+# Output the exact /ingest command for the next article
+python3 scripts/staging_queue.py next --ingest-cmd
+
+# Synchronize the Obsidian staging dashboard note
+python3 scripts/staging_queue.py sync
+```
+
+---
+
+### 6. Knowledge Graph Linter (`scripts/lint_vault.py`)
 
 Enforces graph consistency, Dual-Flow CoT micro/macro invariants, table pipe escaping (`\|`), clean wikilinks, and NATO Admiralty rating adherence.
 

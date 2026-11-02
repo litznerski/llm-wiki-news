@@ -54,10 +54,11 @@ Since the outbreak of the April 2023 conflict, Kurmuk has served as a heavily fo
 - **2026-03-15**: Intense drone and artillery exchanges between SAF and RSF/SPLM-N units begin along the Kurmuk–Geissan border axis.
 - **2026-10-19**: Heavy ground fighting between SAF and SPLM-N (al-Hilu) forces erupts in the immediate perimeter of Kurmuk.
 - **2026-10-28**: UN Fact-Finding Mission report `A/HRC/65/CRP.1` confirms significant damage to Kurmuk Hospital and civilian displacement resulting from the October clashes.
+- **2026-10-31**: An SAF drone strike targets the commercial market in Belila, Kurmuk locality, killing 5 civilians and injuring 4 others ([[2026-10-31 Belila Kurmuk Drone Strike]]).
 
 ## Related Primitives
 
-- **Events**:
+- **Events**: [[2026-10-31 Belila Kurmuk Drone Strike]], [[2026-10 Sudan Drone Warfare Escalation]]
   - [[2026-10 Sudan Drone Warfare Escalation]]
 - **Actors**:
   - [[Sudan People's Liberation Movement-North (al-Hilu)]]

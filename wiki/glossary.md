@@ -72,6 +72,26 @@
 | **ERRs** | [[Emergency Response Rooms]] | `ERRs`, `غرف الطوارئ`, `Emergency Rooms` | `actor` (`civil_society`). Decentralized youth-led mutual aid and humanitarian network. |
 | **Resistance Committees** | [[Sudanese Resistance Committees]] | `Neighborhood Resistance Committees`, `لجان المقاومة` | `actor` (`civil_society`). Pro-democracy grassroots network that led the 2018–2019 revolution. |
 | **Kaamil Ahmed** | [[Kaamil Ahmed]] | `Kaamil Ahmed`, `كامل أحمد` | `actor` (`person`). Development affairs correspondent for The Guardian. |
+| **BBC News** | [[BBC News]] | `BBC`, `BBC Arabic`, `بي بي سي عربي`, `بي بي سي` | `actor` (`media_source` \| `Admiralty: A`). British public broadcaster providing verified Arabic field coverage. |
+| **Emergency Lawyers** | [[Emergency Lawyers]] | `محامو الطوارئ`, `Muhamu al-Tawari'`, `Emergency Lawyers Committee` | `actor` (`civil_society`). Sudanese legal monitoring collective documenting war crimes and civilian casualties. |
+| **MSF** | [[Médecins Sans Frontières]] | `MSF`, `أطباء بلا حدود`, `Doctors Without Borders` | `actor` (`civil_society`). International medical humanitarian organization operating field hospitals across Sudan. |
+| **Tasees** | [[Tasees]] | `تأسيس`, `Civil Administration Foundation`, `RSF Civil Administration` | `actor` (`civil_society` / governance). RSF-sponsored civil governance structure established across Darfur and Kordofan. |
+| **SLM-al-Nur** | [[Sudan Liberation Movement (al-Nur)]] | `SLM-AW`, `SLA-AW`, `حركة تحرير السودان بقيادة عبد الواحد النور` | `actor` (`armed_group`). Non-signatory Darfur rebel movement holding civilian bastions in Jebel Marra. |
+| **UN OCHA** | [[UN OCHA]] | `OCHA`, `مكتب الأمم المتحدة لتنسيق الشؤون الإنسانية`, `United Nations Office for the Coordination of Humanitarian Affairs` | `actor` (`political_body`). UN body coordinating global emergency humanitarian response. |
+| **IOM** | [[International Organization for Migration]] | `IOM`, `المنظمة الدولية للهجرة`, `DTM` | `actor` (`political_body`). UN migration agency tracking internal and cross-border displacement via the Displacement Tracking Matrix (DTM). |
+| **NUP** | [[National Umma Party]] | `حزب الأمة القومي`, `Umma Party`, `Hizb al-Umma` | `actor` (`political_body`). Major historical Sudanese civilian political party founded by the Mahdi family. |
+| **SCP** | [[Sudanese Communist Party]] | `الحزب الشيوعي السوداني`, `Communist Party of Sudan` | `actor` (`political_body`). Leftist political party and active participant in civilian anti-war and anti-militarization movements. |
+| **STC** | [[Sudanese Teachers Committee]] | `لجنة المعلمين السودانيين`, `Teachers Committee` | `actor` (`civil_society`). Independent professional trade union spearheading public sector strikes over unpaid wartime salaries. |
+| **DVSO** | [[Darfur Victims Support Organization]] | `منظمة دعم ضحايا دارفور`, `Darfur Victims Support` | `actor` (`civil_society`). Independent human rights advocacy group documenting aerial strikes in Darfur. |
+| **Embassy of France** | [[Embassy of France in Sudan]] | `السفارة الفرنسية في السودان`, `Ambassade de France au Soudan` | `actor` (`political_body`). French diplomatic mission issuing foreign policy and human rights communiqués. |
+| **Egyptian MFA** | [[Ministry of Foreign Affairs (Egypt)]] | `وزارة الخارجية المصرية`, `Egyptian Foreign Ministry` | `actor` (`political_body`). Diplomatic executive body of the Arab Republic of Egypt monitoring Red Sea and Nile Basin security. |
+| **Del Koninckx** | [[Del Koninckx]] | `Del Koninckx (MSF)`, `Emergency Coordinator Koninckx` | `actor` (`person`). Emergency Coordinator for [[Médecins Sans Frontières]] in South Darfur. |
+| **Hamdan Suleiman** | [[Hamdan Suleiman]] | `حمدان سليمان` | `actor` (`person`). Local resident and eyewitness survivor of the 27 October 2026 Tanqonj market airstrike in Nyala. |
+| **Abdulahe** | [[Abdulahe]] | `Dr. Abdulahe`, `Medical Director Abdulahe` | `actor` (`person`). Medical Director of Belila Rural Hospital in Kurmuk Locality, Blue Nile State. |
+| **Muhammad al-Nao** | [[Muhammad al-Nao]] | `الناطق الرسمي باسم الحركة الشعبية محمد النعو`, `SPLM-N Spokesperson` | `actor` (`person`). Official spokesperson for the [[Sudan People's Liberation Movement-North (al-Hilu)]]. |
+| **Fathi Fadul** | [[Fathi Fadul]] | `فتحي الفضل`, `SCP Spokesperson Fathi Fadul` | `actor` (`person`). Official spokesperson of the [[Sudanese Communist Party]]. |
+| **Ahmed Omar** | [[Ahmed Omar]] | `أحمد عمر`, `Dr. Ahmed Omar` | `actor` (`person`). Medical Director and Radiation Oncology specialist at [[Khartoum Oncology Hospital]]. |
+| **Lamia Mutawakil** | [[Lamia Mutawakil]] | `لمياء متوكل` | `actor` (`person`). Prominent Sudanese radio broadcaster, civil society activist, and cancer patient in Khartoum. |
 
 ---
 
@@ -111,3 +131,11 @@
 | **SD04002** | [[Atbara]] | `Railway City`, `عطبرة` | `city_town` (`ADM2/City`). Strategic railway nexus and industrial hub in River Nile State. |
 | **SD17002** | [[Kurmuk]] | `الكرمك`, `Al-Kurmuk`, `Kurmuk Town` | `city_town` (`ADM2/City`). Strategic border town in [[Blue Nile State]] (`SD17`) on the Ethiopian frontier. |
 | **SD02005** | [[Um Badr]] | `أم بادر`, `Oom Badr`, `Um Badr Locality` | `locality_adm2` (`ADM2`). Locality and trade hub in western [[North Kordofan]] (`SD13`), site of 24 Sept 2026 RSF summary executions. |
+| **SD04006** | [[Abu Hamad]] | `أبو حمد`, `Abu Hamed`, `Abu Hamad Locality` | `city_town` (`ADM2/City`). Gold mining and railway junction on Nile bend in [[River Nile State]]. |
+| **SD05004** | [[Al Dabbah]] | `الدبة`, `Ed Debba`, `Al Dabbah Locality` | `city_town` (`ADM2/City`). Logistics and military hub on Nile in [[Northern State]]. |
+| **SD02008** | [[El Malha]] | `المالحة`, `Al-Malha`, `El Malha Locality` | `locality_adm2` (`ADM2`). Commercial trade corridor and desert hub in northern [[North Darfur]]. |
+| **SD03004** | [[Netiga]] | `نتيقة`, `Natiga`, `Netiga Locality` | `locality_adm2` (`ADM2`). Livestock trading locality in [[South Darfur]] experiencing hyperinflation. |
+| **SD02007** | [[Karnoi]] | `كرنوي`, `Kornoi`, `Karnoi Locality` | `locality_adm2` (`ADM2`). Borderland locality in northwestern [[North Darfur]] facing mass displacement. |
+| **SD02006** | [[Um Baru]] | `أم برو`, `Um Barru`, `Um Baru Locality` | `locality_adm2` (`ADM2`). Locality in northwestern [[North Darfur]] hosting displaced populations from El Fasher. |
+| **SD01001-HOSP** | [[Khartoum Oncology Hospital]] | `مستشفى الذرة`, `Mustashfa al-Dharra`, `Radiation and Isotopes Centre Khartoum` | `infrastructure` (`ADM4/Hospital`). National specialized cancer radiotherapy centre in [[Khartoum]]. |
+
