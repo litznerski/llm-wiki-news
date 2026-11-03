@@ -38,6 +38,7 @@ Sudan's public health sector suffered from decades of structural underinvestment
 - **Urban Siege Encirclement**: In [[El Obeid]] (`SD13`), RSF encirclement and shelling disabled over 70% of health facilities, forcing the closure of maternal and pediatric wards while SAF-aligned Security Cells militarized the remaining facilities.
 - **Direct Airstrikes and Medical Evacuation Crises**: In [[Nyala]] (`SD03001`), the influx of mass casualties from the Tanqonj market double-tap strike overwhelmed the field clinic of [[Médecins Sans Frontières]], which lacked blood units and surgical supplies.
 - **Rural Clinic Devastation**: In [[Blue Nile State]], rural healthcare clinics in Um Darfa and Belila were hit by drone strikes and artillery, injuring healthcare workers and halting localized disease response.
+- **Isolated Mountain Enclave Neglect**: In [[Liba]] (`SD02008-LIB`) within East [[Jebel Marra]], the sole regional health center serving 30 surrounding villages ceased functioning for over 10 months following the complete withdrawal of aid agencies, triggering surges in malaria, acute respiratory illness, and anemia among 14,000 residents and displaced persons.
 
 ---
 
@@ -55,10 +56,11 @@ Belligerents routinely justify military presence near hospitals by accusing oppo
 
 ---
 
-## ## Related Primitives
+## Related Primitives
 
 - **Attributed Belligerents**: [[Sudanese Armed Forces]], [[Rapid Support Forces]]
-- **Target Locations**: [[Khartoum Oncology Hospital]], [[El Obeid]], [[Nyala]], [[Kurmuk]], [[El Fasher]]
-- **Key Actors**: [[Médecins Sans Frontières]], [[Ahmed Omar]], [[Lamia Mutawakil]], [[Emergency Lawyers]]
-- **Connected Events**: [[2026-10-27 Nyala Tanqonj Market Drone Strike]], [[2026-10 El Obeid Siege and Drone Warfare Escalation]]
-- **Connected Citations**: [[2026-11-01 Ahmed Omar Appeal for Khartoum Oncology Radiotherapy]], [[2026-10-28 Del Koninckx MSF Statement on Nyala Market Drone Casualties]]
+- **Target Locations**: [[Khartoum Oncology Hospital]], [[El Obeid]], [[Nyala]], [[Kurmuk]], [[El Fasher]], [[Liba]], [[Dar Omo]], [[Jebel Marra]]
+- **Key Actors**: [[Médecins Sans Frontières]], [[Ahmed Omar]], [[Lamia Mutawakil]], [[Emergency Lawyers]], [[Adam Yagoub Mohamed Abdallah]]
+- **Connected Events**: [[2026-10-27 Nyala Tanqonj Market Drone Strike]], [[2026-10 El Obeid Siege and Drone Warfare Escalation]], [[2026-10-30 Dar Omo Famine and Humanitarian Crisis Alert]]
+- **Connected Citations**: [[2026-11-01 Ahmed Omar Appeal for Khartoum Oncology Radiotherapy]], [[2026-10-28 Del Koninckx MSF Statement on Nyala Market Drone Casualties]], [[2026-10-30 Adam Yagoub Statement on Liba White Autumn and Health Disaster]]
+- **Sources**: [[sources/2026-10-30-dabanga-dar-omo-east-jebel-marra-famine-warning]]

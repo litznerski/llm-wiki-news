@@ -1,7 +1,7 @@
 ---
 title: "Infrastructure & Architecture Kanban Board"
 type: "kanban"
-last_updated: 2026-11-02
+last_updated: 2026-11-03
 ---
 
 # Infrastructure & Architecture Kanban Board
@@ -16,6 +16,9 @@ last_updated: 2026-11-02
 
 ## ✅ Done
 
+- [x] [[_input/tasks/archived/Update Centering KG on 5WH1.md|Update Centering KG on 5W1H Framework: Option C Automation, Raw Articles in ArcadeDB, Section Node Retirement, and Ingestion Rework]] (2026-11-03)
+- [x] [[_input/tasks/archived/Center on 5WH1.md|Centering on 5W1H Framework in ArcadeDB: Ingestion Pipeline & Cypher Query Enhancements]] (2026-11-03)
+- [x] [[_input/tasks/archived/Dabanga RSS feed.md|Radio Dabanga RSS Feed Article Collector: Monthly Main News Extraction Pipeline]] (2026-11-02)
 - [x] [[_input/tasks/archived/Staging mechanism for harvested articles.md|Staging Mechanism for Harvested Articles: Identification & Ingestion Tracking]] (2026-11-02)
 - [x] [[_input/tasks/archived/Dabanga News Arabic.md|Radio Dabanga Arabic News Extraction Pipeline: Date-Filtered Harvesting & Trafilatura Ingestion]] (2026-11-02)
 - [x] [[_input/tasks/archived/GDELT BigQuery.md|GDELT BigQuery Pipeline: News Identification & Trafilatura Extraction]] (2026-11-01)

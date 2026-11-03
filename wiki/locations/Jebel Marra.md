@@ -64,12 +64,17 @@ SLA-AW forces maintain checkpoints and civil administrative bodies across upper 
 - **2023-04-15**: SLA-AW declares Jebel Marra an open humanitarian haven for fleeing civilians of all ethnic backgrounds.
 - **2023-11-01**: Influx of tens of thousands of IDPs following the RSF takeover of Nyala and Zalingei.
 - **2026-10-28**: Dispatches from Nyala and Jebel Marra document severe acute child malnutrition and deaths in mountain settlements due to the total siege of commercial supply lines.
+- **2026-10-30**: [[2026-10-30 Dar Omo Famine and Humanitarian Crisis Alert]] - Traditional leader Shartai [[Ibrahim Suleiman Hasaballah]] and [[Adam Yagoub Mohamed Abdallah]] declare imminent famine across 8 federations in [[Dar Omo]] and [[Liba]] following a 95% crop failure and 10-month clinic outage.
 
 ---
 
 ## Related Primitives
 
 - **Parent Region**: [[South Darfur]], Central Darfur
+- **Subordinate Localities & Sectors**: [[Dar Omo]], [[Liba]]
 - **Controlling Movement**: [[Sudan Liberation Movement (al-Nur)]]
+- **Key Community Leaders**: [[Ibrahim Suleiman Hasaballah]], [[Adam Yagoub Mohamed Abdallah]]
+- **Events**: [[2026-10-30 Dar Omo Famine and Humanitarian Crisis Alert]]
 - **Adjacent Urban Hubs**: [[Nyala]]
-- **Key Themes**: [[War Economy and Commercial Blockades in Sudan]], [[Ethnic Cleansing and Genocidal Patterns in Darfur]]
+- **Key Themes**: [[War Economy and Commercial Blockades in Sudan]], [[Ethnic Cleansing and Genocidal Patterns in Darfur]], [[Systemic Healthcare Collapse and Hospital Militarization in Sudan]]
+- **Sources**: [[sources/2026-10-30-dabanga-dar-omo-east-jebel-marra-famine-warning]]

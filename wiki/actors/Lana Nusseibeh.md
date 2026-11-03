@@ -12,6 +12,7 @@ tags: [diplomat, uae-official, un-ambassador, unsg-candidate, foreign-policy]
 last_updated: 2026-11-01
 sources:
   - "[[sources/2026-10-30-the-guardian-sudanese-diaspora-uae-un-nominee-nusseibeh]]"
+  - "[[sources/2026-10-28-middle-east-eye-uae-dark-politics-nusseibeh-un]]"
 aliases: ["Ambassador Lana Zaki Nusseibeh", "Lana Zaki Nusseibeh", "لانا زكي نسيبة"]
 admiralty_rating: "A2"
 reliability_score: 0.90
@@ -53,13 +54,16 @@ Nusseibeh’s diplomatic persona and campaign platform center on:
 
 | Date | Diplomatic Milestone / Public Stance | Controversy / Event Context |
 | :--- | :--- | :--- |
+| **2013–2014** | Ambassadorship to UN in New York | Routine dismissal by her mission of UN investigator [[Dino Mahtani]]'s evidence of 160+ illegal Somali charcoal shipments funding al-Shabaab entering UAE desert warehouses |
+| **2022** | Diplomatic tenure as UN Permanent Representative | Retaliatory detention and expulsion of former UN investigator [[Dino Mahtani]] by UAE authorities connected to renewed Somali sanctions inquiries |
 | **2023-06** | Presided over UN Security Council during UAE presidency | Navigated scrutiny over early RSF atrocities in Darfur |
 | **2024-04** | Formal launch of international campaign for UN Secretary-General | Outlined platform prioritizing multilateral reform and global consensus |
-| **2026-10-28** | Subject of global civil society briefing opposing her UN candidacy | Sudanese diaspora and human rights leaders presented evidence of UAE arms transfers to RSF |
+| **2026-10-28** | Subject of global civil society briefing opposing her UN candidacy | Sudanese diaspora, HRW, and [[Centre for International Policy]] presented evidence of UAE arms transfers to RSF; deflected questions on past RSF denials at UN press conference |
 
-## ## Related Primitives
-- **Sources**: [[sources/2026-10-30-the-guardian-sudanese-diaspora-uae-un-nominee-nusseibeh]]
+## Related Primitives
+
+- **Sources**: [[sources/2026-10-30-the-guardian-sudanese-diaspora-uae-un-nominee-nusseibeh]], [[sources/2026-10-28-middle-east-eye-uae-dark-politics-nusseibeh-un]]
 - **Themes**: [[Multilateral Capture and Accountability Politics in Sudan]], [[UAE Foreign Backing and Logistics Network for the Rapid Support Forces]]
 - **Events**: [[2026-10-28 Global Civil Society Briefing Opposing Lana Nusseibeh Candidacy for UN Secretary-General]]
-- **Actors**: [[United Arab Emirates]], [[Human Rights Watch]], [[SIHA Network]], [[Kenneth Roth]], [[Hala al-Karib]], [[Carlos Mureithi]]
+- **Actors**: [[United Arab Emirates]], [[Human Rights Watch]], [[SIHA Network]], [[Kenneth Roth]], [[Hala al-Karib]], [[Carlos Mureithi]], [[Dino Mahtani]], [[Centre for International Policy]], [[Middle East Eye]]
 - **Locations**: [[Geneva]]

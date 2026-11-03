@@ -20,6 +20,10 @@ events_chronicled:
   - "[[2026-10-21 Geneva Consultative Meeting on Peace Initiatives in Sudan]]"
   - "[[2026-10-27 Nyala Tanqonj Market Drone Strike]]"
   - "[[2026-10-28 Global Civil Society Briefing Opposing Lana Nusseibeh Candidacy for UN Secretary-General]]"
+  - "[[2026-10-26 White Nile Power Grid Blackout and Economic Crisis]]"
+  - "[[2026-10-30 Shendi Power Substation Drone Strike]]"
+  - "[[2026-10-30 Dar Omo Famine and Humanitarian Crisis Alert]]"
+  - "[[2026-10-30 Sudanese Feminist Coalition Condemnation of Drone Warfare]]"
   - "[[2026-10-31 Haiya Oil Pumping and Power Station Drone Strike]]"
   - "[[2026-10-31 Belila Kurmuk Drone Strike]]"
   - "[[2026-10-31 RSF Dissolution of Native Administration Document]]"
@@ -35,6 +39,8 @@ citations_chronicled:
   - "[[2026-10-28 Mohamed Chande Othman Address to the UN General Assembly Third Committee on Sudan]]"
   - "[[2026-10-28 Kenneth Roth Statement on UAE Arming of RSF and Lana Nusseibeh Candidacy]]"
   - "[[2026-10-28 Hala al-Karib Statement on Denial of El Fasher Genocidal Acts and UAE Role]]"
+  - "[[2026-10-28 Dino Mahtani Statement on UAE Sanctions-Busting and Lana Nusseibeh UNSG Bid]]"
+  - "[[2026-10-28 Centre for International Policy Statement on Lana Nusseibeh UN Candidacy]]"
   - "[[2026-10-28 Del Koninckx MSF Statement on Nyala Market Drone Casualties]]"
   - "[[2026-10-28 Emergency Lawyers Condemnation of Nyala Market Drone Strike]]"
   - "[[2026-10-28 Hamdan Suleiman Eyewitness Account of Nyala Market Bombing]]"
@@ -42,6 +48,14 @@ citations_chronicled:
   - "[[2026-10-28 UN FFM Finding on RSF Drone Warfare and Indiscriminate Attacks in El Obeid]]"
   - "[[2026-10-28 UN FFM Finding on SAF Detention Practices and Torture in El Obeid]]"
   - "[[2026-10-28 UN FFM Recommendation for Specialized Independent Court for Sudan]]"
+  - "[[2026-10-30 Mohamed Idris Statement on Ad Douiem Power Blackout Impact]]"
+  - "[[2026-10-30 Mubarak Ali Statement on Ad Douiem Ice and Bread Inflation]]"
+  - "[[2026-10-30 Ibrahim Hasaballah Statement on Dar Omo Famine and Agricultural Collapse]]"
+  - "[[2026-10-30 Adam Yagoub Statement on Liba White Autumn and Health Disaster]]"
+  - "[[2026-10-30 Ihsan Fagiri Statement on Drone Warfare and Infrastructure Destruction]]"
+  - "[[2026-10-30 Nafisa Hagar Statement on Indiscriminate Drone Warfare as War Crimes]]"
+  - "[[2026-10-30 Noon Kashkoush Statement Calling for Immediate Halt to Drones and External Arms Supplies]]"
+  - "[[2026-10-30 Amira Osman Statement on War Against Civilian Survival and December Revolution]]"
   - "[[2026-10-31 Stéphane Dujarric UNSG Statement Condemning Escalating Drone Attacks in Sudan and Abyei]]"
   - "[[2026-10-31 Stéphane Dujarric Arab News Statement Condemning Nyala Market Drone Strike]]"
   - "[[2026-10-31 António Guterres Appeal for Immediate Cessation of Hostilities and Good-Faith Mediation in Sudan]]"
@@ -93,6 +107,7 @@ sources:
   - "[[sources/2026-10-31-arab-news-un-chief-appalled-drone-strikes-nyala-market]]"
   - "[[sources/2026-10-31-dabanga-haiya-oil-electricity-drone-attack]]"
   - "[[sources/2026-11-01-dabanga-unsg-guterres-condemns-escalating-drone-attacks]]"
+  - "[[sources/2026-10-28-middle-east-eye-uae-dark-politics-nusseibeh-un]]"
 aliases: ["October 2026 Sudan Conflict Chronicle", "سجل الصراع السوداني أكتوبر 2026"]
 ---
 
@@ -131,18 +146,32 @@ Strategic periodization of October 2026 divides into four distinct operational p
 | 9 | `2026-10-23` | `2026-10-23` | 0d | `Citation (testimony)` | [[2026-10-23 Muhammad Farooq First-Responder Account of Amiet Market Fire]] | [[Abyei]] | [[Muhammad Farooq]], [[UNISFA]] | First-responder account: *"every shop was burning"* | **A2** |
 | 10 | `2026-10-23` | `2026-10-23` | 0d | `Citation (statement)` | [[2026-10-23 Adebowale Ajabge Report on UNISFA Emergency Response and Todach Evacuations]] | [[Abyei]] | [[Adebowale Ajabge]], [[UNISFA]] | Confirmed firefighting & evacuation of >27 wounded | **A2** |
 | 11 | `2026-10-23` | `2026-10-23` | 0d | `Citation (testimony)` | [[2026-10-23 Angelina Musa Diaw Survivor Testimony on Amiet Market Destruction]] | [[Abyei]] | [[Angelina Musa Diaw]] | Survivor testimony on loss of market livelihood | **A2** |
-| 12 | `2026-10-27` | `2026-10-31` | 4d | `Event (incident)` | [[2026-10-27 Nyala Tanqonj Market Drone Strike]] | [[Nyala]], [[South Darfur]] | [[Sudanese Armed Forces]], [[Rapid Support Forces]], [[United Nations]] | **102+ civilians killed**, >100 wounded in livestock market strike | **B2** |
-| 13 | `2026-10-28` | `2026-10-28` | 0d | `Event (diplomatic)` | [[2026-10-28 Global Civil Society Briefing Opposing Lana Nusseibeh Candidacy for UN Secretary-General]] | [[Geneva]] / Online | [[Human Rights Watch]], [[SIHA Network]], [[Kenneth Roth]], [[Hala al-Karib]] | Global advocacy campaign opposing UAE UN candidacy | **A2** |
-| 14 | `2026-10-28` | `2026-10-28` | 0d | `Event (crisis)` | [[2026-10 El Obeid Siege and Drone Warfare Escalation]] | [[El Obeid]], [[North Kordofan]] | [[Independent International Fact-Finding Mission for the Sudan]], [[Mohamed Chande Othman]] | Documented siege starvation and drone strikes in North Kordofan | **A1** |
-| 15 | `2026-10-28` | `2026-10-28` | 0d | `Citation (forensic)` | [[2026-10-28 UN FFM Finding on RSF Drone Warfare and Indiscriminate Attacks in El Obeid]] | [[El Obeid]], [[North Kordofan]] | [[Independent International Fact-Finding Mission for the Sudan]] | FFM verifies RSF drone strikes on schools, hospitals, funerals, and rescue workers | **A1** |
-| 16 | `2026-10-28` | `2026-10-28` | 0d | `Citation (forensic)` | [[2026-10-28 UN FFM Finding on SAF Detention Practices and Torture in El Obeid]] | [[El Obeid]], [[North Kordofan]] | [[Independent International Fact-Finding Mission for the Sudan]] | FFM verifies SAF custodial torture, 2,000+ detainees in Central Prison, and billets co-location | **A1** |
-| 17 | `2026-10-28` | `2026-10-28` | 0d | `Citation (recommendation)` | [[2026-10-28 UN FFM Recommendation for Specialized Independent Court for Sudan]] | [[Geneva]] / UN | [[Independent International Fact-Finding Mission for the Sudan]] | Recommended creating a specialized independent judicial mechanism for Sudan | **A1** |
-| 18 | `2026-10-31` | `2026-10-31` | 0d | `Event (incident)` | [[2026-10-31 Haiya Oil Pumping and Power Station Drone Strike]] | [[Haiya]], [[Red Sea State]] | [[Rapid Support Forces]], [[Ministry of Foreign Affairs (Sudan)]], [[Muawiya Osman]] | Strategic infrastructure strike against Station 4 & power grid | **B2** |
-| 19 | `2026-10-31` | `2026-10-31` | 0d | `Citation (warning)` | [[2026-10-31 Stéphane Dujarric UNSG Statement Condemning Escalating Drone Attacks in Sudan and Abyei]] | Nationwide & [[Abyei]] | [[Stéphane Dujarric]], [[António Guterres]], [[United Nations]] | Condemned escalating drone attacks as **IHL violations** | **A1** |
-| 20 | `2026-10-31` | `2026-10-31` | 0d | `Citation (appeal)` | [[2026-10-31 António Guterres Appeal for Immediate Cessation of Hostilities and Good-Faith Mediation in Sudan]] | Nationwide | [[António Guterres]], [[United Nations]] | Demanded immediate cessation of hostilities and good-faith mediation | **A1** |
-| 21 | `2026-10-31` | `2026-10-31` | 0d | `Citation (statement)` | [[2026-10-31 Stéphane Dujarric Arab News Statement Condemning Nyala Market Drone Strike]] | [[Nyala]], [[South Darfur]] | [[Stéphane Dujarric]], [[António Guterres]], [[Arab News]] | UNSG appalled by reports of drone strikes on Tanqonj market | **B2** |
-| 22 | `2026-10-31` | `2026-10-31` | 0d | `Citation (statement)` | [[2026-10-31 Muawiya Osman Accusation of Ethiopian Base and UAE Proxy Drone Strikes on Sudan Infrastructure]] | [[Haiya]], [[Red Sea State]] | [[Muawiya Osman]], [[Ministry of Foreign Affairs (Sudan)]] | Formally accused Ethiopian-based UAE proxies of staging strikes | **B2** |
-| 23 | `2026-11-01` | `2026-11-01` | 0d | `Citation (statement)` | [[2026-11-01 Radio Dabanga Arabic Rendition of UNSG Drone Condemnation and FFM Warning]] | [[Haiya]], [[Nyala]], [[El Obeid]] | [[Radio Dabanga]], [[Stéphane Dujarric]], [[Mohamed Chande Othman]] | Vernacular Arabic synthesis connecting UNSG and FFM warnings | **B2** |
+| 12 | `2026-10-26` | `2026-10-30` | 4d | `Event (crisis)` | [[2026-10-26 White Nile Power Grid Blackout and Economic Crisis]] | [[Ad Douiem]], [[White Nile State]] | [[Rapid Support Forces]], [[Mohamed Idris]], [[Mubarak Ali]] | Destruction of Mashkoor substation causes total blackout, tripling ice prices and paralyzing bakeries | **B2** |
+| 13 | `2026-10-27` | `2026-10-31` | 4d | `Event (incident)` | [[2026-10-27 Nyala Tanqonj Market Drone Strike]] | [[Nyala]], [[South Darfur]] | [[Sudanese Armed Forces]], [[Rapid Support Forces]], [[United Nations]] | **102+ civilians killed**, >100 wounded in livestock market strike | **B2** |
+| 14 | `2026-10-28` | `2026-10-28` | 0d | `Event (diplomatic)` | [[2026-10-28 Global Civil Society Briefing Opposing Lana Nusseibeh Candidacy for UN Secretary-General]] | [[Geneva]] / Online | [[Human Rights Watch]], [[SIHA Network]], [[Kenneth Roth]], [[Hala al-Karib]] | Global advocacy campaign opposing UAE UN candidacy | **A2** |
+| 15 | `2026-10-28` | `2026-10-28` | 0d | `Event (crisis)` | [[2026-10 El Obeid Siege and Drone Warfare Escalation]] | [[El Obeid]], [[North Kordofan]] | [[Independent International Fact-Finding Mission for the Sudan]], [[Mohamed Chande Othman]] | Documented siege starvation and drone strikes in North Kordofan | **A1** |
+| 16 | `2026-10-28` | `2026-10-28` | 0d | `Citation (forensic)` | [[2026-10-28 UN FFM Finding on RSF Drone Warfare and Indiscriminate Attacks in El Obeid]] | [[El Obeid]], [[North Kordofan]] | [[Independent International Fact-Finding Mission for the Sudan]] | FFM verifies RSF drone strikes on schools, hospitals, funerals, and rescue workers | **A1** |
+| 17 | `2026-10-28` | `2026-10-28` | 0d | `Citation (forensic)` | [[2026-10-28 UN FFM Finding on SAF Detention Practices and Torture in El Obeid]] | [[El Obeid]], [[North Kordofan]] | [[Independent International Fact-Finding Mission for the Sudan]] | FFM verifies SAF custodial torture, 2,000+ detainees in Central Prison, and billets co-location | **A1** |
+| 18 | `2026-10-28` | `2026-10-28` | 0d | `Citation (recommendation)` | [[2026-10-28 UN FFM Recommendation for Specialized Independent Court for Sudan]] | [[Geneva]] / UN | [[Independent International Fact-Finding Mission for the Sudan]] | Recommended creating a specialized independent judicial mechanism for Sudan | **A1** |
+| 19 | `2026-10-28` | `2026-10-28` | 0d | `Citation (forensic)` | [[2026-10-28 Dino Mahtani Statement on UAE Sanctions-Busting and Lana Nusseibeh UNSG Bid]] | New York / UAE | [[Dino Mahtani]], [[Middle East Eye]] | First-hand account of UAE sanctions-busting and investigator detention | **A1** |
+| 20 | `2026-10-28` | `2026-10-28` | 0d | `Citation (statement)` | [[2026-10-28 Centre for International Policy Statement on Lana Nusseibeh UN Candidacy]] | Washington / New York | [[Centre for International Policy]] | Warned Nusseibeh career owes to authoritarian petrostate and kleptocracy | **A2** |
+| 21 | `2026-10-30` | `2026-10-30` | 0d | `Event (incident)` | [[2026-10-30 Shendi Power Substation Drone Strike]] | [[Shendi]], [[River Nile State]] | [[Rapid Support Forces]], [[Third Infantry Division]], [[Shendi Locality Security Committee]] | Suicide drone strike guts transformers causing total blackout; targets 3rd Division HQ & fuel depot | **B2** |
+| 22 | `2026-10-30` | `2026-10-30` | 0d | `Event (crisis)` | [[2026-10-30 Dar Omo Famine and Humanitarian Crisis Alert]] | [[Dar Omo]], [[Liba]], [[Jebel Marra]] | [[Ibrahim Suleiman Hasaballah]], [[Adam Yagoub Mohamed Abdallah]], [[Sudan Liberation Movement (al-Nur)]] | Alert on imminent famine across 8 federations after 95% crop failure, 10mo clinic shutdown & aid exit | **B2** |
+| 23 | `2026-10-30` | `2026-10-30` | 0d | `Event (diplomatic)` | [[2026-10-30 Sudanese Feminist Coalition Condemnation of Drone Warfare]] | Nationwide / Regional | [[No to Women's Oppression Initiative]], [[Darfur Bar Association]], [[Al-Jazira Center for Human Rights]] | Joint declaration characterizing urban drone strikes and infrastructure destruction as war crimes | **A2** |
+| 24 | `2026-10-30` | `2026-10-30` | 0d | `Citation (testimony)` | [[2026-10-30 Mohamed Idris Statement on Ad Douiem Power Blackout Impact]] | [[Ad Douiem]], [[White Nile State]] | [[Mohamed Idris]], [[Radio Dabanga]] | Detailed household cooling collapse and unbudgeted survival costs | **B2** |
+| 25 | `2026-10-30` | `2026-10-30` | 0d | `Citation (testimony)` | [[2026-10-30 Mubarak Ali Statement on Ad Douiem Ice and Bread Inflation]] | [[Ad Douiem]], [[White Nile State]] | [[Mubarak Ali]], [[Radio Dabanga]] | Corroborated ice price jump to 30,000 SDG, bakery output drop, and 2,000 SDG mobile charging fee | **B2** |
+| 26 | `2026-10-30` | `2026-10-30` | 0d | `Citation (statement)` | [[2026-10-30 Ibrahim Hasaballah Statement on Dar Omo Famine and Agricultural Collapse]] | [[Dar Omo]], [[Jebel Marra]] | [[Ibrahim Suleiman Hasaballah]], [[Sudan Liberation Movement (al-Nur)]] | Traditional Shartai appeal warning of imminent famine across 8 federations | **B2** |
+| 27 | `2026-10-30` | `2026-10-30` | 0d | `Citation (statement)` | [[2026-10-30 Adam Yagoub Statement on Liba White Autumn and Health Disaster]] | [[Liba]], [[Dar Omo]], [[Jebel Marra]] | [[Adam Yagoub Mohamed Abdallah]], [[Radio Dabanga]] | Verified 5% rainfall 'white autumn', 10-month clinic closure, and waterborne disease surge | **B2** |
+| 28 | `2026-10-30` | `2026-10-30` | 0d | `Citation (statement)` | [[2026-10-30 Ihsan Fagiri Statement on Drone Warfare and Infrastructure Destruction]] | Nationwide | [[Ihsan Fagiri]], [[No to Women's Oppression Initiative]] | Denounced evolution from hunger to systematic drone demolition of basic infrastructure | **A2** |
+| 29 | `2026-10-30` | `2026-10-30` | 0d | `Citation (statement)` | [[2026-10-30 Nafisa Hagar Statement on Indiscriminate Drone Warfare as War Crimes]] | Nationwide | [[Nafisa Hagar]], [[Darfur Bar Association]] | Affirmed urban drone attacks violate Geneva Conventions as war crimes without statute of limitations | **A2** |
+| 30 | `2026-10-30` | `2026-10-30` | 0d | `Citation (appeal)` | [[2026-10-30 Noon Kashkoush Statement Calling for Immediate Halt to Drones and External Arms Supplies]] | Nationwide | [[Noon Kashkoush]], [[Al-Jazira Center for Human Rights]] | Demanded immediate drone cessation, foreign supplier sanctions, and independent investigations | **B2** |
+| 31 | `2026-10-30` | `2026-10-30` | 0d | `Citation (statement)` | [[2026-10-30 Amira Osman Statement on War Against Civilian Survival and December Revolution]] | Nationwide | [[Amira Osman]], [[No to Women's Oppression Initiative]] | Critiqued SAF and RSF attacks on markets, schools, and utilities as war against December Revolution | **A2** |
+| 32 | `2026-10-31` | `2026-10-31` | 0d | `Event (incident)` | [[2026-10-31 Haiya Oil Pumping and Power Station Drone Strike]] | [[Haiya]], [[Red Sea State]] | [[Rapid Support Forces]], [[Ministry of Foreign Affairs (Sudan)]], [[Muawiya Osman]] | Strategic infrastructure strike against Station 4 & power grid | **B2** |
+| 33 | `2026-10-31` | `2026-10-31` | 0d | `Citation (warning)` | [[2026-10-31 Stéphane Dujarric UNSG Statement Condemning Escalating Drone Attacks in Sudan and Abyei]] | Nationwide & [[Abyei]] | [[Stéphane Dujarric]], [[António Guterres]], [[United Nations]] | Condemned escalating drone attacks as **IHL violations** | **A1** |
+| 34 | `2026-10-31` | `2026-10-31` | 0d | `Citation (appeal)` | [[2026-10-31 António Guterres Appeal for Immediate Cessation of Hostilities and Good-Faith Mediation in Sudan]] | Nationwide | [[António Guterres]], [[United Nations]] | Demanded immediate cessation of hostilities and good-faith mediation | **A1** |
+| 35 | `2026-10-31` | `2026-10-31` | 0d | `Citation (statement)` | [[2026-10-31 Stéphane Dujarric Arab News Statement Condemning Nyala Market Drone Strike]] | [[Nyala]], [[South Darfur]] | [[Stéphane Dujarric]], [[António Guterres]], [[Arab News]] | UNSG appalled by reports of drone strikes on Tanqonj market | **B2** |
+| 36 | `2026-10-31` | `2026-10-31` | 0d | `Citation (statement)` | [[2026-10-31 Muawiya Osman Accusation of Ethiopian Base and UAE Proxy Drone Strikes on Sudan Infrastructure]] | [[Haiya]], [[Red Sea State]] | [[Muawiya Osman]], [[Ministry of Foreign Affairs (Sudan)]] | Formally accused Ethiopian-based UAE proxies of staging strikes | **B2** |
+| 37 | `2026-11-01` | `2026-11-01` | 0d | `Citation (statement)` | [[2026-11-01 Radio Dabanga Arabic Rendition of UNSG Drone Condemnation and FFM Warning]] | [[Haiya]], [[Nyala]], [[El Obeid]] | [[Radio Dabanga]], [[Stéphane Dujarric]], [[Mohamed Chande Othman]] | Vernacular Arabic synthesis connecting UNSG and FFM warnings | **B2** |
 
 ---
 
@@ -222,6 +251,8 @@ flowchart TD
   - [[2026-10-28 Mohamed Chande Othman Address to the UN General Assembly Third Committee on Sudan]]
   - [[2026-10-28 Kenneth Roth Statement on UAE Arming of RSF and Lana Nusseibeh Candidacy]]
   - [[2026-10-28 Hala al-Karib Statement on Denial of El Fasher Genocidal Acts and UAE Role]]
+  - [[2026-10-28 Dino Mahtani Statement on UAE Sanctions-Busting and Lana Nusseibeh UNSG Bid]]
+  - [[2026-10-28 Centre for International Policy Statement on Lana Nusseibeh UN Candidacy]]
   - [[2026-10-28 UN FFM Finding on RSF Drone Warfare and Indiscriminate Attacks in El Obeid]]
   - [[2026-10-28 UN FFM Finding on SAF Detention Practices and Torture in El Obeid]]
   - [[2026-10-28 UN FFM Recommendation for Specialized Independent Court for Sudan]]
@@ -231,13 +262,15 @@ flowchart TD
   - [[2026-10-31 Muawiya Osman Accusation of Ethiopian Base and UAE Proxy Drone Strikes on Sudan Infrastructure]]
   - [[2026-11-01 Radio Dabanga Arabic Rendition of UNSG Drone Condemnation and FFM Warning]]
 - **Actors & Locations**:
-  - [[Sudanese Armed Forces]] | [[Rapid Support Forces]] | [[United Nations]] | [[OHCHR]] | [[UNISFA]] | [[Radio Dabanga]] | [[Independent International Fact-Finding Mission for the Sudan]] | [[Federal Department of Foreign Affairs (Switzerland)]] | [[Al-Baraa Ibn Malik Brigade]]
-  - [[António Guterres]] | [[Stéphane Dujarric]] | [[Volker Türk]] | [[Mohamed Chande Othman]] | [[Alexandre Fasel]] | [[Pekka Haavisto]] | [[Muawiya Osman]]
+  - [[Sudanese Armed Forces]] | [[Rapid Support Forces]] | [[United Nations]] | [[OHCHR]] | [[UNISFA]] | [[Radio Dabanga]] | [[Independent International Fact-Finding Mission for the Sudan]] | [[Federal Department of Foreign Affairs (Switzerland)]] | [[Al-Baraa Ibn Malik Brigade]] | [[Centre for International Policy]] | [[Middle East Eye]]
+  - [[António Guterres]] | [[Stéphane Dujarric]] | [[Volker Türk]] | [[Mohamed Chande Othman]] | [[Alexandre Fasel]] | [[Pekka Haavisto]] | [[Muawiya Osman]] | [[Dino Mahtani]] | [[Lana Nusseibeh]]
   - [[West Kordofan]] | [[Blue Nile State]] | [[Abyei]] | [[Nyala]] | [[Haiya]] | [[El Obeid]] | [[South Darfur]] | [[Red Sea State]]
 - **Themes & Sources**:
   - [[Drone Proliferation and Double-Tap Strike Doctrine in Sudan]]
   - [[Energy Infrastructure Targeting in the Sudan War]]
   - [[Multilateral Mediation and Peace Coordination Mechanisms in Sudan]]
+  - [[Multilateral Capture and Accountability Politics in Sudan]]
+  - [[UAE Foreign Backing and Logistics Network for the Rapid Support Forces]]
   - [[Arbitrary Detention and Custodial Torture in the Sudan War]]
   - [[sources/2026-10-23-un-news-sudan-drone-strikes-306-killed]]
   - [[sources/2026-10-31-unsg-spokesperson-escalating-drone-attacks-sudan]]
@@ -245,3 +278,4 @@ flowchart TD
   - [[sources/2026-10-31-dabanga-haiya-oil-electricity-drone-attack]]
   - [[sources/2026-11-01-dabanga-unsg-guterres-condemns-escalating-drone-attacks]]
   - [[sources/2026-10-28-un-hrc-crp1-el-obeid-civilian-devastation]]
+  - [[sources/2026-10-28-middle-east-eye-uae-dark-politics-nusseibeh-un]]

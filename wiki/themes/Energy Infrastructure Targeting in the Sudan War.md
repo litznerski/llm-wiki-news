@@ -34,7 +34,9 @@ Oil infrastructure in Sudan represents both the primary sovereign revenue stream
 ## 3. Operational Manifestations Across Frontlines
 
 - **Eastern Corridor Strikes**: In late October 2026, RSF drones struck the crude oil pumping station and electrical substation in [[Haiya]] (`SD10002`), setting crude oil storage tanks on fire.
-- **Systemic Power Grid Degradation**: Over 13 electricity distribution stations across Gedaref, Khartoum, Al Jazirah, Red Sea, Sennar, White Nile, and South Kordofan were disabled by drone strikes, precipitating catastrophic nationwide blackouts.
+- **River Nile & Northern Penetration**: On 30 October 2026, an RSF suicide drone strike destroyed the transformer substation in [[Shendi]] (`SD08004`), knocking it out of service and setting fire to a [[Nile Petroleum Company]] fuel depot.
+- **White Nile Grid Blackout**: On 26 October 2026, RSF drones destroyed the control room of the Mashkoor transformer substation in [[White Nile State]], cutting power to [[Ad Douiem]], El Kawa, and Wad az Zaki and tripling basic commodity prices.
+- **Systemic Power Grid Degradation**: Over 13 electricity distribution stations across Gedaref, Khartoum, Al Jazirah, Red Sea, Sennar, White Nile, River Nile, Northern State, and South Kordofan were disabled by drone strikes, precipitating catastrophic nationwide blackouts.
 - **Urban Utility Targeting**: In [[El Obeid]], water pumping stations and municipal power networks were knocked out, leaving hundreds of thousands of civilians without potable water.
 
 ---
@@ -56,7 +58,8 @@ Belligerents justify infrastructure strikes by alleging that power substations a
 ## Related Primitives
 
 - **Attributed Belligerents**: [[Rapid Support Forces]], [[Sudanese Armed Forces]]
-- **Target Locations**: [[Haiya]], [[Red Sea State]], [[El Obeid]], [[Khartoum State]]
-- **Connected Events**: [[2026-10-31 Haiya Oil Pumping and Power Station Drone Strike]]
+- **Target Locations**: [[Haiya]], [[Red Sea State]], [[El Obeid]], [[Khartoum State]], [[Shendi]], [[River Nile State]], [[White Nile State]], [[Ad Douiem]]
+- **Connected Events**: [[2026-10-31 Haiya Oil Pumping and Power Station Drone Strike]], [[2026-10-30 Shendi Power Substation Drone Strike]], [[2026-10-26 White Nile Power Grid Blackout and Economic Crisis]]
+- **Sources**: [[sources/2026-10-31-dabanga-haiya-oil-electricity-drone-attack]], [[sources/2026-10-30-dabanga-shendi-power-station-drone-strike]], [[sources/2026-10-30-dabanga-white-nile-power-grid-collapse-inflation]]
 - **Connected Doctrines**: [[Drone Proliferation and Double-Tap Strike Doctrine in Sudan]]
 - **Chronology**: [[2026-10 Sudan Conflict Chronicle]], [[Sudan Drone Warfare and Double-Tap Strike Timeline]]

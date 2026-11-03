@@ -12,6 +12,7 @@ last_updated: 2026-11-01
 sources:
   - "[[sources/2026-10-30-the-guardian-sudanese-diaspora-uae-un-nominee-nusseibeh]]"
   - "[[sources/2026-10-31-dabanga-haiya-oil-electricity-drone-attack]]"
+  - "[[sources/2026-10-28-middle-east-eye-uae-dark-politics-nusseibeh-un]]"
 aliases: ["UAE", "Emirates", "دولة الإمارات العربية المتحدة"]
 admiralty_rating: "A2"
 reliability_score: 0.90
@@ -51,20 +52,26 @@ Emirati strategic doctrine in Sudan is driven by three core objectives:
 Extensive investigative reporting by the UN Security Council Panel of Experts, international media, and human rights organizations documents a sophisticated Emirati logistics corridor:
 - **Aviation Corridors**: Illicit weapons and medical supply flights routed via Abu Dhabi through Uganda and Kenya to Amdjarass Airfield in Eastern Chad, masked as humanitarian relief.
 - **Drone Supply Networks**: Supplying advanced loitering munitions, quadcopters, and fixed-wing UAVs, with operational launching and staging suspected from facilities such as [[Assosa]] in Western Ethiopia.
-- **Diplomatic Shielding**: Deploying prominent diplomats like [[Lana Nusseibeh]] to champion humanitarian aid initiatives while denying direct military intervention.
+- **Mercenary Deployment**: Financing and facilitating the recruitment of Colombian mercenary fighters to support RSF assault brigades in Darfur, as documented in draft UN panel findings.
+- **Diplomatic Shielding & Council Manipulation**: Deploying prominent diplomats like [[Lana Nusseibeh]] to champion humanitarian aid initiatives while denying direct military intervention, and coordinating with council allies like Bahrain to stay proceedings on critical UN investigative reports.
+- **Cyber Influence Operations**: In September 2026, tech safety firm Anthropic established with high confidence that the UAE orchestrated covert cyber operations targeting UN experts and critics documenting its Sudan role.
 
 ## 5. Chronological Event Footprint & Accountability Record
 
 | Period / Date | Documented Footprint / Escalation | Operational Arena |
 | :--- | :--- | :--- |
+| **2013–2014** | Illicit Somali charcoal imports (160+ shipments) documented in UAE desert warehouses by UN investigator [[Dino Mahtani]] | Gulf sanctions-busting |
+| **2022** | Retaliatory detention and expulsion of former UN investigator [[Dino Mahtani]] | UAE transit airport |
 | **2023-06** | Establishment of Amdjarass humanitarian-military logistics hub | Chad / North Darfur |
 | **2024-01** | UN Panel of Experts report verifies UAE-origin weaponry in RSF possession | UN Security Council |
+| **2026-08** | Demanded UN investigators "remedy serious defects" in weapons and Colombian mercenary report | UN Security Council |
 | **2026-10-28** | Global civil society and diaspora mobilize to block UAE candidacy for UNSG | New York / Geneva |
 | **2026-10-31** | Sudan MFA formally alleges UAE-backed drone launch from Ethiopian territory | [[Haiya]], [[Red Sea State]] |
 
 ## Related Primitives
-- **Sources**: [[sources/2026-10-30-the-guardian-sudanese-diaspora-uae-un-nominee-nusseibeh]], [[sources/2026-10-31-dabanga-haiya-oil-electricity-drone-attack]]
+
+- **Sources**: [[sources/2026-10-30-the-guardian-sudanese-diaspora-uae-un-nominee-nusseibeh]], [[sources/2026-10-31-dabanga-haiya-oil-electricity-drone-attack]], [[sources/2026-10-28-middle-east-eye-uae-dark-politics-nusseibeh-un]]
 - **Themes**: [[UAE Foreign Backing and Logistics Network for the Rapid Support Forces]], [[Regional Proxy Warfare and Transnational Drone Supply Networks in Sudan]], [[Multilateral Capture and Accountability Politics in Sudan]]
 - **Events**: [[2026-10-31 Haiya Oil Pumping and Power Station Drone Strike]], [[2026-10-28 Global Civil Society Briefing Opposing Lana Nusseibeh Candidacy for UN Secretary-General]]
-- **Actors**: [[Rapid Support Forces]], [[Sudanese Armed Forces]], [[Lana Nusseibeh]], [[Government of Ethiopia]], [[Ministry of Foreign Affairs (Sudan)]]
-- **Locations**: [[Haiya]], [[Assosa]], [[Red Sea State]]
+- **Actors**: [[Rapid Support Forces]], [[Sudanese Armed Forces]], [[Lana Nusseibeh]], [[Government of Ethiopia]], [[Ministry of Foreign Affairs (Sudan)]], [[Dino Mahtani]], [[Centre for International Policy]], [[Middle East Eye]]
+- **Locations**: [[Haiya]], [[Assosa]], [[Red Sea State]], [[El Fasher]]

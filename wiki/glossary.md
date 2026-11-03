@@ -92,6 +92,24 @@
 | **Fathi Fadul** | [[Fathi Fadul]] | `فتحي الفضل`, `SCP Spokesperson Fathi Fadul` | `actor` (`person`). Official spokesperson of the [[Sudanese Communist Party]]. |
 | **Ahmed Omar** | [[Ahmed Omar]] | `أحمد عمر`, `Dr. Ahmed Omar` | `actor` (`person`). Medical Director and Radiation Oncology specialist at [[Khartoum Oncology Hospital]]. |
 | **Lamia Mutawakil** | [[Lamia Mutawakil]] | `لمياء متوكل` | `actor` (`person`). Prominent Sudanese radio broadcaster, civil society activist, and cancer patient in Khartoum. |
+| **Third Infantry Division** | [[Third Infantry Division]] | `الفرقة الثالثة مشاة`, `3rd Infantry Division`, `Shendi Division` | `actor` (`state_force`). SAF territorial division headquartered in [[Shendi]] protecting the northern approach to Khartoum. |
+| **Shendi Security Committee** | [[Shendi Locality Security Committee]] | `اللجنة الأمنية لمحلية شندي`, `Shendi Locality Security Committee` | `actor` (`political_body`). Municipal security and executive coordinating council in [[Shendi]], River Nile State. |
+| **Nile Petroleum** | [[Nile Petroleum Company]] | `شركة النيل للبترول`, `Nile Petroleum Company Limited` | `actor` (`state_force`). State-owned downstream petroleum distribution enterprise managing strategic fuel reserves. |
+| **No to Women's Oppression** | [[No to Women's Oppression Initiative]] | `مبادرة لا لقهر النساء`, `No to Women's Oppression` | `actor` (`civil_society`). Grassroots Sudanese feminist rights initiative chaired by [[Amira Osman]]. |
+| **Darfur Bar Association** | [[Darfur Bar Association]] | `هيئة محامي دارفور`, `DBA` | `actor` (`civil_society`). Independent legal collective and human rights documentation bar founded in 2003. |
+| **Al-Jazira Center for HR** | [[Al-Jazira Center for Human Rights]] | `مركز الجزيرة لحقوق الإنسان`, `Al-Jazira Center for Human Rights` | `actor` (`civil_society`). Human rights legal monitoring center directed by [[Noon Kashkoush]]. |
+| **Mohamed Idris** | [[Mohamed Idris]] | `محمد إدريس` | `actor` (`person`). Civilian resident and eyewitness to the Mashkoor power outage in [[Ad Douiem]]. |
+| **Mubarak Ali** | [[Mubarak Ali]] | `مبارك علي` | `actor` (`person`). Civilian resident and market observer in [[Ad Douiem]]. |
+| **Ibrahim Suleiman Hasaballah** | [[Ibrahim Suleiman Hasaballah]] | `الشرتاي إبراهيم سليمان حسب الله`, `Shartai Hasaballah` | `actor` (`person`). Shartai and paramount customary leader of [[Dar Omo]] circle in East Jebel Marra. |
+| **Adam Yagoub** | [[Adam Yagoub Mohamed Abdallah]] | `آدم يعقوب محمد عبد الله`, `Adam Yagoub` | `actor` (`person`). Head of Displaced Persons Committee in [[Liba]] Federation, East Jebel Marra. |
+| **Suleiman Sirri** | [[Suleiman Sirri]] | `سليمان سري` | `actor` (`person`). Investigative field journalist for [[Radio Dabanga]]. |
+| **Ihsan Fagiri** | [[Ihsan Fagiri]] | `د. إحسان فقيري`, `Dr. Ihsan Fagiri` | `actor` (`person`). Veteran feminist leader, physician, and human rights defender. |
+| **Nafisa Hagar** | [[Nafisa Hagar]] | `نفيسة حجر`, `Nafisa Hagar (DBA)` | `actor` (`person`). Human rights attorney and Vice President of the [[Darfur Bar Association]]. |
+| **Noon Kashkoush** | [[Noon Kashkoush]] | `نون كشكوش` | `actor` (`person`). Human rights lawyer and Director of the [[Al-Jazira Center for Human Rights]]. |
+| **Amira Osman** | [[Amira Osman]] | `أميرة عثمان`, `Amira Osman Hamed` | `actor` (`person`). Prominent Sudanese human rights defender and Chairwoman of the [[No to Women's Oppression Initiative]]. |
+| **Middle East Eye** | [[Middle East Eye]] | `MEE`, `ميدل إيست إي` | `actor` (`media_source` \| `Admiralty: B`). Independent digital news and investigative portal based in London covering regional conflict economies. |
+| **Dino Mahtani** | [[Dino Mahtani]] | `Dino Mahtani`, `دينو ماهتاني` | `actor` (`person`). Former UN Security Council Sanctions Panel investigator and investigative analyst. |
+| **CIP** | [[Centre for International Policy]] | `Centre for International Policy`, `Center for International Policy`, `CIP`, `مركز السياسة الدولية` | `actor` (`civil_society`). Independent Washington-based foreign policy think tank advocating for human rights and demilitarization. |
 
 ---
 
@@ -138,4 +156,8 @@
 | **SD02007** | [[Karnoi]] | `كرنوي`, `Kornoi`, `Karnoi Locality` | `locality_adm2` (`ADM2`). Borderland locality in northwestern [[North Darfur]] facing mass displacement. |
 | **SD02006** | [[Um Baru]] | `أم برو`, `Um Barru`, `Um Baru Locality` | `locality_adm2` (`ADM2`). Locality in northwestern [[North Darfur]] hosting displaced populations from El Fasher. |
 | **SD01001-HOSP** | [[Khartoum Oncology Hospital]] | `مستشفى الذرة`, `Mustashfa al-Dharra`, `Radiation and Isotopes Centre Khartoum` | `infrastructure` (`ADM4/Hospital`). National specialized cancer radiotherapy centre in [[Khartoum]]. |
+| **SD08004** | [[Shendi]] | `شندي`, `Shandi`, `Shendi Locality` | `city_town` (`ADM2/City`). Strategic military garrison and commercial Nile hub in [[River Nile State]]. |
+| **SD16003** | [[Ad Douiem]] | `الدويم`, `Ed Dueim`, `Ad Duwaym` | `city_town` (`ADM2/City`). Major commercial and university city on western bank of the Nile in [[White Nile State]]. |
+| **SD02008-OMO** | [[Dar Omo]] | `دار أمو`, `دائرة أمو`, `Dar Oumo` | `locality_adm2` (`ADM2/Circle`). Administrative circle of 8 federations in East [[Jebel Marra]] under SLM-AW governance. |
+| **SD02008-LIB** | [[Liba]] | `ليبة`, `Liba Federation`, `فدرالية ليبة` | `neighborhood_site` (`ADM3/Settlement`). Administrative seat of Liba Federation and displacement haven in East [[Jebel Marra]]. |
 

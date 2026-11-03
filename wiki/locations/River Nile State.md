@@ -43,10 +43,12 @@ Governed by SAF military authorities and hosting elements of the 3rd Infantry Di
 ## 5. Chronological Log of Major Conflict Events
 
 - **2024-04-02**: Mass-casualty drone strike hits an Al-Baraa Ibn Malik Iftar gathering in Atbara.
+- **2026-10-30**: [[2026-10-30 Shendi Power Substation Drone Strike]] - RSF suicide drone strike sets fire to transformer substation in [[Shendi]], knocking it out of service and targeting the 3rd Division HQ.
 - **2026-11-01**: Coordinated RSF drone strikes hit the Abu Hamad electrical substation, causing a total municipal blackout.
 
 ## Related Primitives
 
-- **Localities**: [[Abu Hamad]], Atbara, Ed Damar, Shendi, Berber
-- **Belligerents**: [[Sudanese Armed Forces]], [[Rapid Support Forces]]
-- **Incidents**: [[2026-11-01 Abu Hamad and Al Dabbah Power Stations Drone Strikes]]
+- **Localities**: [[Abu Hamad]], [[Shendi]], Atbara, Ed Damar, Berber
+- **Belligerents**: [[Sudanese Armed Forces]], [[Rapid Support Forces]], [[Third Infantry Division]]
+- **Incidents**: [[2026-10-30 Shendi Power Substation Drone Strike]], [[2026-11-01 Abu Hamad and Al Dabbah Power Stations Drone Strikes]]
+- **Sources**: [[sources/2026-10-30-dabanga-shendi-power-station-drone-strike]], [[sources/2026-11-01-dabanga-abu-hamad-al-dabbah-power-station-drone-attack]], [[sources/2026-11-01-dabanga-umma-party-river-nile-famine-emergency]]

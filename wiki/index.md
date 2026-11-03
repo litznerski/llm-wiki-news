@@ -18,6 +18,10 @@ This catalog maintains a single-line summary of all compiled nodes within the va
 - [[2026-11-01 Abu Hamad and Al Dabbah Power Stations Drone Strikes]] — Coordinated RSF drone strikes hitting power substations in Abu Hamad and Al Dabbah, plunging northern towns into blackouts and killing Al-Baraa commander Muhammad al-Nao (`B2`).
 - [[2026-11-01 El Malha Commercial Vehicle Drone Strike]] — Aerial drone strike incinerating a civilian commercial transport vehicle near Al-Hara in [[El Malha]], North Darfur, killing 2 named civilians (`B2`).
 - [[2026-11-01 Sudan UNSC and AU Complaint Against Ethiopia]] — Formal diplomatic complaints filed by Sudan with the UNSC and AU-PSC accusing Ethiopia of facilitating RSF drone strikes on 14 power stations via Assosa base (`B2`).
+- [[2026-10-30 Shendi Power Substation Drone Strike]] — RSF suicide drone strike destroying the Shendi electricity substation and targeting the SAF 3rd Infantry Division HQ in River Nile State (`B2`).
+- [[2026-10-26 White Nile Power Grid Blackout and Economic Crisis]] — Total electrical grid collapse across Ad Douiem, El Kawa, and Wad az Zaki following RSF drone destruction of Mashkoor substation, tripling ice prices and paralyzing bakeries (`B2`).
+- [[2026-10-30 Dar Omo Famine and Humanitarian Crisis Alert]] — Native administration and displacement alert warning of imminent famine across eight federations in East Jebel Marra following 95% crop failure and 10-month clinic outage (`B2`).
+- [[2026-10-30 Sudanese Feminist Coalition Condemnation of Drone Warfare]] — Joint civil society declaration categorizing urban drone warfare and infrastructure targeting as war crimes under the Geneva Conventions (`A2`).
 - [[2025-10 El Fasher Siege and RSF Takeover Atrocities]] — Systematic encirclement and takeover of [[El Fasher]] by the [[Rapid Support Forces]] marked by summary executions and hallmarks of genocide against Fur and Zaghawa populations (`A1`).
 
 ## Actors (`wiki/actors/`)
@@ -92,10 +96,33 @@ This catalog maintains a single-line summary of all compiled nodes within the va
 - [[Kaamil Ahmed]] — Development affairs correspondent for The Guardian (`subtype: person`) investigating diaspora opposition to UAE diplomacy.
 - [[Al-Baraa Ibn Malik Brigade]] — Islamist paramilitary auxiliary battalion (`subtype: armed_group`) allied with the SAF, active in residential combat and security cells in El Obeid.
 - [[Sudan People's Liberation Movement-North (al-Hilu)]] — Armed political movement (`subtype: armed_group`) commanding territory in the Nuba Mountains and southern Blue Nile State.
+- [[Third Infantry Division]] — Major SAF operational formation (`subtype: state_force`) headquartered in Shendi securing the northern approach to Khartoum.
+- [[Shendi Locality Security Committee]] — Municipal security and crisis executive body (`subtype: political_body`) in Shendi, River Nile State.
+- [[Nile Petroleum Company]] — State-owned downstream petroleum distribution enterprise (`subtype: state_force`) managing emergency fuel storage reserves.
+- [[No to Women's Oppression Initiative]] — Prominent grassroots Sudanese feminist anti-war organization (`subtype: civil_society`) chaired by Amira Osman.
+- [[Darfur Bar Association]] — Veteran independent human rights and legal collective (`subtype: civil_society`) documenting war crimes and IHL violations.
+- [[Al-Jazira Center for Human Rights]] — Independent legal monitoring organization (`subtype: civil_society`) directed by Noon Kashkoush.
+- [[Mohamed Idris]] — Civilian resident and witness in Ad Douiem (`subtype: person`) testifying to the impacts of the Mashkoor power blackout.
+- [[Mubarak Ali]] — Civilian resident and market observer in Ad Douiem (`subtype: person`) documenting ice hyperinflation and bakery disruptions.
+- [[Ibrahim Suleiman Hasaballah]] — Paramount Shartai of Dar Omo administrative circle in East Jebel Marra (`subtype: person`) issuing famine alerts.
+- [[Adam Yagoub Mohamed Abdallah]] — Head of Liba Displaced Persons Committee (`subtype: person`) reporting on 95% crop failure and medical clinic closure.
+- [[Suleiman Sirri]] — Investigative field correspondent for Radio Dabanga (`subtype: person`) reporting from East Jebel Marra.
+- [[Ihsan Fagiri]] — Veteran Sudanese feminist leader, physician, and activist (`subtype: person`) in the No to Women's Oppression Initiative.
+- [[Nafisa Hagar]] — Vice President of the Darfur Bar Association and international human rights attorney (`subtype: person`).
+- [[Noon Kashkoush]] — Director of the Al-Jazira Center for Human Rights and accountability lawyer (`subtype: person`).
+- [[Amira Osman]] — Iconic Sudanese human rights defender and Chairwoman of the No to Women's Oppression Initiative (`subtype: person`).
+- [[Middle East Eye]] — Independent digital news and investigative portal (`subtype: media_source`) based in London specializing in Middle East and Horn of Africa conflicts.
+- [[Dino Mahtani]] — Former UN Security Council Sanctions Panel investigator and investigative analyst (`subtype: person`) exposing UAE sanctions evasion and proxy networks.
+- [[Centre for International Policy]] — Independent Washington-based foreign policy think tank (`subtype: civil_society`) advocating for anti-corruption and multilateral integrity.
 
 ## Locations (`wiki/locations/`)
 - [[Northern State]] — Northwestern Nile basin state (`SD05`, `state_adm1`) anchoring SAF rear strategic depth, cross-border Egypt transit, and agricultural schemes.
 - [[River Nile State]] — Industrial, railway, and gold-mining heartland (`SD04`, `state_adm1`) facing severe fuel shortages and load shedding.
+- [[Shendi]] — Strategic military citadel and commercial Nile hub in River Nile State (`SD08004`, `city_town`), site of 3rd Division HQ and power station drone strike.
+- [[White Nile State]] — Pivotal riverine frontier state (`SD16`, `state_adm1`) housing the Um Dabaker power plant and Mashkoor transmission grid.
+- [[Ad Douiem]] — Second largest commercial metropolis in White Nile State (`SD16003`, `city_town`) plunged into multi-day blackouts and economic crisis.
+- [[Dar Omo]] — Mountain administrative circle of 8 federations in East Jebel Marra (`SD02008-OMO`, `locality_adm2`) facing acute famine and blockade.
+- [[Liba]] — Settlement and administrative seat of Liba Federation in East Jebel Marra (`SD02008-LIB`, `neighborhood_site`) hosting over 14,000 residents and IDPs.
 - [[Abu Hamad]] — Riverine junction and gold extraction center in River Nile State (`SD04006`, `city_town`) where drone strikes caused total power blackout.
 - [[Al Dabbah]] — Strategic Nile bend hub in Northern State (`SD05004`, `city_town`), site of power station strikes and killing of Al-Baraa commander.
 - [[El Malha]] — Desert oasis and trade transit locality in North Darfur (`SD02008`, `locality_adm2`) facing drought, crop failure, and vehicle drone strikes.
@@ -164,6 +191,14 @@ This catalog maintains a single-line summary of all compiled nodes within the va
 - [[2026-11-01 El Malha Emergency Response Room Famine Warning]] — ERR Coordination Council alert warning of total agricultural failure, drought, and open-air displacement (`B2`).
 - [[2026-11-01 National Umma Party Famine Emergency Declaration River Nile]] — Executive party declaration demanding an agricultural state of emergency due to diesel shortages and 18-hour power cuts (`B2`).
 - [[2026-11-01 Sudanese Teachers Committee Strike Communique]] — Higher Strike Committee declaration extending general strike over unpaid salaries and fiscal abandonment (`B2`).
+- [[2026-10-30 Mohamed Idris Statement on Ad Douiem Power Blackout Impact]] — Eyewitness testimony by resident Mohamed Idris on household collapse and ice costs in Ad Douiem (`B2`).
+- [[2026-10-30 Mubarak Ali Statement on Ad Douiem Ice and Bread Inflation]] — Eyewitness testimony by resident Mubarak Ali on bakery production collapse and 2,000 SDG mobile charging in Ad Douiem (`B2`).
+- [[2026-10-30 Ibrahim Hasaballah Statement on Dar Omo Famine and Agricultural Collapse]] — Traditional leader Shartai appeal warning of imminent famine across eight federations in East Jebel Marra (`B2`).
+- [[2026-10-30 Adam Yagoub Statement on Liba White Autumn and Health Disaster]] — Displaced persons committee report on 5% rainfall, 10-month clinic outage, and epidemics in Liba (`B2`).
+- [[2026-10-30 Ihsan Fagiri Statement on Drone Warfare and Infrastructure Destruction]] — Feminist leader statement condemning the progression from hunger and disease to drone infrastructure demolition (`A2`).
+- [[2026-10-30 Nafisa Hagar Statement on Indiscriminate Drone Warfare as War Crimes]] — Human rights lawyer statement categorizing urban drone strikes as grave breaches of Geneva Conventions (`A2`).
+- [[2026-10-30 Noon Kashkoush Statement Calling for Immediate Halt to Drones and External Arms Supplies]] — Al-Jazira Center Director statement calling for drone bans and foreign arms supplier prosecutions (`B2`).
+- [[2026-10-30 Amira Osman Statement on War Against Civilian Survival and December Revolution]] — No to Women's Oppression Chairwoman critique of SAF and RSF attacks on markets and utilities (`A2`).
 - [[2026-10-23 Volker Türk Condemnation of Sudan Drone Escalation and Arms Influx]] — Verbatim statement by Volker Türk warning of drone mortality and urging arms halt (`A2`).
 - [[2026-10-23 Seif Magango Statement on Evisceration of Civilian Infrastructure in Sudan]] — Statement by Seif Magango on scores of civilians/IDPs killed and vital services eviscerated (`A2`).
 - [[2026-10-23 Muhammad Farooq First-Responder Account of Amiet Market Fire]] — First-responder account by Lt. Col. Farooq confirming conflagration at Amiet Market (`A2`).
@@ -186,11 +221,17 @@ This catalog maintains a single-line summary of all compiled nodes within the va
 - [[2026-10-21 Pekka Haavisto Appeal for De-Escalation and Comprehensive Ceasefire in Sudan]] — UN Personal Envoy appeal for de-escalation, arms embargo enforcement, and ceasefire (`A1`).
 - [[2026-10-28 Kenneth Roth Statement on UAE Arming of RSF and Lana Nusseibeh Candidacy]] — Former HRW leader statement on UAE arms transfers to RSF and UN leadership hypocrisy (`A2`).
 - [[2026-10-28 Hala al-Karib Statement on Denial of El Fasher Genocidal Acts and UAE Role]] — SIHA Regional Director statement condemning denial of El Fasher genocidal atrocities (`A2`).
+- [[2026-10-28 Dino Mahtani Statement on UAE Sanctions-Busting and Lana Nusseibeh UNSG Bid]] — Former UN investigator testimony detailing UAE sanctions evasion under Nusseibeh and retaliatory transit detention (`A1`).
+- [[2026-10-28 Centre for International Policy Statement on Lana Nusseibeh UN Candidacy]] — Institutional policy statement characterizing Nusseibeh's career as tied to an authoritarian petrostate and kleptocracy (`A2`).
 - [[2026-10-28 Lana Nusseibeh Statement on Transitional Justice and Allegations of UAE RSF Support]] — Official statement by UAE diplomat denying military support and defending aid policy (`A2`).
 - [[2026-10-31 Stéphane Dujarric Arab News Statement Condemning Nyala Market Drone Strike]] — UN Spokesperson statement conveying Secretary-General dismay at Nyala market strike (`B2`).
 - [[2026-11-01 Radio Dabanga Arabic Rendition of UNSG Drone Condemnation and FFM Warning]] — Vernacular Arabic journalistic synthesis connecting UNSG condemnation to FFM findings (`B2`).
 
 ## Sources (`wiki/sources/`)
+- [[sources/2026-10-30-dabanga-shendi-power-station-drone-strike]] — Radio Dabanga report on RSF suicide drone strike destroying the Shendi electricity substation and targeting 3rd Division HQ (`B2`, `compiled: true`).
+- [[sources/2026-10-30-dabanga-white-nile-power-grid-collapse-inflation]] — Radio Dabanga report on White Nile blackout following Mashkoor substation strike, tripling ice prices and mobile charging fees (`B2`, `compiled: true`).
+- [[sources/2026-10-30-dabanga-dar-omo-east-jebel-marra-famine-warning]] — Radio Dabanga field investigation by Suleiman Sirri on imminent famine and health collapse in Dar Omo, East Jebel Marra (`B2`, `compiled: true`).
+- [[sources/2026-10-30-dabanga-feminist-coalition-condemnation-drone-warfare]] — Radio Dabanga coverage of joint feminist coalition condemnation of suicide drones and civilian infrastructure attacks (`B2`, `compiled: true`).
 - [[sources/2026-10-28-bbc-arabic-nyala-market-strike-conflicting-casualty-tolls]] — BBC Arabic investigative dispatch on Nyala market double-tap strike, 70-person mass grave, and SAF denial (`A2`, `compiled: true`).
 - [[sources/2026-10-28-dabanga-nyala-market-strike-msf-tasees-death-toll]] — Radio Dabanga report on MSF hospital intake (36 dead, 150+ injured) and Tasees 188 death toll (`B2`, `compiled: true`).
 - [[sources/2026-11-01-dabanga-abu-hamad-al-dabbah-power-station-drone-attack]] — Radio Dabanga report on drone strikes hitting Abu Hamad and Al Dabbah power stations and killing Muhammad al-Nao (`B2`, `compiled: true`).
@@ -218,11 +259,17 @@ This catalog maintains a single-line summary of all compiled nodes within the va
 - [[sources/2026-10-30-the-guardian-sudanese-diaspora-uae-un-nominee-nusseibeh]] — The Guardian exposé on Sudanese diaspora mobilization against UAE UN nominee (`B1`, `compiled: true`).
 - [[sources/2026-10-31-arab-news-un-chief-appalled-drone-strikes-nyala-market]] — Arab News/AFP dispatch on UN Chief appalled by Nyala market drone strikes (`B2`, `compiled: true`).
 - [[sources/2026-11-01-dabanga-unsg-guterres-condemns-escalating-drone-attacks]] — Radio Dabanga Arabic dispatch on UNSG drone condemnation and FFM warnings (`B2`, `compiled: true`).
+- [[sources/2026-10-28-middle-east-eye-uae-dark-politics-nusseibeh-un]] — Middle East Eye analysis by Dino Mahtani on UAE sanctions evasion, P5 capital leverage, and opposition to Lana Nusseibeh's UN bid (`B1`, `compiled: true`).
 
 ## Syntheses (`wiki/syntheses/`)
 *No dialectical intelligence syntheses archived yet.*
 
 ## Ingestions (`wiki/ingestions/`)
+- [[ingestions/2026-11-02/2026-10-28-middle-east-eye-uae-dark-politics-nusseibeh-un]] — Compilation audit dossier for Middle East Eye Dino Mahtani exposé on UAE sanctions evasion and UN candidacy.
+- [[ingestions/2026-11-02/2026-10-30-dabanga-shendi-power-station-drone-strike]] — Compilation audit dossier for Shendi electricity transformer substation drone strike report.
+- [[ingestions/2026-11-02/2026-10-30-dabanga-white-nile-power-grid-collapse-inflation]] — Compilation audit dossier for White Nile power grid collapse and economic hyperinflation report.
+- [[ingestions/2026-11-02/2026-10-30-dabanga-dar-omo-east-jebel-marra-famine-warning]] — Compilation audit dossier for Dar Omo East Jebel Marra imminent famine warning report.
+- [[ingestions/2026-11-02/2026-10-30-dabanga-feminist-coalition-condemnation-drone-warfare]] — Compilation audit dossier for Sudanese feminist coalition condemnation of drone warfare report.
 - [[ingestions/2026-11-02/2026-10-28-bbc-arabic-nyala-market-strike-conflicting-casualty-tolls]] — Compilation audit dossier for BBC Arabic Nyala market strike report.
 - [[ingestions/2026-11-02/2026-10-28-dabanga-nyala-market-strike-msf-tasees-death-toll]] — Compilation audit dossier for Radio Dabanga Nyala market MSF/Tasees report.
 - [[ingestions/2026-11-02/2026-11-01-dabanga-abu-hamad-al-dabbah-power-station-drone-attack]] — Compilation audit dossier for Abu Hamad and Al Dabbah power station drone attacks.
